@@ -116,7 +116,7 @@ class TaskBase(luigi.Task):
         assert isinstance(last_date,  arrow.Arrow)
 
         if "Range" in cls.__name__:
-            return list(set[cls(first_date), cls(last_date)]) # return head and tail directly
+            return list(set([cls(first_date), cls(last_date)])) # return head and tail directly
         else:
             dates = arrow.Arrow.range(cls("1997-01-01").date_type, first_date, last_date)
             return [cls(date1.datetime) for date1 in dates]

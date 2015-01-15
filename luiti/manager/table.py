@@ -28,3 +28,39 @@ class Table(object):
                 print "[task_file] ", failure1['task_file']
                 print "[err] ",       failure1['err']
                 print
+
+
+    @staticmethod
+    def print_files_by_task_cls_and_date_range(curr_task, args, opts=dict()):
+        # 打印 依赖类 和 执行配置 信息
+        task_headers = ["Current Env Key", "Current Env Value"]
+        task_table   = [
+                    ["task name", args.task_name],
+                    ["task date range", args.date_range],
+                    ["task execute mode", "DRY=" + str(args.dry)],
+                    ["task dep mode", "NO_DEP=" + str(args.no_dep)],
+                    ["related task classes total count", opts['task_classes_count']],
+                  ]
+        print
+        print "Tasks related infos"
+        print tabulate(task_table, task_headers, tablefmt="grid")
+
+        # 打印 要删除的文件列表
+        file_headers = ["Generated from task", "Storage", "File path"]
+
+        # TODO 直接显示 date + basename
+        keep_date_pre_len = 19 # 保留 /2014-10-13/ ，再上面的父目录就不显示了，因为一样。
+
+        dep_files  = opts['dep_files']
+        file_table = [[dep_files[f1].__class__.__name__, 'HDFS', f1[len(dep_files[f1].data_dir)-keep_date_pre_len:] ] \
+                                                                         for f1 in sorted(dep_files.keys())]
+        file_table.append(['', '', "Total count %s" % len(dep_files)])
+        file_table.append(['', '', ''])
+        file_uniq_root_dir = set([t1.root_dir for t1 in opts['dep_tasks_on_curr_task']])
+        file_table.append(['All root dirs', '', 'Total count %s' % len(file_uniq_root_dir)])
+        for dir1 in file_uniq_root_dir: file_table.append(['', '', dir1])
+
+        print
+        print "Files related infos"
+        print tabulate(file_table, file_headers, tablefmt="grid")
+        print "\n"*3

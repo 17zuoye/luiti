@@ -15,7 +15,7 @@ class Path(object):
             raise ValueError("%s doesnt exists!" % project_dir)
 
         if not os.path.exists(os.path.join(project_dir, Path.TasksDir)):
-            raise ValueError("%s has no subdir %s) % !" % (project_dir, TasksDir))
+            raise ValueError("%s has no subdir %s !" % (project_dir, Path.TasksDir))
 
         sys.path.insert(0, project_dir)
 
