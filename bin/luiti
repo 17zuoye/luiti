@@ -18,13 +18,13 @@ import luiti.manager as manager
 
 
 # 1. parser
-parser_main    = argparse.ArgumentParser(description="Luiti tasks manager..")
+parser_main    = argparse.ArgumentParser(description="Luiti tasks manager.")
 subparsers     = parser_main.add_subparsers(title="subcommands", description='valid subcommands',)
 
 # 1.1. parser tasks
 parser_tasks   = subparsers.add_parser('tasks', help=u"manage luiti tasks.")
-parser_tasks.add_argument("ls",            help=u"print current avaiable luiti tasks." )
-parser_tasks.add_argument("--project-dir", help=u"force use another project directory.", default=curr_dir)
+parser_tasks.add_argument("ls",  nargs=1,       help=u"print current avaiable luiti tasks." )
+parser_tasks.add_argument("--project-dir",      help=u"force use another project directory.", default=curr_dir)
 
 # 1.2. parser files
 parser_files   = subparsers.add_parser('files', help=u"manage files that outputed by luiti tasks.")
@@ -35,7 +35,6 @@ parser_files.add_argument('rm', nargs=1, )
 #parser_files_group.add_argument('ls',      action='store_true', default=None, )
 #parser_files_group.add_argument('rm',      action='store_true', default=None, )
 
-
 parser_files.add_argument('--task-name',         help=u"必须指定任务名称，比如 --task-name=Redmine5954ParentReportWeek",   required=True, )
 parser_files.add_argument('--date-range',        help=u"必须指定时间周期，比如 --date-range=20141001-20141015",            required=True, )
 parser_files.add_argument('--dry',               help=u"可以指定 **假运行** 模式 , 比如 --dry=true。",                     default=True,  choices=['true', 'false'])
@@ -44,6 +43,10 @@ parser_files.add_argument('--force',             help=u"强制删除文件",    
 parser_files.add_argument("--project-dir",       help=u"force use another project directory.", default=curr_dir)
 
 
+# TODO 整合到 tasks subcommand 里
+parser_run = subparsers.add_parser('run', help=u"run a luiti task.")
+parser_run.add_argument('--task-name',           help=u"必须指定任务名称，比如 --task-name=Redmine5954ParentReportWeek",   required=True, )
+parser_run.add_argument('--date-value',          help=u"必须指定具体时间，比如 --date-value=2014-09-01T00:00:01+08:00 。后面的时区信息是必须的。",   required=True, )
 
 if len(sys.argv) == 1:
     parser_main.print_help()
@@ -83,3 +86,7 @@ if subcommand == "files":
             print "\nTips: just set --dry=false to soft-delete theses files.\n"
         else:
             manager.Files.soft_delete_files(dep_files)
+
+if subcommand == "run":
+    curr_task = TaskUtils.load_task(args_main.task_name)
+    luigi.run(main_task_cls=curr_task)
