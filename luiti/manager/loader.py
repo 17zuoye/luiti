@@ -16,7 +16,7 @@ class Loader(object):
 
         for dir1 in luiti_tasks_dirs:
             task_files.extend(
-                    glob.glob(os.path.join(dir1, Path.TasksDir + "[a-z]*.py"))
+                    glob.glob(os.path.join(dir1, Path.TasksDir, "[a-z]*.py"))
                 )
 
         def fix_load(file1, result):
