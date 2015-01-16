@@ -71,11 +71,7 @@ class TaskBase(luigi.Task):
 
     @cached_property
     def date_type(self):
-        """ Inherit class must be in TaskBase{Day,Week,Month} style.  """
-        # No underline in DateType
-        str1 = Inflector().underscore(self.__class__.__name__).split("_")[-1].lower()
-        assert str1 in self.__class__.DateTypes
-        return str1
+        return TaskBase.get_date_type(self.__class__)
 
     @cached_property
     def date_value_by_type_in_last(self):
@@ -99,14 +95,14 @@ class TaskBase(luigi.Task):
 
     def reset_date(self):
         # **强制** 写为统一时间格式(arrow格式)，这样luigi就不会同时跑两个任务了。
-        self.date_value = ArrowParameter.get(self.date_value).replace(tzinfo=tz.tzlocal())
+        self.date_value = ArrowParameter.get(self.date_value)
 
         orig_date       = self.date_value
         if self.date_type != 'range':
             new_date = orig_date.floor(self.date_type)
             if orig_date != new_date:
                 print "[reset date by %s] from %s to %s" % (self.date_type, orig_date, new_date)
-            self.date_value = new_date
+                self.date_value = new_date
 
 
     @classmethod
@@ -118,8 +114,17 @@ class TaskBase(luigi.Task):
         if "Range" in cls.__name__:
             return list(set([cls(first_date), cls(last_date)])) # return head and tail directly
         else:
-            dates = arrow.Arrow.range(cls("1997-01-01").date_type, first_date, last_date)
+            dates = arrow.Arrow.range(TaskBase.get_date_type(cls), first_date, last_date)
             return [cls(date1.datetime) for date1 in dates]
 
     @cached_property
     def task_class(self): return self.__class__
+
+
+    @staticmethod
+    def get_date_type(cls):
+        """ Inherit class must be in TaskBase{Day,Week,Month,Range} style.  """
+        # No underline in DateType
+        str1 = Inflector().underscore(cls.__name__).split("_")[-1].lower()
+        assert str1 in cls.DateTypes
+        return str1
