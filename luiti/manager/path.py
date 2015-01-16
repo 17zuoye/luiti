@@ -7,18 +7,22 @@ class Path(object):
 
     TasksDir = "luiti_tasks"
 
+    all_luiti_tasks_parent_dirs = []
+
     @staticmethod
-    def find_all_luiti_tasks_dirs(project_dir):
-        """ return all luiti tasks parent directories. """
+    def find_all_luiti_tasks_parent_dirs(project_dir):
+        """ return all luiti tasks directories. """
 
         if not os.path.exists(project_dir):
             raise ValueError("%s doesnt exists!" % project_dir)
 
-        if not os.path.exists(os.path.join(project_dir, Path.TasksDir)):
+        luiti_tasks_dir = os.path.join(project_dir, Path.TasksDir)
+        if not os.path.exists(luiti_tasks_dir):
             raise ValueError("%s has no subdir %s !" % (project_dir, Path.TasksDir))
 
-        sys.path.insert(0, project_dir)
+        for root, dirs, files in os.walk(project_dir):
+            for dir1 in dirs:
+                if dir1 == Path.TasksDir:
+                    Path.all_luiti_tasks_parent_dirs.append(root)
 
-        return [project_dir]
-
-# TODO find sub modules
+        return Path.all_luiti_tasks_parent_dirs

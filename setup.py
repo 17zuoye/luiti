@@ -14,6 +14,7 @@ setup(
     long_description='Luiti = Luigi + time',
     packages=[
                 'luiti',
+                'luiti/manager',
                 'luiti/utils',
              ],
     scripts=[

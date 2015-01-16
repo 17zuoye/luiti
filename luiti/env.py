@@ -26,12 +26,12 @@ class EnvClass(object):
         assert len(env.sys_path), "[error] Must setup Python sys path at least one path! e.g. `luiti.env.sys_path = ['some_python_library_dir', ...]` "
 
         # init only once
-        if "path_old" in dir(sys):
+        if "path_old_by_luiti" in dir(sys):
             raise ValueError("[error] Already setup!")
         else:
-            sys.path_old = sys.path
+            sys.path_old_by_luiti = sys.path
             sys.path     = []
-            for path1 in (env.sys_path + sys.path_old):
+            for path1 in (env.sys_path + sys.path_old_by_luiti):
                 if path1 not in sys.path:
                     sys.path.append(path1)
 

@@ -2,20 +2,21 @@
 
 import os
 import glob
-from .path import Path
 from inflector import Inflector
-from luiti import TaskUtils
+from .path import Path
 
 class Loader(object):
 
     @staticmethod
-    def load_all_tasks(*project_dirs):
+    def load_all_tasks(*luiti_tasks_dirs):
+        from ..utils import TaskUtils
+
         result     = {"success": list(), "failure": list()}
         task_files = []
 
-        for dir1 in project_dirs:
+        for dir1 in luiti_tasks_dirs:
             task_files.extend(
-                    glob.glob(os.path.join(dir1, Path.TasksDir + "/[a-z]*.py"))
+                    glob.glob(os.path.join(dir1, Path.TasksDir + "[a-z]*.py"))
                 )
 
         def fix_load(file1, result):
@@ -37,4 +38,5 @@ class Loader(object):
                 result['failure'].append({"err": err,           "task_file": file1})
 
         for task_file1 in task_files: fix_load(task_file1, result)
+
         return result

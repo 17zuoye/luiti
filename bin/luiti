@@ -8,13 +8,11 @@ import argparse
 from collections import defaultdict
 from datetime import datetime
 
-curr_dir  = os.getcwd()
-sys.path.insert(0, curr_dir) # delete me TODO
-
 
 import luigi
 from luiti import TaskUtils
 import luiti.manager as manager
+curr_dir  = os.getcwd()
 
 
 # 1. parser
@@ -47,6 +45,7 @@ parser_files.add_argument("--project-dir",       help=u"force use another projec
 parser_run = subparsers.add_parser('run', help=u"run a luiti task.")
 parser_run.add_argument('--task-name',           help=u"必须指定任务名称，比如 --task-name=Redmine5954ParentReportWeek",   required=True, )
 parser_run.add_argument('--date-value',          help=u"必须指定具体时间，比如 --date-value=2014-09-01T00:00:01+08:00 。后面的时区信息是必须的。",   required=True, )
+parser_run.add_argument("--project-dir",         help=u"force use another project directory.", default=curr_dir)
 
 if len(sys.argv) == 1:
     parser_main.print_help()
@@ -56,17 +55,24 @@ if len(sys.argv) == 1:
 args_main  = parser_main.parse_args()
 subcommand = sys.argv[1]
 
-project_dirs = manager.Path.find_all_luiti_tasks_dirs(args_main.project_dir)
-result       = manager.Loader.load_all_tasks(*project_dirs)
+
+luiti_tasks_dirs = manager.Path.find_all_luiti_tasks_parent_dirs(args_main.project_dir)
+result           = manager.Loader.load_all_tasks(*luiti_tasks_dirs)
 all_task_classes = [i1['task_cls'] for i1 in result['success']]
 
-#import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
+deleted_idxes = []
+sys.argv = sys.argv[0:1] + sys.argv[-2:]
+
+
 if subcommand == "tasks":
     if args_main.ls:
         manager.Table.print_all_tasks(result)
 
-if subcommand == "files":
+if "task_name" in args_main:
     curr_task = TaskUtils.load_task(args_main.task_name)
+
+if subcommand == "files":
     dep_tasks_on_curr_task = [curr_task]
     if not args_main.no_dep:
         dep_tasks_on_curr_task = manager.Dep.find_dep_on_tasks(curr_task, all_task_classes)
@@ -88,5 +94,4 @@ if subcommand == "files":
             manager.Files.soft_delete_files(dep_files)
 
 if subcommand == "run":
-    curr_task = TaskUtils.load_task(args_main.task_name)
     luigi.run(main_task_cls=curr_task)
