@@ -8,7 +8,6 @@ import argparse
 from collections import defaultdict
 from datetime import datetime
 
-
 import luigi
 from luiti import TaskUtils
 import luiti.manager as manager
@@ -55,14 +54,10 @@ if len(sys.argv) == 1:
 args_main  = parser_main.parse_args()
 subcommand = sys.argv[1]
 
-
+# NOTE modify sys.path in here.
 luiti_tasks_dirs = manager.Path.find_all_luiti_tasks_parent_dirs(args_main.project_dir)
 result           = manager.Loader.load_all_tasks(*luiti_tasks_dirs)
 all_task_classes = [i1['task_cls'] for i1 in result['success']]
-
-# import pdb; pdb.set_trace()
-deleted_idxes = []
-sys.argv = sys.argv[0:1] + sys.argv[-2:]
 
 
 if subcommand == "tasks":
@@ -94,4 +89,31 @@ if subcommand == "files":
             manager.Files.soft_delete_files(dep_files)
 
 if subcommand == "run":
+    # 把参数修复为 luigi 接受的参数，即把只有 luiti 依赖的参数去除。
+    old = sys.argv[:]
+    def fetch_keys(parser1): return parser1.__dict__['_option_string_actions'].keys()
+    luigi_keep_opts = ["--date-value"]
+    luiti_only_opts = subparsers.choices.keys() + fetch_keys(parser_tasks) + fetch_keys(parser_files) + fetch_keys(parser_run)
+    luiti_only_opts = [i1 for i1 in luiti_only_opts if i1 not in  luigi_keep_opts]
+    delete_argv_idxes = set([])
+    for idx1, arg1 in enumerate(sys.argv):
+        if idx1 in delete_argv_idxes: continue
+
+        # 1. 排除 tasks, files, run 等
+        if (not arg1.startswith("--")) and (arg1 in luiti_only_opts):
+            delete_argv_idxes.add(idx1)
+            continue
+
+        # 2. 处理 --task-name 等参数
+        if "=" in arg1:
+            arg2, val2 = arg1.split("=", 1)
+            if arg2 in luiti_only_opts:
+                delete_argv_idxes.add(idx1)
+        else:
+            if (arg1 in luiti_only_opts) and (not arg1 in luigi_keep_opts):
+                delete_argv_idxes.add(idx1)
+                delete_argv_idxes.add(idx1 + 1)
+
+    sys.argv = [arg1 for idx1, arg1 in enumerate(sys.argv) if idx1 not in delete_argv_idxes]
+
     luigi.run(main_task_cls=curr_task)
