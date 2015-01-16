@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 
 import os
+import commands
 
 class CommandUtils:
 
@@ -9,5 +10,4 @@ class CommandUtils:
         if verbose:   print "[command]", command_str
         if dry:       return False
 
-        import commands
         return commands.getstatusoutput(command_str)

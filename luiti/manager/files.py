@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 
 from ..parameter import ArrowParameter
+import luigi
 
 class Files(object):
 
@@ -15,3 +16,13 @@ class Files(object):
                     for task1 in task_classes \
                     for task_instance_2 in task1.instances_by_date_range(first_date, last_date) \
                     for file_3 in task_instance_2._persist_files + [task_instance_2.data_file]})
+
+    @staticmethod
+    def soft_delete_files(*files):
+        delete_at_str = datetime.now().strftime("-deleted-at-%Y%m%d-%H%M%S")
+
+        for file1 in sorted(files):
+            luigi.hdfs.client.rename(file1, file1 + delete_at_str)
+
+        print "\nDone!"
+        return 0

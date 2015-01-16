@@ -6,13 +6,16 @@
 import os, sys
 import argparse
 from collections import defaultdict
+from datetime import datetime
 
 curr_dir  = os.getcwd()
 sys.path.insert(0, curr_dir) # delete me TODO
 
 
+import luigi
 from luiti import TaskUtils
 import luiti.manager as manager
+
 
 # 1. parser
 parser_main    = argparse.ArgumentParser(description="Luiti tasks manager..")
@@ -75,4 +78,8 @@ if subcommand == "files":
                                     "task_classes_count"        : len(dep_tasks_on_curr_task),
                                     "dep_tasks_on_curr_task"    : dep_tasks_on_curr_task,
                                 })
-        import pdb; pdb.set_trace()
+
+        if args_main.dry:
+            print "\nTips: just set --dry=false to soft-delete theses files.\n"
+        else:
+            manager.Files.soft_delete_files(dep_files)
