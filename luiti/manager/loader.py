@@ -54,11 +54,9 @@ class Loader(object):
         # clean sys.path
         for idx1, dir1 in enumerate(sys.path):
             sys.path[idx1] = sys.path[idx1].rstrip("/")
+        curr_dir = os.getcwd()
+        if curr_dir not in sys.path: sys.path.insert(0, curr_dir)
         old_sys_path = sys.path      # Fix load path
-
-        # ensure no luiti_tasks dir conflicts
-        for dir1 in Path.all_luiti_tasks_parent_dirs:
-            if dir1 in sys.path: sys.path.remove(dir1)
 
         # 1. check `task_name_1` format.
         assert task_name_1[0] in string.uppercase, "Task name should begin with UpperCase !"

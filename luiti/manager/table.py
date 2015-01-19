@@ -1,10 +1,15 @@
 #-*-coding:utf-8-*-
 
 import os
-from tabulate import tabulate
-
 
 class Table(object):
+
+    @staticmethod
+    def puts(task_table, task_headers, **opts):
+        from tabulate import tabulate
+        print
+        print tabulate(task_table, task_headers, **opts)
+        print
 
     @staticmethod
     def print_all_tasks(result):
@@ -16,9 +21,7 @@ class Table(object):
         task_table = [[idx1+1, task_cls_inspect(item1['task_cls'])] for idx1, item1 in enumerate(result['success'])]
         task_table.extend([["total", len(result['success'])]])
 
-        print
-        print tabulate(task_table, task_headers, tablefmt="grid")
-        print
+        Table.puts(task_table, task_headers, tablefmt="grid")
 
         if result['failure']:
             print
@@ -59,5 +62,5 @@ class Table(object):
 
         print
         print "Files related infos"
-        print tabulate(file_table, file_headers, tablefmt="grid")
+        Table.puts(file_table, file_headers, tablefmt="grid")
         print "\n"*3
