@@ -90,7 +90,7 @@ if subcommand == "files":
         if args_main.dry:
             print "\nTips: just set --dry=false to soft-delete theses files.\n"
         else:
-            manager.Files.soft_delete_files(sorted(dep_file_to_task_instances.keys()))
+            manager.soft_delete_files(*dep_file_to_task_instances.keys())
 
 if subcommand == "run":
     # 把参数修复为 luigi 接受的参数，即把只有 luiti 依赖的参数去除。
