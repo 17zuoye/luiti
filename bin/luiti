@@ -77,20 +77,20 @@ if subcommand == "files":
         dep_tasks_on_curr_task = manager.Dep.find_dep_on_tasks(curr_task, all_task_classes)
 
     if args_main.rm:
-        dep_files = manager.Files.get_all_date_files(args_main.date_range, dep_tasks_on_curr_task)
-        manager.Table.print_files_by_task_cls_and_date_range(
+        dep_file_to_task_instances = manager.get_all_date_file_to_task_instances(args_main.date_range, dep_tasks_on_curr_task)
+        manager.print_files_by_task_cls_and_date_range(
                                 curr_task,
                                 args_main,
                                 {
-                                    "dep_files"                 : dep_files,
-                                    "task_classes_count"        : len(dep_tasks_on_curr_task),
-                                    "dep_tasks_on_curr_task"    : dep_tasks_on_curr_task,
+                                    "dep_file_to_task_instances" : dep_file_to_task_instances,
+                                    "task_classes_count"         : len(dep_tasks_on_curr_task),
+                                    "dep_tasks_on_curr_task"     : dep_tasks_on_curr_task,
                                 })
 
         if args_main.dry:
             print "\nTips: just set --dry=false to soft-delete theses files.\n"
         else:
-            manager.Files.soft_delete_files(dep_files)
+            manager.Files.soft_delete_files(sorted(dep_file_to_task_instances.keys()))
 
 if subcommand == "run":
     # 把参数修复为 luigi 接受的参数，即把只有 luiti 依赖的参数去除。

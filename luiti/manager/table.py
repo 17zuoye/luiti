@@ -51,10 +51,10 @@ class Table(object):
         # 打印 要删除的文件列表
         file_headers = ["Generated from task", "Storage", "Date value", "Filename"]
 
-        dep_files  = opts['dep_files']
-        file_table = [[dep_files[f1].__class__.__name__, 'HDFS', dep_files[f1].date_str, os.path.basename(f1), ] \
-                                                                         for f1 in sorted(dep_files.keys())]
-        file_table.append(['', '', '', "Total count %s" % len(dep_files)])
+        dep_file_to_task_instances = opts['dep_file_to_task_instances']
+        file_table = [[dep_file_to_task_instances[f1].__class__.__name__, 'HDFS', dep_file_to_task_instances[f1].date_str, os.path.basename(f1), ] \
+                                 for f1 in sorted(dep_file_to_task_instances.keys())]
+        file_table.append(['', '', '', "Total count %s" % len(dep_file_to_task_instances)])
         file_table.append(['', '', '', ''])
         file_uniq_root_dir = set([t1.root_dir for t1 in opts['dep_tasks_on_curr_task']])
         file_table.append(['All root dirs', '', '', 'Total count %s' % len(file_uniq_root_dir)])

@@ -13,7 +13,7 @@ from .files      import Files
 #################
 
 find_dep_on_tasks                                 = Dep.find_dep_on_tasks
-get_all_date_files                                = Files.get_all_date_files
+get_all_date_file_to_task_instances               = Files.get_all_date_file_to_task_instances
 soft_delete_files                                 = Files.soft_delete_files
 load_all_tasks                                    = Loader.load_all_tasks
 load_a_task_by_name                               = Loader.load_a_task_by_name
