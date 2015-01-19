@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 
-
+import os
 from tabulate import tabulate
 
 
@@ -38,7 +38,7 @@ class Table(object):
                     ["task name", args.task_name],
                     ["task date range", args.date_range],
                     ["task execute mode", "DRY=" + str(args.dry)],
-                    ["task dep mode", "NO_DEP=" + str(args.no_dep)],
+                    ["task dep mode", "DEP=" + str(args.dep)],
                     ["related task classes total count", opts['task_classes_count']],
                   ]
         print
@@ -46,19 +46,16 @@ class Table(object):
         print tabulate(task_table, task_headers, tablefmt="grid")
 
         # 打印 要删除的文件列表
-        file_headers = ["Generated from task", "Storage", "File path"]
-
-        # TODO 直接显示 date + basename
-        keep_date_pre_len = 19 # 保留 /2014-10-13/ ，再上面的父目录就不显示了，因为一样。
+        file_headers = ["Generated from task", "Storage", "Date value", "Filename"]
 
         dep_files  = opts['dep_files']
-        file_table = [[dep_files[f1].__class__.__name__, 'HDFS', f1[len(dep_files[f1].data_dir)-keep_date_pre_len:] ] \
+        file_table = [[dep_files[f1].__class__.__name__, 'HDFS', dep_files[f1].date_str, os.path.basename(f1), ] \
                                                                          for f1 in sorted(dep_files.keys())]
-        file_table.append(['', '', "Total count %s" % len(dep_files)])
-        file_table.append(['', '', ''])
+        file_table.append(['', '', '', "Total count %s" % len(dep_files)])
+        file_table.append(['', '', '', ''])
         file_uniq_root_dir = set([t1.root_dir for t1 in opts['dep_tasks_on_curr_task']])
-        file_table.append(['All root dirs', '', 'Total count %s' % len(file_uniq_root_dir)])
-        for dir1 in file_uniq_root_dir: file_table.append(['', '', dir1])
+        file_table.append(['All root dirs', '', '', 'Total count %s' % len(file_uniq_root_dir)])
+        for dir1 in file_uniq_root_dir: file_table.append(['', '', '', dir1])
 
         print
         print "Files related infos"
