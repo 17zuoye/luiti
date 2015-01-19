@@ -6,7 +6,8 @@ __all__ = ['MrTestCase']
 from collections import defaultdict
 import json
 
-from .utils import TaskUtils, MRUtils
+from .utils import MRUtils
+from .manager import Loader
 
 # NOTE 集成测试数据到 类中 ，这样就方便引用了。
 
@@ -17,7 +18,7 @@ def MrTestCase(cls, verbose=False):
     cls.maxDiff = None # compact large json diff
 
     def generate_closure_function(mr_task_name1):
-        task_cls      = TaskUtils.load_task(mr_task_name1) # keep it!
+        task_cls      = Loader.load_a_task_by_name(mr_task_name1) # keep it!
         if verbose: print "[task_cls]", task_cls
 
         def test_mr(self):

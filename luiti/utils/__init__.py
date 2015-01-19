@@ -4,7 +4,6 @@ from .io_utils           import IOUtils
 from .target_utils       import TargetUtils
 from .mr_utils           import MRUtils
 from .math_utils         import MathUtils
-from .task_utils         import TaskUtils
 from .hdfs_utils         import HDFSUtils
 from .command_utils      import CommandUtils
 from .date_utils         import DateUtils

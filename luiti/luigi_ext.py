@@ -21,7 +21,8 @@ import importlib
 from inflector import Inflector
 from etl_utils import cached_property
 
-from .utils import IOUtils, TargetUtils, TaskUtils
+from .utils import IOUtils, TargetUtils
+from .manager import Loader
 luigi.HDFS = TargetUtils.hdfs # 本来就是需要读取全局配置，所以索性就绑定在 luigi 命名空间了吧。
 
 def persist_files(*files): # 装饰器
@@ -66,7 +67,7 @@ def ref_tasks(*tasks): # 装饰器
     ```
     """
     def wrap(ref_task_name):
-        return lambda self: TaskUtils.load_task(ref_task_name)
+        return lambda self: Loader.load_a_task_by_name(ref_task_name)
 
     def func(cls):
         curr_task_name = cls.__name__

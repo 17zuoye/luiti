@@ -15,8 +15,10 @@ __all__ = [
             'StaticFile',
             'MongoTask',
 
+            'manager',
+
             'IOUtils', 'DateUtils', 'TargetUtils', 'HDFSUtils',
-            'MRUtils', 'MathUtils', 'TaskUtils', 'CommandUtils',
+            'MRUtils', 'MathUtils', 'CommandUtils',
             'CompressUtils',
 
             'ArrowParameter',
@@ -51,8 +53,9 @@ from .root_task            import RootTask
 from .static_file          import StaticFile
 from .mongo_task           import MongoTask
 
+from .                     import manager
 from .utils                import IOUtils, DateUtils, TargetUtils, HDFSUtils, \
-                                  MRUtils, MathUtils, TaskUtils, CommandUtils, \
+                                  MRUtils, MathUtils, CommandUtils, \
                                   CompressUtils
 
 from .parameter            import ArrowParameter

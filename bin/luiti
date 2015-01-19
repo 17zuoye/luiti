@@ -9,7 +9,6 @@ from collections import defaultdict
 from datetime import datetime
 
 import luigi
-from luiti import TaskUtils
 import luiti.manager as manager
 curr_dir  = os.getcwd()
 
@@ -65,7 +64,7 @@ if subcommand == "tasks":
         manager.Table.print_all_tasks(result)
 
 if "task_name" in args_main:
-    curr_task = TaskUtils.load_task(args_main.task_name)
+    curr_task = manager.Loader.load_a_task_by_name(args_main.task_name)
 
 if subcommand == "files":
     dep_tasks_on_curr_task = [curr_task]
