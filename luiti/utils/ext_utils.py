@@ -11,13 +11,14 @@ class ExtUtils(object):
         """
 
         @classmethod
-        def extend(cls, **attrs):
+        def extend(cls, attrs):
             for attr_k1, attr_v1  in attrs.iteritems():
                 orig_attr = getattr(cls, attr_k1, None)
 
-                if isinstance(orig_attr, property):
+                # convert input to original value type
+                if isinstance(orig_attr, property) and (not isinstance(attr_v1, property)):
                     new_v1 = property(attr_v1)
-                elif isinstance(orig_attr, cached_property):
+                elif isinstance(orig_attr, cached_property) and (not isinstance(attr_v1, cached_property)):
                     new_v1 = cached_property(attr_v1)
                 else:
                     new_v1 = attr_v1

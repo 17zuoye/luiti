@@ -89,12 +89,12 @@ class TestLuitiUtils(unittest.TestCase):
         self.assertEqual(fb1.cached_property_1,      "cached_property_1")
 
 
-        Foobar.extend(
-            not_exist_str       = "not_exist_str",
-            method_1            = lambda self: "method_2",
-            property_1          = lambda self: "property_2",
-            cached_property_1   = lambda self: "cached_property_2",
-          )
+        Foobar.extend({
+            'not_exist_str'       : "not_exist_str",
+            'method_1'            : lambda self: "method_2",
+            'property_1'          : lambda self: "property_2",
+            'cached_property_1'   : lambda self: "cached_property_2",
+            })
 
         fb2 = Foobar()
         self.assertEqual(fb2.method_1(),             "method_2")
