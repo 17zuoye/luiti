@@ -13,11 +13,11 @@ from dateutil     import tz
 
 from .luigi_ext   import luigi
 from .root_task   import RootTask
-from .utils       import IOUtils, DateUtils, TargetUtils, MRUtils, MathUtils
+from .utils       import DateUtils, ExtUtils
 from .parameter   import ArrowParameter
 
 
-class TaskBase(luigi.Task):
+class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     """ 继承的子类在类名后 必须加 **时间类型**, 如 Day, Week, ... """
 
     DateTypes          = ["range", "week"] + arrow.Arrow._ATTRS # ['year', 'month', ...]

@@ -8,3 +8,4 @@ from .hdfs_utils         import HDFSUtils
 from .command_utils      import CommandUtils
 from .date_utils         import DateUtils
 from .compress_utils     import CompressUtils
+from .ext_utils          import ExtUtils

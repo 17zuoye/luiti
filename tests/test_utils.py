@@ -68,4 +68,43 @@ class TestLuitiUtils(unittest.TestCase):
         self.assertEqual(DateUtils.date_value_by_type_in_last("2014-09-01", "week"), arrow.get("2014-08-25"))
 
 
+    def test_ext(self):
+        from etl_utils import cached_property
+        from luiti.utils import ExtUtils
+        import inspect
+
+        class Foobar(ExtUtils.ExtendClass):
+
+            def method_1(self): return "method_1"
+
+            @property
+            def property_1(self): return "property_1"
+
+            @cached_property
+            def cached_property_1(self): return "cached_property_1"
+
+        fb1 = Foobar()
+        self.assertEqual(fb1.method_1(),             "method_1")
+        self.assertEqual(fb1.property_1,             "property_1")
+        self.assertEqual(fb1.cached_property_1,      "cached_property_1")
+
+
+        Foobar.extend(
+            not_exist_str       = "not_exist_str",
+            method_1            = lambda self: "method_2",
+            property_1          = lambda self: "property_2",
+            cached_property_1   = lambda self: "cached_property_2",
+          )
+
+        fb2 = Foobar()
+        self.assertEqual(fb2.method_1(),             "method_2")
+        self.assertEqual(fb2.property_1,             "property_2")
+        self.assertEqual(fb2.cached_property_1,      "cached_property_2")
+
+        self.assertTrue(isinstance(Foobar.not_exist_str, str))
+        self.assertTrue(inspect.ismethod(Foobar.method_1))
+        self.assertTrue(isinstance(Foobar.property_1, property))
+        self.assertTrue(isinstance(Foobar.cached_property_1, cached_property))
+
+
 if __name__ == '__main__': unittest.main()
