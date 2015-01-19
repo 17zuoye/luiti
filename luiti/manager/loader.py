@@ -4,6 +4,7 @@ import os
 import sys
 import glob
 import string
+import traceback
 import importlib
 from inflector import Inflector
 from .path import Path
@@ -32,7 +33,9 @@ class Loader(object):
                 task_cls    = Loader.load_a_task_by_name(classname1)
                 is_success  = True
             except Exception as e:
-                err = e
+                err = list(sys.exc_info())
+                err[2] = "".join(traceback.format_tb(err[2]))
+                err = str(err[0]) + ": " + str(err[1]) + "\n" + err[2]
             sys.path     = old_sys_path
 
             if is_success:
