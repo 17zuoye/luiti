@@ -25,6 +25,7 @@ class Loader(object):
             task_cls   = None
             err        = None
 
+            old_sys_path = sys.path      # Fix load path
             try:
                 basename1   = os.path.basename(file1).split(".")[0]
                 classname1  = Inflector().classify(basename1)
@@ -32,6 +33,7 @@ class Loader(object):
                 is_success  = True
             except Exception as e:
                 err = e
+            sys.path     = old_sys_path
 
             if is_success:
                 result['success'].append({"task_cls": task_cls, "task_file": file1})
@@ -48,8 +50,8 @@ class Loader(object):
 
         # clean sys.path
         for idx1, dir1 in enumerate(sys.path):
-            sys.path[idx1] = sys.path[idx1].strip("/")
-        old_sys_path = sys.path
+            sys.path[idx1] = sys.path[idx1].rstrip("/")
+        old_sys_path = sys.path      # Fix load path
 
         # ensure no luiti_tasks dir conflicts
         for dir1 in Path.all_luiti_tasks_parent_dirs:
