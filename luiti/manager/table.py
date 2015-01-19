@@ -18,7 +18,7 @@ class Table(object):
             return cls.__name__
 
         task_headers = ["", "All Tasks"]
-        task_table = [[idx1+1, task_cls_inspect(item1['task_cls'])] for idx1, item1 in enumerate(result['success'])]
+        task_table = [[idx1+1, task_cls_inspect(item1['task_cls'])] for idx1, item1 in enumerate(sorted(result['success']))]
         task_table.extend([["total", len(result['success'])]])
 
         Table.puts(task_table, task_headers, tablefmt="grid")
