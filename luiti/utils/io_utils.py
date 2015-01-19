@@ -12,8 +12,8 @@ class IOUtils:
     @staticmethod
     def write_json_to_output(json1, output1):
         with output1.open('w') as output_hdfs:
-            if isinstance(json1, (list,)):
-                method = lambda item1: json.dumps(item1) # 兼容 JsonUtils.unicode_dump 不支持list
+            if isinstance(json1, (list,set,)):
+                method = lambda item1: json.dumps(list(item1)) # 兼容 JsonUtils.unicode_dump 不支持list
             else:
                 method = lambda item1: JsonUtils.unicode_dump(item1).encode("UTF-8")
             output_hdfs.write(method(json1) + "\n")

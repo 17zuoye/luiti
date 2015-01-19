@@ -2,16 +2,20 @@
 
 import os
 import sys
+from etl_utils import singleton, cached_property
 
-class Path(object):
+@singleton()
+class PathClass(object):
 
     TasksDir = "luiti_tasks"
 
-    all_luiti_tasks_parent_dirs = []
+    @cached_property
+    def all_luiti_tasks_parent_dirs(self):
+        return self.find_all_luiti_tasks_parent_dirs(os.getcwd())
 
-    @staticmethod
-    def find_all_luiti_tasks_parent_dirs(project_dir):
+    def find_all_luiti_tasks_parent_dirs(self, project_dir):
         """ return all luiti tasks directories. """
+        result = []
 
         if not os.path.exists(project_dir):
             raise ValueError("%s doesnt exists!" % project_dir)
@@ -23,6 +27,8 @@ class Path(object):
         for root, dirs, files in os.walk(project_dir):
             for dir1 in dirs:
                 if dir1 == Path.TasksDir:
-                    Path.all_luiti_tasks_parent_dirs.append(root)
+                    if root not in result:
+                        result.append(root)
+        return result
 
-        return Path.all_luiti_tasks_parent_dirs
+Path = PathClass()
