@@ -23,7 +23,12 @@ class Files(object):
         delete_at_str = datetime.now().strftime("-deleted-at-%Y%m%d-%H%M%S")
 
         for file1 in sorted(files):
-            luigi.hdfs.client.rename(file1, file1 + delete_at_str)
+            print "[delete file]", file1
+            if luigi.hdfs.client.exists(file1):
+                luigi.hdfs.client.rename(file1, file1 + delete_at_str)
+                print
+            else:
+                print "[err] doesnt exist!"
 
         print "\nDone!"
         return 0
