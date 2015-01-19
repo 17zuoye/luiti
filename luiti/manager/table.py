@@ -46,7 +46,7 @@ class Table(object):
                   ]
         print
         print "Tasks related infos"
-        print tabulate(task_table, task_headers, tablefmt="grid")
+        Table.puts(task_table, task_headers, tablefmt="grid")
 
         # 打印 要删除的文件列表
         file_headers = ["Generated from task", "Storage", "Date value", "Filename"]
