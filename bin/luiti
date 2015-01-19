@@ -34,7 +34,7 @@ parser_files.add_argument('rm', nargs=1, )
 parser_files.add_argument('--task-name',         help=u"必须指定任务名称，比如 --task-name=Redmine5954ParentReportWeek",   required=True, )
 parser_files.add_argument('--date-range',        help=u"必须指定时间周期，比如 --date-range=20141001-20141015",            required=True, )
 parser_files.add_argument('--dry',               help=u"可以指定 **假运行** 模式 , 比如 --dry=true。",                     default=True,  choices=['true', 'false'])
-parser_files.add_argument('--no-dep',            help=u"可以指定 --no-dep=true，这样就不会寻找依赖于当前Task之上的任务",   default=False, choices=['true', 'false'])
+parser_files.add_argument('--dep',               help=u"可以指定 --dep=true，这样就会寻找依赖于当前Task之上的任务",        default=False, choices=['true', 'false'])
 parser_files.add_argument('--force',             help=u"强制删除文件",                                                     default=False, choices=['true', 'false'])
 parser_files.add_argument("--project-dir",       help=u"force use another project directory.", default=curr_dir)
 
@@ -68,7 +68,7 @@ if "task_name" in args_main:
 
 if subcommand == "files":
     dep_tasks_on_curr_task = [curr_task]
-    if not args_main.no_dep:
+    if args_main.dep:
         dep_tasks_on_curr_task = manager.Dep.find_dep_on_tasks(curr_task, all_task_classes)
 
     if args_main.rm:
