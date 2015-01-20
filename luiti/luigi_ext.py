@@ -101,6 +101,7 @@ def check_date_range(): # 装饰器
         cls.run = decorator(cls.run)
         return cls
     return func
+# TODO support Hadoop
 luigi.check_date_range = check_date_range
 
 

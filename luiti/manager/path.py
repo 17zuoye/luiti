@@ -11,6 +11,7 @@ class PathClass(object):
 
     @cached_property
     def all_luiti_tasks_parent_dirs(self):
+        """ 自动发现 可以是任何 sys.path, 因为 luigi_tasks 肯定有 __init__.py 文件。  """
         return self.find_all_luiti_tasks_parent_dirs(os.getcwd())
 
     def find_all_luiti_tasks_parent_dirs(self, project_dir):

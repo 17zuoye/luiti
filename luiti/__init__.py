@@ -64,6 +64,7 @@ from .mr_test_case         import MrTestCase
 
 
 
+# TODO 整理
 def luiti_setup(opts=dict()):
     # 1. default value
     assert 'sys_path' in opts, "opts['sys_path'] must be configed! Or there will is none sys.path existed in distributed Hadoop servers."
@@ -79,6 +80,3 @@ def luiti_setup(opts=dict()):
 
     # 3. setup env
     env.setup()
-
-    # 4. setup luiti tasks
-    # 4.1. Add luiti tasks dir

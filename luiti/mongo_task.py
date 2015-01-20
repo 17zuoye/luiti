@@ -73,9 +73,9 @@ class MongoTask(TaskBase):
         tmp_errfile1.close()
 
         # 4. upload to mongodb
+        HDFSUtils.copyFromLocal(self.tmp_errfilepath, self.data_file_err)
         CommandUtils.execute(self.mongo_ensure_index)
         status, output = CommandUtils.execute(self.mongoimport_command)
-        HDFSUtils.copyFromLocal(self.tmp_errfilepath, self.data_file_err)
 
         # 5. clean tmp
         CommandUtils.execute("rm -f %s" % self.tmp_filepath)
