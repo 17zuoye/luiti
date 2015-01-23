@@ -1,0 +1,363 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Luiti by 17zuoye</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Luiti</h1>
+        <p>luiti = luigi + time.</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/17zuoye/luiti" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/17zuoye/luiti/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/17zuoye/luiti/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>
+<a id="luiti" class="anchor" href="#luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Luiti</h1>
+
+<p>Luigi是一套基于python语言构建的复杂流式批处理任务管理系统。它也仅仅是一个任务
+调度系统，具体逻辑全都由 Task 自己去实现，比如分布式计算交由 Hadoop 里的 YARN 实现处理。</p>
+
+<p>Luiti 是构建于 Luigi 之上的主要作用于时间管理相关的插件, 即
+ Luiti = Luigi + time。</p>
+
+<h2>
+<a id="luigi-预备知识" class="anchor" href="#luigi-%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>luigi 预备知识</h2>
+
+<ol>
+<li>英文文档   <a href="http://luigi.readthedocs.org/en/latest/index.html">http://luigi.readthedocs.org/en/latest/index.html</a>
+（推荐看这个，官方详细文档, 含最新)</li>
+<li>中文介绍   <a href="http://vincentzhwg.iteye.com/blog/2063388">http://vincentzhwg.iteye.com/blog/2063388</a>   (Luigi
+－－基于Python语言的流式任务调度框架教程, 国内的人写的，不保
+证正确性。)</li>
+</ol>
+
+<h2>
+<a id="luigi-简单介绍" class="anchor" href="#luigi-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D" aria-hidden="true"><span class="octicon octicon-link"></span></a>luigi 简单介绍</h2>
+
+<p>luigi 的核心概念是用一系列 Task 类来管理任务，主要包含四个部分:</p>
+
+<ol>
+<li>输出。放置在 <code>output</code> 方法里。比如 LocalTarget 和 hdfs.HdfsTarget
+两种类型。</li>
+<li>输入。放置在 <code>requires</code> 方法里, 该方法返回若干 Task instances
+列表，每个 instance 都含有在 1. 里定义的 <code>output</code> 。</li>
+<li>参数。 都继承自 Parameter ，比如 DateParameter 等。</li>
+<li>执行逻辑。比如 <code>run</code> 或 <code>mapper</code> + <code>reducer</code> 方法。</li>
+</ol>
+
+<p>在写完 Task 业务实现和测试后，提交到 luigid 后台进程即可。 luigid
+会根据 <code>requires</code> 自动去处理任务依赖, 这是通过检查 <code>output</code> 是否存
+在而实现的(<code>output</code> 类里有 <code>exists</code> 方法)。并根据 Task 类名 + Task
+参数 保证在当前 luigid 后台进程里的唯一性。</p>
+
+<h2>
+<a id="简单示例" class="anchor" href="#%E7%AE%80%E5%8D%95%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>简单示例</h2>
+
+<div class="highlight highlight-python"><pre><span class="pl-st">class</span> <span class="pl-en">AggregateArtists</span>(<span class="pl-e">luigi.Task</span>):
+    date_interval <span class="pl-k">=</span> luigi.DateIntervalParameter()
+
+    <span class="pl-st">def</span> <span class="pl-en">output</span>(<span class="pl-vpf">self</span>):
+        <span class="pl-k">return</span> luigi.LocalTarget(<span class="pl-s1"><span class="pl-pds">"</span>data/artist_streams_<span class="pl-c1">%s</span>.tsv<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-v">self</span>.date_interval)
+
+    <span class="pl-st">def</span> <span class="pl-en">requires</span>(<span class="pl-vpf">self</span>):
+        <span class="pl-k">return</span> [Streams(date) <span class="pl-k">for</span> date <span class="pl-k">in</span> <span class="pl-v">self</span>.date_interval]
+
+    <span class="pl-st">def</span> <span class="pl-en">run</span>(<span class="pl-vpf">self</span>):
+        artist_count <span class="pl-k">=</span> defaultdict(<span class="pl-s3">int</span>)
+
+        <span class="pl-k">for</span> <span class="pl-s3">input</span> <span class="pl-k">in</span> <span class="pl-v">self</span>.input():
+            <span class="pl-k">with</span> <span class="pl-s3">input</span>.open(<span class="pl-s1"><span class="pl-pds">'</span>r<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> in_file:
+                <span class="pl-k">for</span> line <span class="pl-k">in</span> in_file:
+                    timestamp, artist, track <span class="pl-k">=</span> line.strip().split()
+                    artist_count[artist] <span class="pl-k">+=</span> <span class="pl-c1">1</span>
+
+        <span class="pl-k">with</span> <span class="pl-v">self</span>.output().open(<span class="pl-s1"><span class="pl-pds">'</span>w<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> out_file:
+            <span class="pl-k">for</span> artist, count <span class="pl-k">in</span> artist_count.iteritems():
+                <span class="pl-k">print</span> <span class="pl-k">&gt;&gt;</span> out_file, artist, count</pre></div>
+
+<p>以上代码 Copy 自 <a href="http://luigi.readthedocs.org/en/latest/example_top_artists.html">luigi官方示例</a></p>
+
+<h2>
+<a id="基于时间管理的核心概念" class="anchor" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5" aria-hidden="true"><span class="octicon octicon-link"></span></a>基于时间管理的核心概念</h2>
+
+<h3>
+<a id="时间类型" class="anchor" href="#%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>时间类型</h3>
+
+<h4>
+<a id="基础继承类" class="anchor" href="#%E5%9F%BA%E7%A1%80%E7%BB%A7%E6%89%BF%E7%B1%BB" aria-hidden="true"><span class="octicon octicon-link"></span></a>基础继承类:</h4>
+
+<ol>
+<li>TaskBase           (luigi.Task)</li>
+<li>TaskHour           (TaskBase)</li>
+<li>TaskDay            (TaskBase)</li>
+<li>TaskWeek           (TaskBase)</li>
+<li>TaskMonth          (TaskBase)</li>
+<li>TaskRange          (TaskBase)</li>
+</ol>
+
+<p>所以这里是可以扩展更多时间类型的, 并确保在 <code>TaskBase.DateTypes</code> 里也加上。</p>
+
+<h4>
+<a id="hadoop继承类" class="anchor" href="#hadoop%E7%BB%A7%E6%89%BF%E7%B1%BB" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hadoop继承类:</h4>
+
+<ol>
+<li>TaskDayHadoop      (luigi.hadoop.HadoopExt, TaskDay)</li>
+<li>TaskWeekHadoop     (luigi.hadoop.HadoopExt, TaskWeek)</li>
+<li>TaskRangeHadoop    (luigi.hadoop.HadoopExt, TaskRange)</li>
+</ol>
+
+<h4>
+<a id="其他类" class="anchor" href="#%E5%85%B6%E4%BB%96%E7%B1%BB" aria-hidden="true"><span class="octicon octicon-link"></span></a>其他类:</h4>
+
+<ol>
+<li>RootTask           (RootTask)</li>
+<li>StaticFile         (RootTask)</li>
+<li>MongoTask          (RootTask) # 导出 MR 结果到 mongodb 。</li>
+</ol>
+
+<h3>
+<a id="时间库" class="anchor" href="#%E6%97%B6%E9%97%B4%E5%BA%93" aria-hidden="true"><span class="octicon octicon-link"></span></a>时间库</h3>
+
+<p>采用的时间类库是 <a href="http://crsmithdev.com/arrow/">Arrow</a> , 每一个 Task
+instance 具体引用的时间 instance 都是 arrow.Arrow 类型。</p>
+
+<p>在 luiti 插件里均直接转换到本地时区。如果需要自定义时间，请优先使用
+ <code>ArrowParameter.get(*strs)</code> 和 <code>ArrowParameter.now()</code> 等 以保证都
+ 转换到本地时区。</p>
+
+<h2>
+<a id="task-规范-和-内置属性-和-推荐做法" class="anchor" href="#task-%E8%A7%84%E8%8C%83-%E5%92%8C-%E5%86%85%E7%BD%AE%E5%B1%9E%E6%80%A7-%E5%92%8C-%E6%8E%A8%E8%8D%90%E5%81%9A%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task 规范 和 内置属性 和 推荐做法</h2>
+
+<h3>
+<a id="task-命名规范" class="anchor" href="#task-%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task 命名规范</h3>
+
+<ol>
+<li>一个 Task 类，一个文件。</li>
+<li>Task 类为驼峰方式(比如 <code>EnglishStudentAllExamWeek</code> )，文件名为
+小写加下划线方式(比如 <code>english_student_all_exam_week.py</code> ) 。</li>
+<li>Task 文件所位于的目录均为 <code>luiti_tasks</code>, 这样支持了 装饰器
+<code>@luigi.ref_tasks(*tasks)</code> 相互惰性自动引用，也支持多项目目录
+Task 引用。</li>
+<li>Task 类名必须以 Day, Week 等时间类型结尾，具体参考 <code>TaskBase.DateTypes</code> 。</li>
+</ol>
+
+<h3>
+<a id="task-内置属性" class="anchor" href="#task-%E5%86%85%E7%BD%AE%E5%B1%9E%E6%80%A7" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task 内置属性</h3>
+
+<ol>
+<li>
+<code>date_value</code> 。强制参数, 即使是 Range 类型的 Task 也是需要的，这样
+保证结果会 <code>output</code> 到某天的目录。另外在 <code>__init__</code> 时会被转换称
+arrow.Arrow 的本地时区类型。</li>
+<li>
+<code>data_file</code> 。结果输出的绝对地址，字符串类型。</li>
+<li>
+<code>data_dir</code> 。结果输出的绝对地址目录，字符串类型。</li>
+<li>
+<code>root_dir</code> 。输出的根目录, <code>data_file</code> 和 <code>data_dir</code> 都是在其之下。</li>
+<li>
+<code>output</code> 。基本类输出到 LocalTarget , Hadoop类型会输出到 hdfs.HdfsTarget 。</li>
+<li>
+<code>date_str</code> 。返回 20140901 格式的时间字符串。</li>
+<li>
+<code>date_type</code> 。从类名中获取并返回 Day, Week 等字符串。</li>
+<li>
+<code>date_value_by_type_in_last</code> 。如果时间类型是 Week ，就返回上周一的
+arrow.Arrow 。</li>
+<li>
+<code>date_value_by_type_in_begin</code> 。如果时间类型是 Week ，就返回本周一的
+零点。</li>
+<li>
+<code>date_value_by_type_in_end</code> 。如果时间类型是 Week ，就返回本周日的
+11:59:59。</li>
+<li>
+<code>pre_task_by_self</code> 。一般情况下返回当前时间类型的上个时间点的任务。
+如果达到了该任务类型的时间边界，就返回 RootTask 。</li>
+<li>
+<code>is_reach_the_edge</code> 。在 17zuoye 的业务是学期边界。</li>
+<li>
+<code>instances_by_date_range</code>。类方法。返回属于某周期里的所有当前任务实例列表。</li>
+<li>
+<code>task_class</code>。返回当前 Task 类。</li>
+</ol>
+
+<h3>
+<a id="task-推荐做法" class="anchor" href="#task-%E6%8E%A8%E8%8D%90%E5%81%9A%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task 推荐做法</h3>
+
+<h4>
+<a id="缓存" class="anchor" href="#%E7%BC%93%E5%AD%98" aria-hidden="true"><span class="octicon octicon-link"></span></a>缓存</h4>
+
+<p><a href="http://werkzeug.pocoo.org/">Werkzeug. The Python WSGI Utility Library</a> 实现的 <code>cached_property</code> , 是 Python 内置的 property 的缓存版本，惰性载入耗CPU和IO
+资源的字典数据。示例:</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-st">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
+
+    <span class="pl-st">def</span> <span class="pl-en">requires</span>(<span class="pl-vpf">self</span>):
+        <span class="pl-k">return</span> [task1, task2, ...]
+
+    <span class="pl-st">def</span> <span class="pl-en">mapper</span>(<span class="pl-vpf">self</span>, <span class="pl-vpf">line1</span>):
+        k1, v1 <span class="pl-k">=</span> process(line1)
+        <span class="pl-k">yield</span> k1, v1
+
+    <span class="pl-st">def</span> <span class="pl-en">reducer</span>(<span class="pl-vpf">self</span>, <span class="pl-vpf">k1</span>, <span class="pl-vpf">vs1</span>):
+        <span class="pl-k">for</span> v1 <span class="pl-k">in</span> vs1:
+            v2 <span class="pl-k">=</span> func2(v1, <span class="pl-v">self</span>.another_dict)
+            <span class="pl-k">yield</span> k1, v2
+
+    <span class="pl-en">@cached_property</span>
+    <span class="pl-st">def</span> <span class="pl-en">another_dict</span>(<span class="pl-vpf">self</span>):
+        <span class="pl-c"># lots of cpu/io</span>
+        <span class="pl-k">return</span> big_dict</pre></div>
+
+<p>luiti 的命名空间里自带了若干实用工具。</p>
+
+<h4>
+<a id="全局实用工具" class="anchor" href="#%E5%85%A8%E5%B1%80%E5%AE%9E%E7%94%A8%E5%B7%A5%E5%85%B7" aria-hidden="true"><span class="octicon octicon-link"></span></a>全局实用工具</h4>
+
+<ol>
+<li>os, re, json, defaultdict 等基本工具。</li>
+<li>arrow, ArrowParameter 时间处理工具。</li>
+<li>
+<code>cached_property</code>, 缓存里已介绍。</li>
+<li> 'IOUtils', 'DateUtils', 'TargetUtils', 'HDFSUtils', 'MRUtils', 'MathUtils',
+ 'CommandUtils', 'CompressUtils', 使用见具体实现。</li>
+</ol>
+
+<h2>
+<a id="task-装饰器" class="anchor" href="#task-%E8%A3%85%E9%A5%B0%E5%99%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task 装饰器</h2>
+
+<div class="highlight highlight-python"><pre><span class="pl-c"># 1. 惰性绑定相关 Task, 直接作为 instance property 使用。</span>
+<span class="pl-en">@</span><span class="pl-en">luigi.ref_tasks</span>(<span class="pl-k">*</span>tasks)
+
+<span class="pl-c"># 2. 检查当前日期是否满足Task依赖的时间区间。</span>
+<span class="pl-en">@</span><span class="pl-en">luigi.check_date_range</span>()
+
+<span class="pl-c"># 3. 检查 Task 可以运行的时间点。</span>
+<span class="pl-en">@</span><span class="pl-en">luigi.check_runtime_range</span>(<span class="pl-vpf">hour_num</span><span class="pl-k">=</span>[<span class="pl-c1">4</span>,<span class="pl-c1">5</span>,<span class="pl-c1">6</span>], <span class="pl-vpf">weekday_num</span><span class="pl-k">=</span>[<span class="pl-c1">1</span>])
+
+<span class="pl-c"># 4. 绑定除了默认的 `date_file` 之外的 输出文件名。</span>
+<span class="pl-en">@</span><span class="pl-en">luigi.persist_files</span>(<span class="pl-k">*</span>files)
+
+<span class="pl-st">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
+    <span class="pl-k">pass</span></pre></div>
+
+<h2>
+<a id="mapreduce-相关" class="anchor" href="#mapreduce-%E7%9B%B8%E5%85%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>MapReduce 相关</h2>
+
+<h4>
+<a id="任务失败时的临时文件处理" class="anchor" href="#%E4%BB%BB%E5%8A%A1%E5%A4%B1%E8%B4%A5%E6%97%B6%E7%9A%84%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>任务失败时的临时文件处理</h4>
+
+<p>luigi 会输出到有时间戳的临时文件，如果任务失败，则 YARN 会自动删除该临时文件。</p>
+
+<h4>
+<a id="mr-键值解析" class="anchor" href="#mr-%E9%94%AE%E5%80%BC%E8%A7%A3%E6%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 键值解析</h4>
+
+<p>luiti 推荐是组合键作为 Map Key, 而 dict(序列化为json格式) 作为 Value 。推荐使用 <code>MRUtils.split_mr_kv</code>, 该函数会返回 [str, dict] 结果。</p>
+
+<h4>
+<a id="mr-键的组合处理" class="anchor" href="#mr-%E9%94%AE%E7%9A%84%E7%BB%84%E5%90%88%E5%A4%84%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 键的组合处理</h4>
+
+<ol>
+<li>
+<code>MRUtils.concat_prefix_keys(*keys)</code> 。组合多个键。</li>
+<li>
+<code>MRUtils.is_mr_line(line1)</code> 。判断是否是 MR 格式的行输出。</li>
+<li>
+<code>MRUtils.split_prefix_keys(line_part_a)</code> 。用默认分隔符 分割, 返回字符串列表。</li>
+<li>
+<code>MRUtils.select_prefix_keys(line_part_a, idxes=None)</code> 。用索引来取得组合键的
+某些部分，并支持修复因 json 序列化带来的wuwuwu误操作（在首尾多了 <code>"</code> 引号。</li>
+</ol>
+
+<h4>
+<a id="mr-读入文件处理-generate-方式" class="anchor" href="#mr-%E8%AF%BB%E5%85%A5%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86-generate-%E6%96%B9%E5%BC%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 读入文件处理, generate 方式</h4>
+
+<ol>
+<li>原始读入。 <code>TargetUtils.line_read(hdfs1)</code>。返回 unicode。</li>
+<li>JSON读入。 <code>TargetUtils.json_read(hdfs1)</code>。返回 json 相关类型。</li>
+<li>MR读入。   <code>TargetUtils.mr_read(hdfs1)</code>。返回 [str, json 相关类型] 键值对形式。</li>
+</ol>
+
+<p>示例:</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-k">for</span> k1, v1 <span class="pl-k">in</span> MRUtils.mr_read(hdfs1):
+    <span class="pl-s3">isinstance</span>(k1, <span class="pl-s3">unicode</span>)
+    <span class="pl-s3">isinstance</span>(v1, <span class="pl-s3">dict</span>)</pre></div>
+
+<h4>
+<a id="hdfs-文件对象" class="anchor" href="#hdfs-%E6%96%87%E4%BB%B6%E5%AF%B9%E8%B1%A1" aria-hidden="true"><span class="octicon octicon-link"></span></a>HDFS 文件对象</h4>
+
+<p>使用 <code>TargetUtils.hdfs(path1)</code> 。该函数同时兼容了 MR 按 <code>part-00000</code>
+分文件块的数据格式。</p>
+
+<h2>
+<a id="扩展-luiti" class="anchor" href="#%E6%89%A9%E5%B1%95-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>扩展 luiti</h2>
+
+<p>使用 TaskBase 里自带 extend 类方法扩展或者覆写默认属性或方法，比如:</p>
+
+<div class="highlight highlight-python"><pre>TaskWeek.extend({
+    <span class="pl-s1"><span class="pl-pds">'</span>property_1<span class="pl-pds">'</span></span>          : <span class="pl-st">lambda</span> <span class="pl-vpf">self</span>: <span class="pl-s1"><span class="pl-pds">"</span>property_2<span class="pl-pds">"</span></span>,
+})</pre></div>
+
+<p><code>extend</code> 类方法同时兼容了 <code>function</code>, <code>property</code>, <code>cached_property</code>,
+或者其他任意类属性。在覆写 <code>property</code> 和 <code>cached_property</code>
+传一个函数值即可，extend 会自动转化为本来的 <code>property</code> 和
+<code>cached_property</code> 类型。</p>
+
+<h2>
+<a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run tests</h2>
+
+<div class="highlight highlight-bash"><pre>./tests/run.sh</pre></div>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>MIT. David Chen @ 17zuoye.</p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/17zuoye">17zuoye</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-57207964-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
