@@ -41,8 +41,10 @@ from .luigi_ext            import luigi
 from .env                  import env
 
 from .task_base            import TaskBase
+from .task_hour            import TaskHour
 from .task_day             import TaskDay
 from .task_week            import TaskWeek
+from .task_month           import TaskMonth
 from .task_range           import TaskRange
 
 from .task_day_hadoop      import TaskDayHadoop
