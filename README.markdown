@@ -255,9 +255,28 @@ for k1, v1 in MRUtils.mr_read(hdfs1):
 ```
 
 #### HDFS 文件对象
-
 使用 `TargetUtils.hdfs(path1)` 。该函数同时兼容了 MR 按 `part-00000`
 分文件块的数据格式。
+
+#### MR 测试
+1. 给继承 Hadoop 相关Task基类 的 具体业务 Task 加上 `mrtest_input` 和
+    `mrtest_output` 两个方法，分别用于 MR 的文本输入和输出。
+2. 在测试代码里加上如下代码，luiti 就会自动给 `mr_task_names` 里的所有 Task
+   生成测试用例，然后按正常方式跑 Python 测试用例即可。
+
+```python
+from luiti import MrTestCase
+
+@MrTestCase
+class TestMapReduce(unittest.TestCase):
+    mr_task_names = [
+            'ClassEnglishAllExamWeek',
+            ...
+           ]
+
+if __name__ == '__main__': unittest.main()
+```
+
 
 
 luiti 多项目管理

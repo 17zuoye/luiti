@@ -49,7 +49,6 @@ def MrTestCase(cls, verbose=False):
 
 
 def run_map_reduce(task_instance_1):
-    #import pdb; pdb.set_trace()
     # 1. bind attrs
     for k1, v1 in task_instance_1.mrtest_attrs().iteritems():
         setattr(task_instance_1, k1, v1)
