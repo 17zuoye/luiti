@@ -35,7 +35,7 @@ luigi 的核心概念是用一系列 Task 类来管理任务，主要包含四�
 参数 保证在当前 luigid 后台进程里的唯一性。
 
 
-简单示例
+luiti 简单示例
 ------------------------
 ```python
 class AggregateArtists(luigi.Task):
@@ -64,6 +64,43 @@ class AggregateArtists(luigi.Task):
 以上代码 Copy 自 [luigi官方示例](http://luigi.readthedocs.org/en/latest/example_top_artists.html)
 
 
+
+安装
+------------------------
+```bash
+pip install luiti
+```
+
+或者最新源码
+
+```bash
+git clone https://github.com/17zuoye/luiti.git
+cd luiti
+python setup.py install
+```
+
+
+luiti 命令行
+------------------------
+安装后就可以直接在当前 Shell 里使用 luiti 命令了, 比如:
+```text
+$ luiti
+usage: luiti [-h] {tasks,files,run} ...
+
+Luiti tasks manager.
+
+optional arguments:
+  -h, --help         show this help message and exit
+
+subcommands:
+  valid subcommands
+
+  {tasks,files,run}
+    tasks            manage luiti tasks.
+    files            manage files that outputed by luiti tasks.
+    run              run a luiti task.
+```
+
 基于时间管理的核心概念
 ------------------------
 
@@ -85,9 +122,9 @@ class AggregateArtists(luigi.Task):
 3. TaskRangeHadoop    (luigi.hadoop.HadoopExt, TaskRange)
 
 #### 其他类:
-1. RootTask           (RootTask)
-2. StaticFile         (RootTask)
-3. MongoTask          (RootTask) # 导出 MR 结果到 mongodb 。
+1. RootTask           (luiti.Task)
+2. StaticFile         (luiti.Task)
+3. MongoTask          (TaskBase) # 导出 MR 结果到 mongodb 。
 
 
 ### 时间库
@@ -124,9 +161,9 @@ Task 规范 和 内置属性 和 推荐做法
 7. `date_type` 。从类名中获取并返回 Day, Week 等字符串。
 8. `date_value_by_type_in_last` 。如果时间类型是 Week ，就返回上周一的
    arrow.Arrow 。
-8. `date_value_by_type_in_begin` 。如果时间类型是 Week ，就返回本周一的
+8. `date_value_by_type_in_begin` 。如果时间类型是 Week ，就返回当前周一的
    零点。
-9. `date_value_by_type_in_end` 。如果时间类型是 Week ，就返回本周日的
+9. `date_value_by_type_in_end` 。如果时间类型是 Week ，就返回当前周日的
    11:59:59。
 10. `pre_task_by_self` 。一般情况下返回当前时间类型的上个时间点的任务。
    如果达到了该任务类型的时间边界，就返回 RootTask 。
@@ -162,14 +199,12 @@ class AnotherBussinessDay(TaskDayHadoop):
         return big_dict
 ```
 
-luiti 的命名空间里自带了若干实用工具。
-
 #### 全局实用工具
 1. os, re, json, defaultdict 等基本工具。
 2. arrow, ArrowParameter 时间处理工具。
 3. `cached_property`, 缓存里已介绍。
-4.  'IOUtils', 'DateUtils', 'TargetUtils', 'HDFSUtils', 'MRUtils', 'MathUtils',
-     'CommandUtils', 'CompressUtils', 使用见具体实现。
+4.  IOUtils, DateUtils, TargetUtils, HDFSUtils, MRUtils, MathUtils,
+     CommandUtils, CompressUtils, 使用见具体实现。
 
 Task 装饰器
 ------------------------
@@ -194,7 +229,8 @@ class AnotherBussinessDay(TaskDayHadoop):
 MapReduce 相关
 ------------------------
 #### 任务失败时的临时文件处理
-luigi 会输出到有时间戳的临时文件，如果任务失败，则 YARN 会自动删除该临时文件。
+执行 MR 时, luigi 会先输出到有时间戳的临时文件。如果任务成功，则重命名
+到原先任务指定的名字。如果任务失败，则 YARN 会自动删除该临时文件。
 
 #### MR 键值解析
 luiti 推荐是组合键作为 Map Key, 而 dict(序列化为json格式) 作为 Value 。推荐使用 `MRUtils.split_mr_kv`, 该函数会返回 [str, dict] 结果。
@@ -224,13 +260,28 @@ for k1, v1 in MRUtils.mr_read(hdfs1):
 分文件块的数据格式。
 
 
+luiti 多项目管理
+------------------------
+#### 解决方案
+直接 clone 依赖项目(含 `luiti_tasks` 目录)到当前项目的 `luiti_tasks`
+项目下即可。
+
+#### 实现细节
+为了方便在具体 Task 里 相对引用在当前 `luiti_tasks` 目录下的子目录里的
+Python 文件，比如 `from .utils import SomeUtils` ，而该 utils
+的实际目录是 `/curr_project/luiti_tasks/utils/`。
+
+如果直接把 `luiti_tasks` 放入到 Python 里的 `sys.path` 里的话，就会引起
+`ValueError: Attempted relative import in non-package` 错误。而 luiti
+对多 `luiti_tasks` 的引用也是通过动态修改 `sys.path` 实现的。
+
 扩展 luiti
 ------------------------
 使用 TaskBase 里自带 extend 类方法扩展或者覆写默认属性或方法，比如:
 
 ```python
 TaskWeek.extend({
-    'property_1'          : lambda self: "property_2",
+    'property_1' : lambda self: "property_2",
 })
 ```
 
