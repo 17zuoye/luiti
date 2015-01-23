@@ -4,10 +4,12 @@ __all__ = [
             'luigi', 'luiti_setup',
 
             'TaskBase',
+            'TaskHour',
             'TaskDay',
             'TaskDayHadoop',
             'TaskWeek',
             'TaskWeekHadoop',
+            'TaskMonth',
             'TaskRange',
             'TaskRangeHadoop',
 
