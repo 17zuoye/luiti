@@ -1,44 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Luiti by 17zuoye</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/main.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Luiti : luiti = luigi + time.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Luiti</title>
   </head>
+
   <body>
 
-      <header>
-        <h1>Luiti</h1>
-        <p>luiti = luigi + time.</p>
-      </header>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/17zuoye/luiti">View on GitHub</a>
 
-      <div id="banner">
-        <span id="logo"></span>
+          <h1 id="project_title">Luiti</h1>
+          <h2 id="project_tagline">luiti = luigi + time.</h2>
 
-        <a href="https://github.com/17zuoye/luiti" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span>Downloads:</span>
-          <ul>
-            <li><a href="https://github.com/17zuoye/luiti/zipball/master" class="button">ZIP</a></li>
-            <li><a href="https://github.com/17zuoye/luiti/tarball/master" class="button">TAR</a></li>
-          </ul>
-        </div>
-      </div><!-- end banner -->
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/17zuoye/luiti/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/17zuoye/luiti/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-    <div class="wrapper">
-      <nav>
-        <ul></ul>
-      </nav>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a id="luiti" class="anchor" href="#luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Luiti</h1>
 
@@ -79,7 +71,7 @@
 参数 保证在当前 luigid 后台进程里的唯一性。</p>
 
 <h2>
-<a id="简单示例" class="anchor" href="#%E7%AE%80%E5%8D%95%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>简单示例</h2>
+<a id="luiti-简单示例" class="anchor" href="#luiti-%E7%AE%80%E5%8D%95%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti 简单示例</h2>
 
 <div class="highlight highlight-python"><pre><span class="pl-st">class</span> <span class="pl-en">AggregateArtists</span>(<span class="pl-e">luigi.Task</span>):
     date_interval <span class="pl-k">=</span> luigi.DateIntervalParameter()
@@ -104,6 +96,39 @@
                 <span class="pl-k">print</span> <span class="pl-k">&gt;&gt;</span> out_file, artist, count</pre></div>
 
 <p>以上代码 Copy 自 <a href="http://luigi.readthedocs.org/en/latest/example_top_artists.html">luigi官方示例</a></p>
+
+<h2>
+<a id="安装" class="anchor" href="#%E5%AE%89%E8%A3%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>安装</h2>
+
+<div class="highlight highlight-bash"><pre>pip install luiti</pre></div>
+
+<p>或者最新源码</p>
+
+<div class="highlight highlight-bash"><pre>git clone https://github.com/17zuoye/luiti.git
+<span class="pl-s3">cd</span> luiti
+python setup.py install</pre></div>
+
+<h2>
+<a id="luiti-命令行" class="anchor" href="#luiti-%E5%91%BD%E4%BB%A4%E8%A1%8C" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti 命令行</h2>
+
+<p>安装后就可以直接在当前 Shell 里使用 luiti 命令了, 比如:</p>
+
+<pre lang="text"><code>$ luiti
+usage: luiti [-h] {tasks,files,run} ...
+
+Luiti tasks manager.
+
+optional arguments:
+  -h, --help         show this help message and exit
+
+subcommands:
+  valid subcommands
+
+  {tasks,files,run}
+    tasks            manage luiti tasks.
+    files            manage files that outputed by luiti tasks.
+    run              run a luiti task.
+</code></pre>
 
 <h2>
 <a id="基于时间管理的核心概念" class="anchor" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5" aria-hidden="true"><span class="octicon octicon-link"></span></a>基于时间管理的核心概念</h2>
@@ -138,9 +163,9 @@
 <a id="其他类" class="anchor" href="#%E5%85%B6%E4%BB%96%E7%B1%BB" aria-hidden="true"><span class="octicon octicon-link"></span></a>其他类:</h4>
 
 <ol>
-<li>RootTask           (RootTask)</li>
-<li>StaticFile         (RootTask)</li>
-<li>MongoTask          (RootTask) # 导出 MR 结果到 mongodb 。</li>
+<li>RootTask           (luiti.Task)</li>
+<li>StaticFile         (luiti.Task)</li>
+<li>MongoTask          (TaskBase) # 导出 MR 结果到 mongodb 。</li>
 </ol>
 
 <h3>
@@ -193,10 +218,10 @@ arrow.Arrow 的本地时区类型。</li>
 <code>date_value_by_type_in_last</code> 。如果时间类型是 Week ，就返回上周一的
 arrow.Arrow 。</li>
 <li>
-<code>date_value_by_type_in_begin</code> 。如果时间类型是 Week ，就返回本周一的
+<code>date_value_by_type_in_begin</code> 。如果时间类型是 Week ，就返回当前周一的
 零点。</li>
 <li>
-<code>date_value_by_type_in_end</code> 。如果时间类型是 Week ，就返回本周日的
+<code>date_value_by_type_in_end</code> 。如果时间类型是 Week ，就返回当前周日的
 11:59:59。</li>
 <li>
 <code>pre_task_by_self</code> 。一般情况下返回当前时间类型的上个时间点的任务。
@@ -237,8 +262,6 @@ arrow.Arrow 。</li>
         <span class="pl-c"># lots of cpu/io</span>
         <span class="pl-k">return</span> big_dict</pre></div>
 
-<p>luiti 的命名空间里自带了若干实用工具。</p>
-
 <h4>
 <a id="全局实用工具" class="anchor" href="#%E5%85%A8%E5%B1%80%E5%AE%9E%E7%94%A8%E5%B7%A5%E5%85%B7" aria-hidden="true"><span class="octicon octicon-link"></span></a>全局实用工具</h4>
 
@@ -247,8 +270,8 @@ arrow.Arrow 。</li>
 <li>arrow, ArrowParameter 时间处理工具。</li>
 <li>
 <code>cached_property</code>, 缓存里已介绍。</li>
-<li> 'IOUtils', 'DateUtils', 'TargetUtils', 'HDFSUtils', 'MRUtils', 'MathUtils',
- 'CommandUtils', 'CompressUtils', 使用见具体实现。</li>
+<li> IOUtils, DateUtils, TargetUtils, HDFSUtils, MRUtils, MathUtils,
+ CommandUtils, CompressUtils, 使用见具体实现。</li>
 </ol>
 
 <h2>
@@ -275,7 +298,8 @@ arrow.Arrow 。</li>
 <h4>
 <a id="任务失败时的临时文件处理" class="anchor" href="#%E4%BB%BB%E5%8A%A1%E5%A4%B1%E8%B4%A5%E6%97%B6%E7%9A%84%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>任务失败时的临时文件处理</h4>
 
-<p>luigi 会输出到有时间戳的临时文件，如果任务失败，则 YARN 会自动删除该临时文件。</p>
+<p>执行 MR 时, luigi 会先输出到有时间戳的临时文件。如果任务成功，则重命名
+到原先任务指定的名字。如果任务失败，则 YARN 会自动删除该临时文件。</p>
 
 <h4>
 <a id="mr-键值解析" class="anchor" href="#mr-%E9%94%AE%E5%80%BC%E8%A7%A3%E6%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 键值解析</h4>
@@ -319,12 +343,32 @@ arrow.Arrow 。</li>
 分文件块的数据格式。</p>
 
 <h2>
+<a id="luiti-多项目管理" class="anchor" href="#luiti-%E5%A4%9A%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti 多项目管理</h2>
+
+<h4>
+<a id="解决方案" class="anchor" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>解决方案</h4>
+
+<p>直接 clone 依赖项目(含 <code>luiti_tasks</code> 目录)到当前项目的 <code>luiti_tasks</code>
+项目下即可。</p>
+
+<h4>
+<a id="实现细节" class="anchor" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82" aria-hidden="true"><span class="octicon octicon-link"></span></a>实现细节</h4>
+
+<p>为了方便在具体 Task 里 相对引用在当前 <code>luiti_tasks</code> 目录下的子目录里的
+Python 文件，比如 <code>from .utils import SomeUtils</code> ，而该 utils
+的实际目录是 <code>/curr_project/luiti_tasks/utils/</code>。</p>
+
+<p>如果直接把 <code>luiti_tasks</code> 放入到 Python 里的 <code>sys.path</code> 里的话，就会引起
+<code>ValueError: Attempted relative import in non-package</code> 错误。而 luiti
+对多 <code>luiti_tasks</code> 的引用也是通过动态修改 <code>sys.path</code> 实现的。</p>
+
+<h2>
 <a id="扩展-luiti" class="anchor" href="#%E6%89%A9%E5%B1%95-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>扩展 luiti</h2>
 
 <p>使用 TaskBase 里自带 extend 类方法扩展或者覆写默认属性或方法，比如:</p>
 
 <div class="highlight highlight-python"><pre>TaskWeek.extend({
-    <span class="pl-s1"><span class="pl-pds">'</span>property_1<span class="pl-pds">'</span></span>          : <span class="pl-st">lambda</span> <span class="pl-vpf">self</span>: <span class="pl-s1"><span class="pl-pds">"</span>property_2<span class="pl-pds">"</span></span>,
+    <span class="pl-s1"><span class="pl-pds">'</span>property_1<span class="pl-pds">'</span></span> : <span class="pl-st">lambda</span> <span class="pl-vpf">self</span>: <span class="pl-s1"><span class="pl-pds">"</span>property_2<span class="pl-pds">"</span></span>,
 })</pre></div>
 
 <p><code>extend</code> 类方法同时兼容了 <code>function</code>, <code>property</code>, <code>cached_property</code>,
@@ -342,12 +386,16 @@ arrow.Arrow 。</li>
 
 <p>MIT. David Chen @ 17zuoye.</p>
       </section>
-      <footer>
-        <p>Project maintained by <a href="https://github.com/17zuoye">17zuoye</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Luiti maintained by <a href="https://github.com/17zuoye">17zuoye</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -358,6 +406,7 @@ arrow.Arrow 。</li>
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
