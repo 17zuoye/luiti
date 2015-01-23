@@ -342,6 +342,27 @@ arrow.Arrow 。</li>
 <p>使用 <code>TargetUtils.hdfs(path1)</code> 。该函数同时兼容了 MR 按 <code>part-00000</code>
 分文件块的数据格式。</p>
 
+<h4>
+<a id="mr-测试" class="anchor" href="#mr-%E6%B5%8B%E8%AF%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 测试</h4>
+
+<ol>
+<li>给继承 Hadoop 相关Task基类 的 具体业务 Task 加上 <code>mrtest_input</code> 和
+<code>mrtest_output</code> 两个方法，分别用于 MR 的文本输入和输出。</li>
+<li>在测试代码里加上如下代码，luiti 就会自动给 <code>mr_task_names</code> 里的所有 Task
+生成测试用例，然后按正常方式跑 Python 测试用例即可。</li>
+</ol>
+
+<div class="highlight highlight-python"><pre><span class="pl-k">from</span> luiti <span class="pl-k">import</span> MrTestCase
+
+<span class="pl-en">@MrTestCase</span>
+<span class="pl-st">class</span> <span class="pl-en">TestMapReduce</span>(<span class="pl-e">unittest.TestCase</span>):
+    mr_task_names <span class="pl-k">=</span> [
+            <span class="pl-s1"><span class="pl-pds">'</span>ClassEnglishAllExamWeek<span class="pl-pds">'</span></span>,
+            ...
+           ]
+
+<span class="pl-k">if</span> <span class="pl-sv">__name__</span> <span class="pl-k">==</span> <span class="pl-s1"><span class="pl-pds">'</span>__main__<span class="pl-pds">'</span></span>: unittest.main()</pre></div>
+
 <h2>
 <a id="luiti-多项目管理" class="anchor" href="#luiti-%E5%A4%9A%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti 多项目管理</h2>
 
