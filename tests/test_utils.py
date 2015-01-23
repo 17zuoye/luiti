@@ -27,8 +27,6 @@ class TestLuitiUtils(unittest.TestCase):
 
         self.assertEqual(MRUtils.split_mr_kv("hello\t[1,2,3,4]"), ["hello", [1,2,3,4]])
 
-        self.assertEqual(MRUtils.class_uid_keys("1@@2@@other\t[]"), "1@@2")
-
         self.assertEqual(MRUtils.merge_keys_in_dict([{"a":1}, {"a":2}], ["a"]), {"a":3})
 
         self.assertEqual(MRUtils.split_prefix_keys("1@@2@@other"), ["1", "2", "other"])

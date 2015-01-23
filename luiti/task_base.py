@@ -59,11 +59,8 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     def data_name(self):
         return Inflector().underscore(self.__class__.__name__)
 
-    # default output
-    # 里面调用的 `self.data_file` 会强制执行日期规范化。
     def output(self):
-        # return IOUtils.local_target(self.data_file) # 测试写到本地
-        return luigi.HDFS(self.data_file) # 现在直接写到 HDFS 吧
+        return IOUtils.local_target(self.data_file)
 
     @cached_property
     def date_str(self):

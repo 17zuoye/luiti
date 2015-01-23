@@ -20,6 +20,8 @@ class HadoopExt(luigi.hadoop.JobTask):
         self.orig_date_value = self.orig_date_value or arrow.get(self.date_value)
         self.reset_date()
 
+    def output(self):
+        return luigi.HDFS(self.data_file)
 
     # overwrite
     def job_runner(self):

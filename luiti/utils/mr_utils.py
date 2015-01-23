@@ -44,6 +44,7 @@ class MRUtils:
     @staticmethod
     def split_mr_kv(line1):
         """ 返回一个 解析好的 [k,v] 数组。 """
+        if isinstance(line1, str): line1 = line1.decode("UTF-8")
         k_str, v_str = line1.split(MRUtils.mr_separator, 1)
 
         return [
@@ -56,11 +57,8 @@ class MRUtils:
     #####   key related     ######
     ##############################
     @staticmethod
-    def class_uid_keys(line_part_a):
-        return MRUtils.select_prefix_keys(line_part_a, [0,1])
-
-    @staticmethod
     def merge_keys_in_dict(vals_1, keys_1):
+        """ 合并多个键的整数值。 """
         merge = {key_1:0 for key_1 in keys_1}
         for v_2 in vals_1:
             for key_1 in keys_1:
@@ -68,8 +66,8 @@ class MRUtils:
         return merge
 
     @staticmethod
-    def concat_prefix_keys(*items):
-        items_str = map(unicode, items)
+    def concat_prefix_keys(*keys):
+        items_str = map(unicode, keys)
         return MRUtils.map_key_split.join(items_str)
 
     @staticmethod
