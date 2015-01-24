@@ -240,7 +240,7 @@ arrow.Arrow 。</li>
 <h4>
 <a id="缓存" class="anchor" href="#%E7%BC%93%E5%AD%98" aria-hidden="true"><span class="octicon octicon-link"></span></a>缓存</h4>
 
-<p><a href="http://werkzeug.pocoo.org/">Werkzeug. The Python WSGI Utility Library</a> 实现的 <code>cached_property</code> , 是 Python 内置的 property 的缓存版本，惰性载入耗CPU和IO
+<p>强烈推荐使用 <a href="http://werkzeug.pocoo.org/">Werkzeug. The Python WSGI Utility Library</a> 实现的 <code>cached_property</code> , 是 Python 内置的 property 的缓存版本，惰性载入耗CPU和IO
 资源的字典数据。示例:</p>
 
 <div class="highlight highlight-python"><pre><span class="pl-st">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
@@ -286,7 +286,7 @@ arrow.Arrow 。</li>
 <span class="pl-c"># 3. 检查 Task 可以运行的时间点。</span>
 <span class="pl-en">@</span><span class="pl-en">luigi.check_runtime_range</span>(<span class="pl-vpf">hour_num</span><span class="pl-k">=</span>[<span class="pl-c1">4</span>,<span class="pl-c1">5</span>,<span class="pl-c1">6</span>], <span class="pl-vpf">weekday_num</span><span class="pl-k">=</span>[<span class="pl-c1">1</span>])
 
-<span class="pl-c"># 4. 绑定除了默认的 `date_file` 之外的 输出文件名。</span>
+<span class="pl-c"># 4. 绑定除了默认的 `date_file` 之外的输出文件名。同时兼容了任务失败时的删除处理。</span>
 <span class="pl-en">@</span><span class="pl-en">luigi.persist_files</span>(<span class="pl-k">*</span>files)
 
 <span class="pl-st">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
@@ -304,7 +304,8 @@ arrow.Arrow 。</li>
 <h4>
 <a id="mr-键值解析" class="anchor" href="#mr-%E9%94%AE%E5%80%BC%E8%A7%A3%E6%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 键值解析</h4>
 
-<p>luiti 推荐是组合键作为 Map Key, 而 dict(序列化为json格式) 作为 Value 。推荐使用 <code>MRUtils.split_mr_kv</code>, 该函数会返回 [str, dict] 结果。</p>
+<p>luiti 推荐是 组合键 unicode 作为 Map Key, 而 dict (序列化为json格式) 作为 Reduce Value 。推荐使
+用 <code>MRUtils.split_mr_kv</code>, 该函数会返回 [unicode, dict] 结果。</p>
 
 <h4>
 <a id="mr-键的组合处理" class="anchor" href="#mr-%E9%94%AE%E7%9A%84%E7%BB%84%E5%90%88%E5%A4%84%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 键的组合处理</h4>
@@ -318,7 +319,7 @@ arrow.Arrow 。</li>
 <code>MRUtils.split_prefix_keys(line_part_a)</code> 。用默认分隔符 分割, 返回字符串列表。</li>
 <li>
 <code>MRUtils.select_prefix_keys(line_part_a, idxes=None)</code> 。用索引来取得组合键的
-某些部分，并支持修复因 json 序列化带来的wuwuwu误操作（在首尾多了 <code>"</code> 引号。</li>
+某些部分，并支持修复因 json 序列化带来的误操作（在首尾多了 <code>"</code> 引号）。</li>
 </ol>
 
 <h4>
@@ -327,7 +328,7 @@ arrow.Arrow 。</li>
 <ol>
 <li>原始读入。 <code>TargetUtils.line_read(hdfs1)</code>。返回 unicode。</li>
 <li>JSON读入。 <code>TargetUtils.json_read(hdfs1)</code>。返回 json 相关类型。</li>
-<li>MR读入。   <code>TargetUtils.mr_read(hdfs1)</code>。返回 [str, json 相关类型] 键值对形式。</li>
+<li>MR读入。   <code>TargetUtils.mr_read(hdfs1)</code>。返回 [unicode, json 相关类型] 键值对形式。</li>
 </ol>
 
 <p>示例:</p>
@@ -350,6 +351,7 @@ arrow.Arrow 。</li>
 <code>mrtest_output</code> 两个方法，分别用于 MR 的文本输入和输出。</li>
 <li>在测试代码里加上如下代码，luiti 就会自动给 <code>mr_task_names</code> 里的所有 Task
 生成测试用例，然后按正常方式跑 Python 测试用例即可。</li>
+<li>还可以用 <code>mrtest_attrs</code> 生成该实例上的多个字典属性。</li>
 </ol>
 
 <div class="highlight highlight-python"><pre><span class="pl-k">from</span> luiti <span class="pl-k">import</span> MrTestCase
@@ -394,7 +396,7 @@ Python 文件，比如 <code>from .utils import SomeUtils</code> ，而该 utils
 
 <p><code>extend</code> 类方法同时兼容了 <code>function</code>, <code>property</code>, <code>cached_property</code>,
 或者其他任意类属性。在覆写 <code>property</code> 和 <code>cached_property</code>
-传一个函数值即可，extend 会自动转化为本来的 <code>property</code> 和
+传一个函数值即可，<code>extend</code> 会自动转化为本来的 <code>property</code> 和
 <code>cached_property</code> 类型。</p>
 
 <h2>
