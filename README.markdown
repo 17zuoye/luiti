@@ -175,7 +175,7 @@ Task 规范 和 内置属性 和 推荐做法
 ### Task 推荐做法
 
 #### 缓存
-[Werkzeug. The Python WSGI Utility Library](http://werkzeug.pocoo.org/) 实现的 `cached_property` , 是 Python 内置的 property 的缓存版本，惰性载入耗CPU和IO
+强烈推荐使用 [Werkzeug. The Python WSGI Utility Library](http://werkzeug.pocoo.org/) 实现的 `cached_property` , 是 Python 内置的 property 的缓存版本，惰性载入耗CPU和IO
 资源的字典数据。示例:
 
 ```python
@@ -218,7 +218,7 @@ Task 装饰器
 # 3. 检查 Task 可以运行的时间点。
 @luigi.check_runtime_range(hour_num=[4,5,6], weekday_num=[1])
 
-# 4. 绑定除了默认的 `date_file` 之外的 输出文件名。
+# 4. 绑定除了默认的 `date_file` 之外的输出文件名。同时兼容了任务失败时的删除处理。
 @luigi.persist_files(*files)
 
 class AnotherBussinessDay(TaskDayHadoop):
@@ -233,19 +233,20 @@ MapReduce 相关
 到原先任务指定的名字。如果任务失败，则 YARN 会自动删除该临时文件。
 
 #### MR 键值解析
-luiti 推荐是组合键作为 Map Key, 而 dict(序列化为json格式) 作为 Value 。推荐使用 `MRUtils.split_mr_kv`, 该函数会返回 [str, dict] 结果。
+luiti 推荐是 组合键 unicode 作为 Map Key, 而 dict (序列化为json格式) 作为 Reduce Value 。推荐使
+用 `MRUtils.split_mr_kv`, 该函数会返回 [unicode, dict] 结果。
 
 #### MR 键的组合处理
 1. `MRUtils.concat_prefix_keys(*keys)` 。组合多个键。
 2. `MRUtils.is_mr_line(line1)` 。判断是否是 MR 格式的行输出。
 3. `MRUtils.split_prefix_keys(line_part_a)` 。用默认分隔符 分割, 返回字符串列表。
 4. `MRUtils.select_prefix_keys(line_part_a, idxes=None)` 。用索引来取得组合键的
-    某些部分，并支持修复因 json 序列化带来的wuwuwu误操作（在首尾多了 `"` 引号。
+    某些部分，并支持修复因 json 序列化带来的误操作（在首尾多了 `"` 引号）。
 
 #### MR 读入文件处理, generate 方式
 1. 原始读入。 `TargetUtils.line_read(hdfs1)`。返回 unicode。
 2. JSON读入。 `TargetUtils.json_read(hdfs1)`。返回 json 相关类型。
-3. MR读入。   `TargetUtils.mr_read(hdfs1)`。返回 [str, json 相关类型] 键值对形式。
+3. MR读入。   `TargetUtils.mr_read(hdfs1)`。返回 [unicode, json 相关类型] 键值对形式。
 
 示例:
 ````python
@@ -263,6 +264,7 @@ for k1, v1 in MRUtils.mr_read(hdfs1):
     `mrtest_output` 两个方法，分别用于 MR 的文本输入和输出。
 2. 在测试代码里加上如下代码，luiti 就会自动给 `mr_task_names` 里的所有 Task
    生成测试用例，然后按正常方式跑 Python 测试用例即可。
+3. 还可以用 `mrtest_attrs` 生成该实例上的多个字典属性。
 
 ```python
 from luiti import MrTestCase
@@ -276,7 +278,6 @@ class TestMapReduce(unittest.TestCase):
 
 if __name__ == '__main__': unittest.main()
 ```
-
 
 
 luiti 多项目管理
@@ -306,7 +307,7 @@ TaskWeek.extend({
 
 `extend` 类方法同时兼容了 `function`, `property`, `cached_property`,
 或者其他任意类属性。在覆写 `property` 和 `cached_property`
-传一个函数值即可，extend 会自动转化为本来的 `property` 和
+传一个函数值即可，`extend` 会自动转化为本来的 `property` 和
 `cached_property` 类型。
 
 
