@@ -8,11 +8,12 @@ from etl_utils import singleton, cached_property
 class PathClass(object):
 
     TasksDir = "luiti_tasks"
+    ProjectDir = os.getcwd()
 
     @cached_property
     def all_luiti_tasks_parent_dirs(self):
         """ 自动发现 可以是任何 sys.path, 因为 luigi_tasks 肯定有 __init__.py 文件。  """
-        return self.find_all_luiti_tasks_parent_dirs(os.getcwd())
+        return self.find_all_luiti_tasks_parent_dirs(self.ProjectDir)
 
     def find_all_luiti_tasks_parent_dirs(self, project_dir):
         """ return all luiti tasks directories. """

@@ -64,3 +64,11 @@ class Table(object):
         print "Files related infos"
         Table.puts(file_table, file_headers, tablefmt="grid")
         print "\n"*3
+
+    @staticmethod
+    def print_task_info(curr_task, dep_tasks_on_curr_task):
+        task_headers = ["Task name", curr_task.__name__]
+        task_content = [
+                ["Tasks dep on it", str(dep_tasks_on_curr_task)],
+                ]
+        Table.puts(task_content, task_headers, tablefmt="grid")
