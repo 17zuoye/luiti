@@ -81,6 +81,9 @@ def ref_tasks(*tasks): # 装饰器
             as_ref_task_name = getattr(cls, "as_ref_task_name")
             if as_ref_task_name:
                 assert isinstance(as_ref_task_name, (str, unicode))
+                v1 = getattr(cls, as_ref_task_name, None)
+                if v1 is not None:
+                    raise ValueError("cls is already defined as %s !" % v1)
                 setattr(cls, as_ref_task_name, cached_property(wrap_instance(ref_task_name)))
         return cls
     return func
