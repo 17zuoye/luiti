@@ -6,16 +6,15 @@ import luigi
 class TargetUtils:
 
     @staticmethod
-    def json_read(hdfs1):
-        with hdfs1.open('r') as data1:
-            for line1 in data1:
-                yield json.loads(line1.decode("UTF-8").strip()) # as item1
-
-    @staticmethod
     def line_read(hdfs1):
         with hdfs1.open('r') as data1:
             for line1 in data1:
                 yield line1.decode("UTF-8").strip()
+
+    @staticmethod
+    def json_read(hdfs1):
+        for line1 in TargetUtils.line_read(hdfs1):
+            yield json.loads(line1) # as item1
 
     @staticmethod
     def hdfs(data_file1):

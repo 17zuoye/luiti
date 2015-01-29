@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
 
-# 从 tasks 和 files 两个维度思考
-
 import os, sys
 import argparse
 from collections import defaultdict
@@ -93,7 +91,8 @@ if subcommand == "clean":
         manager.soft_delete_files(*dep_file_to_task_instances.keys())
 
 if subcommand == "run":
-    # 把参数修复为 luigi 接受的参数，即把只有 luiti 依赖的参数去除。
+
+    # 1. 把参数修复为 luigi 接受的参数，即把只有 luiti 依赖的参数去除。
     old = sys.argv[:]
     def fetch_keys(parser1): return parser1.__dict__['_option_string_actions'].keys()
     luigi_keep_opts = ["--date-value"]
@@ -102,12 +101,10 @@ if subcommand == "run":
     delete_argv_idxes = set([])
     for idx1, arg1 in enumerate(sys.argv):
         if idx1 in delete_argv_idxes: continue
-
         # 1. 排除 tasks, files, run 等
         if (not arg1.startswith("--")) and (arg1 in luiti_only_opts):
             delete_argv_idxes.add(idx1)
             continue
-
         # 2. 处理 --task-name 等参数
         if "=" in arg1:
             arg2, val2 = arg1.split("=", 1)
@@ -117,7 +114,7 @@ if subcommand == "run":
             if (arg1 in luiti_only_opts) and (not arg1 in luigi_keep_opts):
                 delete_argv_idxes.add(idx1)
                 delete_argv_idxes.add(idx1 + 1)
-
     sys.argv = [arg1 for idx1, arg1 in enumerate(sys.argv) if idx1 not in delete_argv_idxes]
 
+    # 2. run it!
     luigi.run(main_task_cls=curr_task)
