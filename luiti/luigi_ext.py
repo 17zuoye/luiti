@@ -66,16 +66,20 @@ def ref_tasks(*tasks): # 装饰器
     TaskA().TaskC == TaskC
     ```
     """
-    def wrap(ref_task_name):
+    def wrap_cls(ref_task_name):
         return lambda self: manager.load_a_task_by_name(ref_task_name)
+
+    def wrap_instance(ref_task_name):
+        return lambda self: getattr(self, ref_task_name)(self.date_value)
 
     def func(cls):
         curr_task_name = cls.__name__
         cls._ref_tasks = tasks
         for ref_task_name in cls._ref_tasks:
-            #print curr_task_name, "[ref on]", ref_task_name # 不要在 MapReduce 里 print，否则会输出到 output 的
-            #setattr(cls, ref_task_name, cached_property(wrap(ref_task_name)))
-            setattr(cls, ref_task_name, property(wrap(ref_task_name)))
+            setattr(cls, ref_task_name, cached_property(wrap_cls(ref_task_name)))
+
+            if "as_ref_task_name" in cls.__dict__:
+                setattr(cls, getattr(cls, "as_ref_task_name"), cached_property(wrap_instance(ref_task_name)))
         return cls
     return func
 luigi.ref_tasks = ref_tasks
