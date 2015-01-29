@@ -77,7 +77,7 @@ def ref_tasks(*tasks): # 装饰器
         cls._ref_tasks = tasks
         for ref_task_name in cls._ref_tasks:
             setattr(cls, ref_task_name, cached_property(wrap_cls(ref_task_name)))
-            setattr(cls, "%s_%s" % (ref_task_name, + "task"), cached_property(wrap_instance(ref_task_name)))
+            setattr(cls, "%s_%s" % (ref_task_name, "task"), cached_property(wrap_instance(ref_task_name)))
         return cls
     return func
 luigi.ref_tasks = ref_tasks
