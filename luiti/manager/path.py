@@ -31,7 +31,7 @@ class PathClass(object):
             for dir1 in dirs:
                 if dir1 == Path.TasksDir:
                     if (root not in result) and \
-                       (not os.path.exists(os.path.jon(root, ".luitiignore"))):
+                       (not os.path.exists(os.path.join(root, ".luitiignore"))):
                         result.append(root)
         return result
 
