@@ -26,10 +26,12 @@ class PathClass(object):
         if not os.path.exists(luiti_tasks_dir):
             raise ValueError("%s has no subdir %s !" % (project_dir, Path.TasksDir))
 
+        # Filter `luiti_tasks` dir when .luitiignore under the same root dir.
         for root, dirs, files in os.walk(project_dir):
             for dir1 in dirs:
                 if dir1 == Path.TasksDir:
-                    if root not in result:
+                    if (root not in result) and \
+                       (not os.path.exists(os.path.jon(root, ".luitiignore"))):
                         result.append(root)
         return result
 
