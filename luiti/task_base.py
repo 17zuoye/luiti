@@ -24,8 +24,6 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     date_value         = ArrowParameter() # **统一** 时间类型, 防止同时跑多个任务
     orig_date_value    = None
 
-    as_ref_task_name   = None
-
     # will overwritten by @decorator
     # 不能以 **两个 __ 开头**, 否则会被 Python 当作隐私变量而无法继承。TODO 隐私变量 可能是错的。
     _persist_files    = []
