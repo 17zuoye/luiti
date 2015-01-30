@@ -133,7 +133,7 @@ subcommands:
 #### 其他类:
 1. RootTask           (luiti.Task)
 2. StaticFile         (luiti.Task)
-3. MongoTask          (TaskBase) # 导出 MR 结果到 mongodb 。
+3. MongoImportTask    (TaskBase) # 导出 MR 结果到 mongodb 。
 
 
 ### 时间库

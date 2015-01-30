@@ -15,7 +15,7 @@ __all__ = [
 
             'RootTask',
             'StaticFile',
-            'MongoTask',
+            'MongoImportTask',
 
             'manager',
 
@@ -55,7 +55,7 @@ from .task_range_hadoop    import TaskRangeHadoop
 
 from .root_task            import RootTask
 from .static_file          import StaticFile
-from .mongo_task           import MongoTask
+from .mongo_task           import MongoImportTask
 
 from .                     import manager
 from .utils                import IOUtils, DateUtils, TargetUtils, HDFSUtils, \

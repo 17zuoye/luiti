@@ -9,7 +9,7 @@ import arrow
 import json
 
 
-class MongoTask(TaskBase):
+class MongoImportTask(TaskBase):
 
     report_status_collection_name     = "report_status"
     report_status_namespace           = "latestCollection"
