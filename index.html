@@ -41,6 +41,18 @@
  Luiti = Luigi + time。</p>
 
 <h2>
+<a id="luiti-优势" class="anchor" href="#luiti-%E4%BC%98%E5%8A%BF" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti 优势</h2>
+
+<ol>
+<li>按时间和业务类型等属性去多目录划分基础表, 中间表, 统计表 等。</li>
+<li>支持无缝多项目任务管理依赖, 兼容常规 Python 库引用机制。</li>
+<li>任务的运行时间和业务时间的满足条件检查。</li>
+<li>众多 MapReduce / IO 实用操作函数。</li>
+<li>基于输入输出数据的 MapReduce 测试方案。</li>
+<li>内置支持 Task 基类扩展。</li>
+</ol>
+
+<h2>
 <a id="luigi-预备知识" class="anchor" href="#luigi-%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>luigi 预备知识</h2>
 
 <ol>
@@ -114,20 +126,21 @@ python setup.py install</pre></div>
 <p>安装后就可以直接在当前 Shell 里使用 luiti 命令了, 比如:</p>
 
 <pre lang="text"><code>$ luiti
-usage: luiti [-h] {tasks,files,run} ...
+usage: luiti [-h] {ls,info,clean,run} ...
 
 Luiti tasks manager.
 
 optional arguments:
-  -h, --help         show this help message and exit
+  -h, --help           show this help message and exit
 
 subcommands:
   valid subcommands
 
-  {tasks,files,run}
-    tasks            manage luiti tasks.
-    files            manage files that outputed by luiti tasks.
-    run              run a luiti task.
+  {ls,info,clean,run}
+    ls                 list all current luiti tasks.
+    info               show a detailed task.
+    clean              manage files that outputed by luiti tasks.
+    run                run a luiti task.
 </code></pre>
 
 <h2>
@@ -165,7 +178,7 @@ subcommands:
 <ol>
 <li>RootTask           (luiti.Task)</li>
 <li>StaticFile         (luiti.Task)</li>
-<li>MongoTask          (TaskBase) # 导出 MR 结果到 mongodb 。</li>
+<li>MongoImportTask    (TaskBase) # 导出 MR 结果到 mongodb 。</li>
 </ol>
 
 <h3>
