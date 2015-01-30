@@ -9,6 +9,8 @@ class PathClass(object):
 
     TasksDir = "luiti_tasks"
     ProjectDir = os.getcwd()
+    enable_ignore = True
+
 
     @cached_property
     def all_luiti_tasks_parent_dirs(self):
@@ -30,9 +32,11 @@ class PathClass(object):
         for root, dirs, files in os.walk(project_dir):
             for dir1 in dirs:
                 if dir1 == Path.TasksDir:
-                    if (root not in result) and \
-                       (not os.path.exists(os.path.join(root, ".luitiignore"))):
-                        result.append(root)
+                    yes = False
+                    yes = yes or (root not in result)
+                    if Path.enable_ignore:
+                       yes = yes and (not os.path.exists(os.path.join(root, ".luitiignore")))
+                    if yes: result.append(root)
         return result
 
 Path = PathClass()

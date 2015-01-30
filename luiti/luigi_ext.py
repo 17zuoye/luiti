@@ -67,16 +67,33 @@ def ref_tasks(*tasks): # 装饰器
     ```
     """
     def wrap_cls(ref_task_name):
-        return lambda self, ref_task_name=ref_task_name: manager.load_a_task_by_name(ref_task_name)
+        def _func(self):
+            v1 = self.__dict__.get(ref_task_name, None)
+            if v1 is None:
+                v1 = manager.load_a_task_by_name(ref_task_name)
+                self.__dict__[ref_task_name] = v1
+            return v1
+        return _func
 
-    def wrap_instance(ref_task_name):
-        return lambda self, ref_task_name=ref_task_name: getattr(self, ref_task_name)(self.date_value)
+    def wrap_instance(ref_task_name, task_name):
+        def _func(self):
+            v1 = self.__dict__.get(task_name, None)
+            if v1 is None:
+                v1 = getattr(self, ref_task_name)(self.date_value)
+                self.__dict__[task_name] = v1
+            return v1
+        return _func
 
+# cached_property 捕获不了 ref_task_name 变量, 被重置为某一个了。。
+# property 可以捕获 ref_task_name 变量。
     def func(cls):
         cls._ref_tasks = tasks
         for ref_task_name in cls._ref_tasks:
-            setattr(cls, ref_task_name, cached_property(wrap_cls(ref_task_name)))
-            setattr(cls, "%s_%s" % (ref_task_name, "task"), cached_property(wrap_instance(ref_task_name)))
+            setattr(cls, ref_task_name, property(wrap_cls(ref_task_name)))
+
+            # TODO 根据当前日期返回。
+            task_name = "%s_%s" % (ref_task_name, "task")
+            setattr(cls, task_name, property(wrap_instance(ref_task_name, task_name)))
         return cls
     return func
 luigi.ref_tasks = ref_tasks
