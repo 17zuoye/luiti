@@ -7,6 +7,14 @@ Luiti 是构建于 Luigi 之上的主要作用于时间管理相关的插件, �
  Luiti = Luigi + time。
 
 
+luiti 优势
+------------------------
+1. 按时间和业务类型等属性去多目录划分基础表, 中间表, 统计表 等。
+2. 支持无缝多项目任务管理依赖, 兼容常规 Python 库引用机制。
+3. 任务的运行时间和业务时间的满足条件检查。
+4. 众多 MapReduce / IO 实用操作函数。
+5. 基于输入输出数据的 MapReduce 测试方案。
+6. 内置支持 Task 基类扩展。
 
 luigi 预备知识
 ------------------------
@@ -85,20 +93,21 @@ luiti 命令行
 安装后就可以直接在当前 Shell 里使用 luiti 命令了, 比如:
 ```text
 $ luiti
-usage: luiti [-h] {tasks,files,run} ...
+usage: luiti [-h] {ls,info,clean,run} ...
 
 Luiti tasks manager.
 
 optional arguments:
-  -h, --help         show this help message and exit
+  -h, --help           show this help message and exit
 
 subcommands:
   valid subcommands
 
-  {tasks,files,run}
-    tasks            manage luiti tasks.
-    files            manage files that outputed by luiti tasks.
-    run              run a luiti task.
+  {ls,info,clean,run}
+    ls                 list all current luiti tasks.
+    info               show a detailed task.
+    clean              manage files that outputed by luiti tasks.
+    run                run a luiti task.
 ```
 
 基于时间管理的核心概念
