@@ -65,6 +65,9 @@ class Loader(object):
         task1      = None
 
         for dir1 in Path.all_luiti_tasks_parent_dirs:
+            if Path.TasksDir in sys.modules: del sys.modules[Path.TasksDir] # clear it every time
+            if (Path.TasksDir + ".__setup") in sys.modules: del sys.modules[(Path.TasksDir + ".__setup")]
+
             sys.path.insert(0, dir1)
 
             module_name = Path.TasksDir + "." + Inflector().underscore(task_name_1)
@@ -76,7 +79,6 @@ class Loader(object):
 
             sys.path.remove(dir1)
             # clean parent import info
-            if Path.TasksDir in sys.modules: del sys.modules[Path.TasksDir]
 
             if task1 is not None: break
 

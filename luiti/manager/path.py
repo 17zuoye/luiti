@@ -35,7 +35,8 @@ class PathClass(object):
                     yes = False
                     yes = yes or (root not in result)
                     if Path.enable_ignore:
-                       yes = yes and (not os.path.exists(os.path.join(root, ".luitiignore")))
+                        if not os.path.exists(os.path.join(root, ".luitiignore")):
+                            yes = True
                     if yes: result.append(root)
         return result
 
