@@ -84,6 +84,20 @@ def ref_tasks(*tasks): # 装饰器
             return v1
         return _func
 
+    def __getstate__(self):
+        """ Fix luiti_tasks module namespace conflicts. """
+        for ref_task1 in self._ref_tasks:
+            cname = ref_task1           # class    name
+            iname = ref_task1 + "_task" # instance name
+
+            # delete instance property is enough.
+            #if hasattr(self.__class__, cname):  delattr(self.__class__, cname)
+            #if hasattr(self.__class__, iname):  delattr(self.__class__, iname)
+
+            if cname in self.__dict__:          del self.__dict__[cname]
+            if iname in self.__dict__:          del self.__dict__[iname]
+        return self.__dict__
+
 # cached_property 捕获不了 ref_task_name 变量, 被重置为某一个了。。
 # property 可以捕获 ref_task_name 变量。
     def func(cls):
@@ -94,6 +108,9 @@ def ref_tasks(*tasks): # 装饰器
             # TODO 根据当前日期返回。
             task_name = "%s_%s" % (ref_task_name, "task")
             setattr(cls, task_name, property(wrap_instance(ref_task_name, task_name)))
+
+            # clear ref task info when pickle.dump
+            setattr(cls, "__getstate__", __getstate__)
         return cls
     return func
 luigi.ref_tasks = ref_tasks
