@@ -3,8 +3,9 @@
 __all__ = ['HadoopExt']
 
 import luigi.hadoop
+from .utils import ExtUtils
 
-class HadoopExt(luigi.hadoop.JobTask):
+class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
     n_reduce_tasks    = 1 # 体现在 输出的part-00000数量为reduce数量
 
