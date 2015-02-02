@@ -58,7 +58,9 @@ class Loader(object):
         if curr_dir not in sys.path: sys.path.insert(0, curr_dir)
 
         # Keep old load path
-        old_sys_path    = list(sys.path)
+        luiti_tasks             = Path.TasksDir # make a ref
+        old_sys_path            = list(sys.path)
+        orig_luiti_tasks_module = sys.modules.get(luiti_tasks, None)
         # old_sys_modules = dict(sys.modules) # dont modify sys.modules, cause error after modified
 
         # 1. check `task_name_1` format.
@@ -68,8 +70,8 @@ class Loader(object):
         task1      = None
 
         for dir1 in Path.all_luiti_tasks_parent_dirs:
-            if Path.TasksDir in sys.modules: del sys.modules[Path.TasksDir] # clear it every time
-            if (Path.TasksDir + ".__setup") in sys.modules: del sys.modules[(Path.TasksDir + ".__setup")]
+            if luiti_tasks in sys.modules: del sys.modules[luiti_tasks] # clear it every time
+            if (luiti_tasks + ".__setup") in sys.modules: del sys.modules[(luiti_tasks + ".__setup")]
 
             sys.path.insert(0, dir1)
 
@@ -87,6 +89,7 @@ class Loader(object):
 
         # reset to orig
         sys.path    = old_sys_path
+        if orig_luiti_tasks_module: sys.modules[luiti_tasks] = orig_luiti_tasks_module
 
         if task1 is None: raise Exception("[luiti] cannot find %s's path" % task_name_1)
         return task1
