@@ -56,7 +56,10 @@ class Loader(object):
             sys.path[idx1] = sys.path[idx1].rstrip("/")
         curr_dir = os.getcwd()
         if curr_dir not in sys.path: sys.path.insert(0, curr_dir)
-        old_sys_path = sys.path      # Fix load path
+
+        # Keep old load path
+        old_sys_path    = list(sys.path)
+        # old_sys_modules = dict(sys.modules) # dont modify sys.modules, cause error after modified
 
         # 1. check `task_name_1` format.
         assert task_name_1[0] in string.uppercase, "Task name should begin with UpperCase !"
@@ -83,9 +86,7 @@ class Loader(object):
             if task1 is not None: break
 
         # reset to orig
-        sys.path = old_sys_path
+        sys.path    = old_sys_path
 
-        if task1 is None:
-            raise Exception("[luiti] cannot find %s's path" % task_name_1)
-
+        if task1 is None: raise Exception("[luiti] cannot find %s's path" % task_name_1)
         return task1
