@@ -44,4 +44,27 @@ class TestLuiti(unittest.TestCase):
         # hash is luigi's test task unique method
         self.assertEqual(hash(DDay_task.HDay_task), hash(HDay(day_str)))
 
+    def test_serialize_and_unserialize(self):
+        import pickle
+        import cPickle
+
+        def serialize_and_unserialize_a_task_instance(cls_name, serialize):
+            task_cls               = manager.load_a_task_by_name(cls_name)
+            task_instance          = task_cls(day_str)
+
+            task_instance_2        = serialize.loads(serialize.dumps(task_instance))
+
+            self.assertEqual(hash(task_instance), hash(task_instance_2))
+
+            for ref_task_name_3 in task_cls._ref_tasks:
+                self.assertEqual(getattr(task_instance, ref_task_name_3), getattr(task_instance_2, ref_task_name_3))
+                self.assertEqual(hash(getattr(task_instance, ref_task_name_3+"_task")), hash(getattr(task_instance_2, ref_task_name_3+"_task")))
+
+
+        serialize_and_unserialize_a_task_instance('ADay', pickle)
+        serialize_and_unserialize_a_task_instance('ADay', cPickle)
+        serialize_and_unserialize_a_task_instance('DDay', pickle)
+        serialize_and_unserialize_a_task_instance('DDay', cPickle)
+
+
 if __name__ == '__main__': unittest.main()
