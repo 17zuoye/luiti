@@ -16,6 +16,7 @@ class TestLuiti(unittest.TestCase):
 
         @luigi.check_date_range()
         class CheckDateRangeExampleWeek(TaskWeek):
+            root_dir = "/foobar"
             def run(self): return "data"
 
         next_week = arrow.now().replace(weeks=1)
@@ -29,6 +30,7 @@ class TestLuiti(unittest.TestCase):
 
         @luigi.check_runtime_range(hour_num=[5,6,7,8], weekday_num=[1], )
         class CheckRuntimeRangeExampleWeek(TaskWeek):
+            root_dir = "/foobar"
             def run(self): return "data"
 
 

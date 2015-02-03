@@ -5,6 +5,8 @@ from .__setup import *
 @luigi.ref_tasks("HDay")
 class DDay(TaskDay):
 
+    root_dir = "/foobar"
+
     @cached_property
     def count(self): return 4
 

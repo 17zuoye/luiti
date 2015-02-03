@@ -44,6 +44,7 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         self.orig_date_value = ArrowParameter.get(self.date_value).replace(tzinfo=tz.tzlocal())
 
         self.reset_date() # reset date to at the beginning of current date type here
+        self.data_file # force load it now, or `output` still load it.
 
 
     @cached_property
