@@ -9,11 +9,11 @@ Luiti 是构建于 Luigi 之上的主要作用于时间管理相关的插件, �
 
 luiti 优势
 ------------------------
-1. 按时间和业务类型等属性去多目录划分基础表, 中间表, 统计表 等。[#](#core-concept-based-on-time-management-based)
+1. 按时间和业务类型等属性去多目录划分基础表, 中间表, 统计表 等。[#](#core-concepts-based-on-time-management)
 2. 支持无缝多项目任务管理依赖, 兼容常规 Python 库引用机制。[#](#manage-multiple-projects-in-luiti)
-3. 任务的运行时间和业务时间的满足条件检查。[#](#task-decorator)
-4. 众多 MapReduce / IO 实用操作函数。[#](#MapReduce-related)
-5. 基于输入输出数据的 MapReduce 测试方案。[#](#MR-test)
+3. 任务的运行时间和业务时间的满足条件检查。[#](#task-decorators)
+4. 众多 MapReduce / IO 实用操作函数。[#](#mapreduce-related)
+5. 基于输入输出数据的 MapReduce 测试方案。[#](#mr-test)
 6. 内置支持 Task 基类扩展。[#](#extend-luiti)
 
 luigi 预备知识
@@ -195,7 +195,7 @@ subcommands:
     run                run a luiti task.
 ```
 
-<div "id"="core-concept-based-on-time-management-based">基于时间管理的核心概念</div>
+Core concepts based on time management
 ------------------------
 ### 时间类型
 
@@ -300,7 +300,7 @@ class AnotherBussinessDay(TaskDayHadoop):
      CommandUtils, CompressUtils, 使用见具体实现。
 
 
-<div "id"="task-decorator">Task 装饰器</div>
+Task decorators
 ------------------------
 ```python
 # 1. 惰性绑定相关 Task, 直接作为 instance property 使用。
@@ -321,7 +321,7 @@ class AnotherBussinessDay(TaskDayHadoop):
 
 
 
-<div "id"="MapReduce-related">MapReduce 相关</div>
+MapReduce related
 ------------------------
 #### 任务失败时的临时文件处理
 执行 MR 时, luigi 会先输出到有时间戳的临时文件。如果任务成功，则重命名
@@ -354,7 +354,7 @@ for k1, v1 in MRUtils.mr_read(hdfs1):
 使用 `TargetUtils.hdfs(path1)` 。该函数同时兼容了 MR 按 `part-00000`
 分文件块的数据格式。
 
-#### <div "id"="MR-test">MR 测试</div>
+#### MR test
 1. 给继承 Hadoop 相关Task基类 的 具体业务 Task 加上 `mrtest_input` 和
     `mrtest_output` 两个方法，分别用于 MR 的文本输入和输出。
 2. 在测试代码里加上如下代码，luiti 就会自动给 `mr_task_names` 里的所有 Task
@@ -375,7 +375,7 @@ if __name__ == '__main__': unittest.main()
 ```
 
 
-<div "id"="manage-multiple-projects-in-luiti">luiti 多项目管理</div>
+Manage multiple projects in luiti
 ------------------------
 #### 解决方案
 直接 clone 依赖项目(含 `luiti_tasks` 目录)到当前项目的 `luiti_tasks`
@@ -391,7 +391,7 @@ Python 文件，比如 `from .utils import SomeUtils` ，而该 utils
 对多 `luiti_tasks` 的引用也是通过动态修改 `sys.path` 实现的。
 
 
-#### <div "id"="extend-luiti">扩展 luiti</div>
+Extend luiti
 ------------------------
 使用 TaskBase 里自带 extend 类方法扩展或者覆写默认属性或方法，比如:
 
