@@ -338,7 +338,7 @@ luiti 推荐是 组合键 unicode 作为 Map Key, 而 dict (序列化为json格�
 4. `MRUtils.select_prefix_keys(line_part_a, idxes=None)` 。用索引来取得组合键的
     某些部分，并支持修复因 json 序列化带来的误操作（在首尾多了 `"` 引号）。
 
-#### MR 读入文件处理, generate 方式
+#### MR 读入文件处理, generator 方式
 1. 原始读入。 `TargetUtils.line_read(hdfs1)`。返回 unicode。
 2. JSON读入。 `TargetUtils.json_read(hdfs1)`。返回 json 相关类型。
 3. MR读入。   `TargetUtils.mr_read(hdfs1)`。返回 [unicode, json 相关类型] 键值对形式。
