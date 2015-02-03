@@ -9,12 +9,12 @@ Luiti 是构建于 Luigi 之上的主要作用于时间管理相关的插件, �
 
 luiti 优势
 ------------------------
-1. 按时间和业务类型等属性去多目录划分基础表, 中间表, 统计表 等。
-2. 支持无缝多项目任务管理依赖, 兼容常规 Python 库引用机制。
-3. 任务的运行时间和业务时间的满足条件检查。
-4. 众多 MapReduce / IO 实用操作函数。
-5. 基于输入输出数据的 MapReduce 测试方案。
-6. 内置支持 Task 基类扩展。
+1. 按时间和业务类型等属性去多目录划分基础表, 中间表, 统计表 等。[#](#基于时间管理的核心概念)
+2. 支持无缝多项目任务管理依赖, 兼容常规 Python 库引用机制。[#](#luiti 多项目管理)
+3. 任务的运行时间和业务时间的满足条件检查。[#](#Task 装饰器)
+4. 众多 MapReduce / IO 实用操作函数。[#](MapReduce 相关)
+5. 基于输入输出数据的 MapReduce 测试方案。[#](MR 测试)
+6. 内置支持 Task 基类扩展。[#](扩展 luiti)
 
 luigi 预备知识
 ------------------------
@@ -43,14 +43,18 @@ luigi 的核心概念是用一系列 Task 类来管理任务，主要包含四�
 参数 保证在当前 luigid 后台进程里的唯一性。
 
 
-luigi 简单示例
+luiti 简单示例
 ------------------------
+#### luigi 的写法示例。以上代码 Copy 自 [luigi官方示例](http://luigi.readthedocs.org/en/latest/example_top_artists.html)
 ```python
+import luigi
+from collections import defaultdict
+
 class AggregateArtists(luigi.Task):
     date_interval = luigi.DateIntervalParameter()
 
     def output(self):
-        return luigi.LocalTarget("data/artist_streams_%s.tsv" % self.date_interval)
+        return luigi.LocalTarget("/data/artist_streams_%s.tsv" % self.date_interval)
 
     def requires(self):
         return [Streams(date) for date in self.date_interval]
@@ -69,7 +73,87 @@ class AggregateArtists(luigi.Task):
                 print >> out_file, artist, count
 ```
 
-以上代码 Copy 自 [luigi官方示例](http://luigi.readthedocs.org/en/latest/example_top_artists.html)
+#### 同一个例子的 luiti 写法
+
+* 第一个文件: `artist_project/luiti_tasks/artist_stream_day.py`
+
+```python
+from luiti import *
+
+class ArtistStreamDay(StaticFile):
+
+    @cached_property
+    def filepath(self):
+        return "/data/artist_streams_%s.tsv" % self.date_str
+```
+
+* 第二个文件: `artist_project/luiti_tasks/aggregate_artists_week.py`
+```python
+from luiti import *
+
+@luigi.ref_tasks("ArtistStreamDay')
+class AggregateArtistsWeek(TaskWeek):
+
+    def requires(self):
+        return [self.ArtistStreamDay(d1) for d1 in self.days_in_week]
+
+    def run(self):
+        artist_count = defaultdict(int)
+
+        for file1 in self.input():
+            for line2 in TargetUtils.line_read(file1):
+                timestamp, artist, track = line.strip().split()
+                artist_count[artist] += 1
+
+        with self.output().open('w') as out_file:
+            for artist, count in artist_count.iteritems():
+                print >> out_file, artist, count
+```
+
+优化说明:
+1. luiti 的 Task 类均直接内置了 `date_value` 属性，并转为 Arrow 类型。
+2. ArtistStreamDay 里的 `date_str` 由 `date_value` 转换而来，在初次调用后就被转成实例的属性了。
+3. `@luigi.ref_tasks` 就自动绑定了 ArtistStreamDay 到 AggregateArtistsWeek  的实例属性了，
+   所以可以用 `self.ArtistStreamDay(d1)` 形式来直接声明实例了。
+4. 在 AggregateArtistsWeek 继承了 `TaskWeek` 后就自动有了 `self.days_in_week` 属性了。
+5. `TargetUtils.line_read` 替换了原来两行代码需要完成的功能，直接返回一个迭代器(generator)。
+
+
+#### luiti 的 MapReduce 写法
+* 第一个文件: `artist_project/luiti_tasks/artist_stream_day.py`
+
+```python
+from luiti import *
+
+class ArtistStreamDay(StaticFile):
+
+    @cached_property
+    def filepath(self):
+        return TargetUtils.hdfs("/data/artist_streams_%s.tsv" % self.date_str
+```
+
+* 第二个文件: `artist_project/luiti_tasks/aggregate_artists_week.py`
+```python
+from luiti import *
+
+@luigi.ref_tasks("ArtistStreamDay')
+class AggregateArtistsWeek(TaskWeekHadoop):
+
+    def requires(self):
+        return [self.ArtistStreamDay(d1) for d1 in self.days_in_week]
+
+    def mapper(self, line1):
+        timestamp, artist, track = line.strip().split()
+        yield artist, 1
+
+    def reducer(self, artist, counts):
+        yield artist, len(counts)
+```
+
+优化说明: 在 MapReduce 计算模式下，这种简单业务实际上比原来代码还精简。其他和原生 luigi 没多大区别。
+
+
+
 
 
 
