@@ -89,5 +89,45 @@ class TestLuiti(unittest.TestCase):
         self.assertTrue("DDay" in manager.PackageMap.task_clsname_to_package)
         self.assertTrue("HDay" in manager.PackageMap.task_clsname_to_package)
 
+    def test_run_python_on_distributed_system(self):
+        # 1. setup env
+        import luigi.hadoop
+        tar_dir   = "/tmp/luiti_tests/tmp"
+        tar_name  = "project_A.tar"
+        tar_file  = tar_dir + "/" + tar_name
+        os.system("mkdir -p %s" % tar_dir)
+
+        DDay      = manager.load_a_task_by_name("DDay")
+        DDay_task = DDay("2014-09-01")
+
+        # 2. package it
+        import luiti
+        import etl_utils
+        # mimic luigi.hadoop.create_packages_archive
+        new_packages = list(luigi.luiti_config.luiti_tasks_packages) + \
+                       [__import__(DDay_task.__module__, None, None, 'dummy')] + \
+                       [luigi, luiti, etl_utils]
+        luigi.hadoop.create_packages_archive(new_packages, tar_file)
+
+        # 3. unpackage it
+        #    mimic luigi.mrrunner.Runner.extract_packages_archive
+        os.chdir(tar_dir)
+        import tarfile
+        tar = tarfile.open(tar_name)
+        for tarinfo in tar:
+            tar.extract(tarinfo)
+        tar.close()
+
+        # 4. test
+        unziped_items = os.listdir('.')
+        self.assertTrue("etl_utils" in unziped_items)
+        self.assertTrue("luigi" in unziped_items)
+        self.assertTrue("luiti" in unziped_items)
+        self.assertTrue("project_A" in unziped_items)
+        self.assertTrue("project_B" in unziped_items)
+
+        # 5. clean up
+        os.system("rm -rf /tmp/luiti_tests")
+
 
 if __name__ == '__main__': unittest.main()

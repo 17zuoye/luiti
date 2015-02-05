@@ -8,5 +8,5 @@ os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
 from luiti import *
 luigi.plug_packages(
         "project_B",        # dep project
-        "tabulate==0.7.3",  # just for test import
+        "etl_utils==0.1.8",  # just for test import
       )

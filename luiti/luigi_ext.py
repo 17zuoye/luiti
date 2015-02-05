@@ -186,7 +186,7 @@ class LuitiConfigClass(object):
     curr_project_name = None
 
     @cached_property
-    def attached_package_names(self): return set([])
+    def attached_package_names(self): return set(['luiti'])
 
     @cached_property
     def luiti_tasks_packages(self): return set([])
@@ -246,5 +246,3 @@ def plug_packages(*package_names):
                 pass
 
 luigi.plug_packages = plug_packages
-
-# TODO create_packages_archive(packages, filename)
