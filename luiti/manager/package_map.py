@@ -39,7 +39,7 @@ def ensure_setup_packages():
             import luigi.hadoop
             import re
 
-            for p1 in lc.attached_package_names:
+            for p1 in list(lc.attached_package_names): # fix Set changed size during iteration
                 package2, version2 =  re.compile("(^[a-z0-9\_]+)(.*)", re.IGNORECASE).match(p1).groups()
                 if package2 in processed_package_names:
                     continue
