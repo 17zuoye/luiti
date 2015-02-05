@@ -28,11 +28,7 @@ def ensure_setup_packages():
                 # 1.2. it's the root luiti tasks package
                 lc.luiti_tasks_packages.add(PackageMap.Loader.import2(lc.curr_project_name))
                 # 1.3. ensure other luiti tasks packages can be loaded.
-                # manager.import2(lc.curr_project_name + ".luiti_tasks.__init_luiti")
-
-            loaded_name = lc.curr_project_name + ".luiti_tasks.__init_luiti"
-            if loaded_name not in sys.modules:
-                PackageMap.Loader.import2(loaded_name) # force load luiti_config.attached_package_names
+                PackageMap.Loader.import2(lc.curr_project_name + ".luiti_tasks.__init_luiti")
 
             # 2. Load related packages.
             import pkg_resources
