@@ -37,6 +37,8 @@ class Loader(object):
 
     @staticmethod
     def load_all_tasks():
+        luigi.plug_packages()
+
         result     = {"success": list(), "failure": list()}
 
         for task_clsname_1 in Loader.PackageMap.task_clsname_to_package.keys():
@@ -53,9 +55,9 @@ class Loader(object):
                 err = str(err[0]) + ": " + str(err[1]) + "\n" + err[2]
 
             if is_success:
-                result['success'].append({"task_cls": task_cls, "task_file": file1})
+                result['success'].append({"task_cls": task_cls})
             else:
-                result['failure'].append({"err": err,           "task_file": file1})
+                result['failure'].append({"err": err,           "task_clsname": task_clsname_1})
 
         return result
 

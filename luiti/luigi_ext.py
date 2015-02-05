@@ -184,6 +184,7 @@ luigi.check_runtime_range = check_runtime_range
 class LuitiConfigClass(object):
     """ Make sure init variables only once. """
     curr_project_name = None
+    curr_project_dir  = os.getcwd()
 
     @cached_property
     def attached_package_names(self): return set(['luiti'])
@@ -191,6 +192,8 @@ class LuitiConfigClass(object):
     @cached_property
     def luiti_tasks_packages(self): return set([])
 
+luigi.luiti_config = LuitiConfigClass()
+luigi.luiti_config.curr_project_name
 
 def plug_packages(*package_names):
     """
@@ -199,7 +202,7 @@ def plug_packages(*package_names):
     package format can be any valid Python package name, such as "project_B" or "project_C==0.0.2", etc.
     """
     # 1. Check current work dir is under a valid a luiti_tasks project
-    curr_dir = os.getcwd()
+    curr_dir = luigi.luiti_config.curr_project_dir
     if not os.path.exists(os.path.join(curr_dir, "luiti_tasks")):
         raise ValueError("[error] current work dir [%s] has no luiti_tasks dir!" % curr_dir)
 
@@ -208,8 +211,6 @@ def plug_packages(*package_names):
 
     # 2. Setup sys.path
     global luigi # Fix UnboundLocalError: local variable `luigi` referenced before assignment
-    luigi.luiti_config = LuitiConfigClass()
-    luigi.luiti_config.curr_project_name
     if luigi.luiti_config.curr_project_name is not None:
         return "already load main project." # below code will never be executed!
     else:

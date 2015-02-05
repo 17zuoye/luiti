@@ -56,7 +56,7 @@ result           = manager.load_all_tasks()
 all_task_classes = [i1['task_cls'] for i1 in result['success']]
 
 if "project_dir" in args_main:
-    manager.Path.ProjectDir = args_main.project_dir
+    luigi.luiti_config.curr_project_dir = args_main.project_dir
 
 #import pdb; pdb.set_trace()
 if "task_name" in args_main:

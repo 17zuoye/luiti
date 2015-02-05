@@ -28,7 +28,7 @@ class Table(object):
             print "[warn] failure parsed files"
             print
             for failure1 in result['failure']:
-                print "[task_file] ", failure1['task_file']
+                print "[task_file] ", failure1['task_clsname']
                 print "[err] ",       failure1['err']
                 print
 
