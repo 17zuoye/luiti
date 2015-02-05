@@ -45,6 +45,11 @@ class TestLuiti(unittest.TestCase):
         self.assertEqual(hash(DDay_task.HDay_task), hash(HDay(day_str)))
 
     def test_serialize_and_unserialize(self):
+        """
+        Fix multiple projects use the same `luiti_tasks` namespace.
+
+        But if there are same directory(e.g. ./templetes`  under the `luiti_tasks`, and luiti can't figure out the right choice.
+        """
         import pickle
         import cPickle
 
@@ -65,6 +70,9 @@ class TestLuiti(unittest.TestCase):
         serialize_and_unserialize_a_task_instance('ADay', cPickle)
         serialize_and_unserialize_a_task_instance('DDay', pickle)
         serialize_and_unserialize_a_task_instance('DDay', cPickle)
+
+    def test_plug_packages(self):
+        pass
 
 
 if __name__ == '__main__': unittest.main()
