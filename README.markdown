@@ -408,7 +408,7 @@ luiti new project_A
 
 #### 如何关联另一个项目的某个 Task
 每个项目都是类似 `project_A/luiti_tasks/another_feature_day.py` 结构，在 `__init_luiti.py` 只要
-用 `luiti.plug_packages("project_B", ["project_C", "0.0.2"])` 后， 像 `@luigi.ref_tasks("ArtistStreamDay')`
+用 `luigi.plug_packages("project_B", "project_C==0.0.2"])` 后， 像 `@luigi.ref_tasks("ArtistStreamDay')`
 就会现在当前 `project_A`, 和相关的 `project_B`, `project_C` 里去找 ArtistStreamDay Task 了。
 
 

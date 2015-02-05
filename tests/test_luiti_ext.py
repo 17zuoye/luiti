@@ -8,9 +8,16 @@ os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
 import unittest
 
 
-from luiti import manager
-manager.Path.enable_ignore = False
-manager.Path.ProjectDir    = os.path.join(root_dir, "tests")
+# 1. change to work dir
+project_dir = root_dir + "/tests/project_A"
+os.chdir(project_dir)
+
+# 2. init luiti env
+sys.path.insert(0, root_dir + "/tests") # project sys.path
+import project_A.luiti_tasks.__init_luiti
+
+# 3. setup tests variables
+from luiti import manager, luigi
 day_str                    = "2014-09-01T00:00:00+08:00"
 
 class TestLuiti(unittest.TestCase):
@@ -72,7 +79,15 @@ class TestLuiti(unittest.TestCase):
         serialize_and_unserialize_a_task_instance('DDay', cPickle)
 
     def test_plug_packages(self):
-        pass
+        package_names = [i1.__name__ for i1 in luigi.luiti_config.luiti_tasks_packages]
+        self.assertTrue("project_A" in package_names)
+        self.assertTrue("project_B" in package_names)
+
+        self.assertTrue("ADay" in manager.PackageMap.task_clsname_to_package)
+        self.assertTrue("BDay" in manager.PackageMap.task_clsname_to_package)
+        self.assertTrue("CDay" in manager.PackageMap.task_clsname_to_package)
+        self.assertTrue("DDay" in manager.PackageMap.task_clsname_to_package)
+        self.assertTrue("HDay" in manager.PackageMap.task_clsname_to_package)
 
 
 if __name__ == '__main__': unittest.main()

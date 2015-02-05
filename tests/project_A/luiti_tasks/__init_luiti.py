@@ -5,7 +5,6 @@ root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 sys.path.insert(0, root_dir)
 os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
 
-import luiti
 from luiti import *
 luigi.plug_packages(
         "project_B",        # dep project

@@ -52,9 +52,7 @@ if len(sys.argv) == 1:
 args_main  = parser_main.parse_args()
 subcommand = sys.argv[1]
 
-# NOTE modify sys.path in here.
-luiti_tasks_dirs = manager.Path.find_all_luiti_tasks_parent_dirs(args_main.project_dir)
-result           = manager.Loader.load_all_tasks(*luiti_tasks_dirs)
+result           = manager.load_all_tasks()
 all_task_classes = [i1['task_cls'] for i1 in result['success']]
 
 if "project_dir" in args_main:
