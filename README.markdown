@@ -377,18 +377,39 @@ if __name__ == '__main__': unittest.main()
 
 Manage multiple projects in luiti
 ------------------------
-#### 解决方案
-直接 clone 依赖项目(含 `luiti_tasks` 目录)到当前项目的 `luiti_tasks`
-项目下即可。
+#### 具体单个项目的目录结构
+每个项目目录结构建议为以下格式，即可以当作一个正规的 Python package 来使用， 比如:
 
-#### 实现细节
-为了方便在具体 Task 里 相对引用在当前 `luiti_tasks` 目录下的子目录里的
-Python 文件，比如 `from .utils import SomeUtils` ，而该 utils
-的实际目录是 `/curr_project/luiti_tasks/utils/`。
+```text
+project_A
+  setup.py
+  README.markdown
+  project_A/
+  ├── __init__.py
+  └── luiti_tasks
+      ├── __init__.py
+      ├── __init_luiti.py
+      ├── exam_logs_english_app_day.py
+      ├── ..._day.py
+      └── templates
+            ├── __init__.py
+            └── ..._template.py
+```
 
-如果直接把 `luiti_tasks` 放入到 Python 里的 `sys.path` 里的话，就会引起
-`ValueError: Attempted relative import in non-package` 错误。而 luiti
-对多 `luiti_tasks` 的引用也是通过动态修改 `sys.path` 实现的。
+在安装好 `luiti` 后，运行如下命令行即可生成上述的项目基本目录结构，
+```bash
+luiti new project_A
+```
+
+这个树目录其实就是可以用来安装 package 的 Python 项目, 在根的 `project_A` 目录
+下运行 `python setup.py install` 即可把当前项目安装到当前 Python 环境的 package
+引用路径(即 `sys.path` )下。
+
+
+#### 如何关联另一个项目的某个 Task
+每个项目都是类似 `project_A/luiti_tasks/another_feature_day.py` 结构，在 `__init_luiti.py` 只要
+用 `luiti.plug_packages("project_B", ["project_C", "0.0.2"])` 后， 像 `@luigi.ref_tasks("ArtistStreamDay')`
+就会现在当前 `project_A`, 和相关的 `project_B`, `project_C` 里去找 ArtistStreamDay Task 了。
 
 
 Extend luiti
