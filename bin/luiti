@@ -4,9 +4,9 @@
 import os, sys
 import argparse
 from collections import defaultdict
+from etl_utils import singleton, cached_property
 
-import luigi
-import luiti.manager as manager
+from luiti import luigi, manager
 curr_dir  = os.getcwd()
 
 def bool_type(arg1):
@@ -52,8 +52,18 @@ if len(sys.argv) == 1:
 args_main  = parser_main.parse_args()
 subcommand = sys.argv[1]
 
-result           = manager.load_all_tasks()
-all_task_classes = [i1['task_cls'] for i1 in result['success']]
+
+
+@singleton()
+class LazyData(object):
+
+    @cached_property
+    def all_task_classes(self): return [i1['task_cls'] for i1 in result['success']]
+
+    @cached_property
+    def result(self): return manager.load_all_tasks()
+ld = LazyData()
+
 
 if "project_dir" in args_main:
     luigi.luiti_config.curr_project_dir = args_main.project_dir
@@ -62,16 +72,16 @@ if "project_dir" in args_main:
 if "task_name" in args_main:
     curr_task = manager.load_a_task_by_name(args_main.task_name)
 
-if subcommand == "ls": manager.Table.print_all_tasks(result)
+if subcommand == "ls": manager.print_all_tasks(ld.result)
 
 if subcommand == "info":
-    dep_tasks_on_curr_task = manager.find_dep_on_tasks(curr_task, all_task_classes)
+    dep_tasks_on_curr_task = manager.find_dep_on_tasks(curr_task, ld.all_task_classes)
     manager.Table.print_task_info(curr_task, dep_tasks_on_curr_task)
 
 if subcommand == "clean":
     dep_tasks_on_curr_task = [curr_task]
     if args_main.dep:
-        dep_tasks_on_curr_task = manager.find_dep_on_tasks(curr_task, all_task_classes)
+        dep_tasks_on_curr_task = manager.find_dep_on_tasks(curr_task, ld.all_task_classes)
     dep_file_to_task_instances = manager.get_all_date_file_to_task_instances(args_main.date_range, dep_tasks_on_curr_task)
 
     manager.print_files_by_task_cls_and_date_range(

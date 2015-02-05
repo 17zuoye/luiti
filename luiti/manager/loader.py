@@ -2,46 +2,20 @@
 
 import os
 import sys
-import glob
 import string
 import traceback
 import importlib
 from inflector import Inflector
-from etl_utils import singleton, cached_property
-from ..luigi_ext import luigi
-
-
-
-@singleton()
-class PackageMapClass(object):
-
-    @cached_property
-    def task_clsname_to_package(self):
-        loaded_name = luigi.luiti_config.curr_project_name + ".luiti_tasks.__init_luiti"
-        if loaded_name not in sys.modules: Loader.import2(loaded_name)
-
-        assert luigi.luiti_config.luiti_tasks_packages, "At least have one project!"
-
-        result = dict()
-        for project1 in luigi.luiti_config.luiti_tasks_packages:
-            for f2 in glob.glob(os.path.join(project1.__path__[0], "luiti_tasks/[a-z]*.py")):
-                task_filename3        = os.path.basename(f2).rsplit(".", 1)[0]
-                task_clsname4         = Inflector().classify(task_filename3)
-                result[task_clsname4] = project1
-        return result
-
+from .package_map import PackageMap
 
 class Loader(object):
 
-    PackageMap = PackageMapClass()
-
     @staticmethod
+    @PackageMap.ensure_setup_packages()
     def load_all_tasks():
-        luigi.plug_packages()
-
         result     = {"success": list(), "failure": list()}
 
-        for task_clsname_1 in Loader.PackageMap.task_clsname_to_package.keys():
+        for task_clsname_1 in PackageMap.task_clsname_to_package.keys():
             is_success = False
             task_cls   = None
             err        = None
@@ -62,11 +36,12 @@ class Loader(object):
         return result
 
     @staticmethod
+    @PackageMap.ensure_setup_packages()
     def load_a_task_by_name(task_clsname_1):
         assert task_clsname_1[0] in string.uppercase, \
                                 "Task name should begin with UpperCase !"
 
-        package_path = Loader.PackageMap.task_clsname_to_package[task_clsname_1].__name__ + \
+        package_path = PackageMap.task_clsname_to_package[task_clsname_1].__name__ + \
                        ".luiti_tasks." + \
                        Inflector().underscore(task_clsname_1)
         task_lib     = Loader.import2(package_path)
@@ -77,4 +52,4 @@ class Loader(object):
     def import2(a_package):
         return __import__(a_package, None, None, 'non_empty')
 
-
+PackageMap.Loader = Loader

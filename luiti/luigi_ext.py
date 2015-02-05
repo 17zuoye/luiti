@@ -180,70 +180,14 @@ luigi.check_runtime_range = check_runtime_range
 
 
 
-@singleton()
-class LuitiConfigClass(object):
-    """ Make sure init variables only once. """
-    curr_project_name = None
-    curr_project_dir  = os.getcwd()
-
-    @cached_property
-    def attached_package_names(self): return set(['luiti'])
-
-    @cached_property
-    def luiti_tasks_packages(self): return set([])
-
-luigi.luiti_config = LuitiConfigClass()
-luigi.luiti_config.curr_project_name
-
 def plug_packages(*package_names):
     """
     let luigi know which packages should be attached, and can send to YARN, etc.
 
     package format can be any valid Python package name, such as "project_B" or "project_C==0.0.2", etc.
     """
-    # 1. Check current work dir is under a valid a luiti_tasks project
-    curr_dir = luigi.luiti_config.curr_project_dir
-    if not os.path.exists(os.path.join(curr_dir, "luiti_tasks")):
-        raise ValueError("[error] current work dir [%s] has no luiti_tasks dir!" % curr_dir)
-
-    curr_project_name     = os.path.basename(curr_dir) # "project_A"
-    curr_project_syspath  = os.path.dirname(curr_dir)  # project_A/
-
-    # 2. Setup sys.path
-    global luigi # Fix UnboundLocalError: local variable `luigi` referenced before assignment
-    if luigi.luiti_config.curr_project_name is not None:
-        return "already load main project." # below code will never be executed!
-    else:
-        luigi.luiti_config.curr_project_name = curr_project_name
-
-    # 2.1. be importable
-    if curr_project_syspath not in sys.path: sys.path.insert(0, curr_project_syspath)
-    # 2.2. it's the root luiti tasks package
-    luigi.luiti_config.luiti_tasks_packages.add(manager.import2(curr_project_name))
-    # 2.3. ensure other luiti tasks packages can be loaded.
-    manager.import2(curr_project_name + ".luiti_tasks.__init_luiti")
-
-
-    # 3. Load related packages.
-    import pkg_resources
-    import luigi.hadoop
-
     for p1 in package_names:
-        package2, version2 = (p1 + "==").split("==")[0:2]
-        if package2 in luigi.luiti_config.attached_package_names:
-            continue
-        else:
-            # Notice Python to import special version package.
-            if version2: pkg_resources.require(p1)
-
-            # Let luigi know it.
-            luigi.hadoop.attach(package2)
-
-            # Add valid package which has .luiti_tasks
-            try:
-                if manager.import2(package2 + ".luiti_tasks"):
-                    luigi.luiti_config.luiti_tasks_packages.add(manager.import2(package2))
-            except ImportError as ie:
-                pass
-
+        manager.luiti_config.attached_package_names.add(p1)
 luigi.plug_packages = plug_packages
+
+luigi.luiti_config = manager.luiti_config

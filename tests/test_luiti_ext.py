@@ -10,11 +10,7 @@ import unittest
 
 # 1. change to work dir
 project_dir = root_dir + "/tests/project_A"
-os.chdir(project_dir)
-
-# 2. init luiti env
-sys.path.insert(0, root_dir + "/tests") # project sys.path
-import project_A.luiti_tasks.__init_luiti
+os.chdir(project_dir) # let luiti find `luiti_tasks` dir
 
 # 3. setup tests variables
 from luiti import manager, luigi

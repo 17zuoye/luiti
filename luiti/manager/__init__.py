@@ -5,6 +5,9 @@ from .table      import Table
 from .dep        import Dep
 from .files      import Files
 
+from .config     import luiti_config
+from .package_map import PackageMap
+
 
 
 #################
@@ -17,6 +20,5 @@ soft_delete_files                                 = Files.soft_delete_files
 load_all_tasks                                    = Loader.load_all_tasks
 load_a_task_by_name                               = Loader.load_a_task_by_name
 import2                                           = Loader.import2
-PackageMap                                        = Loader.PackageMap
 print_all_tasks                                   = Table.print_all_tasks
 print_files_by_task_cls_and_date_range            = Table.print_files_by_task_cls_and_date_range
