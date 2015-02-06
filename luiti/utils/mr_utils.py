@@ -82,6 +82,7 @@ class MRUtils:
         根据索引数组 转化出新的 map key
         e.g. select_prefix_keys("232@@8923802@@afenti", [0,1]) # => "232@8923802"
         """
+        if isinstance(line_part_a, str): line_part_a = line_part_a.decode("UTF-8")
         # 兼容解析格式错误的jsonkey
         if line_part_a.startswith(MRUtils.map_key_escape) and (not line_part_a.endswith(MRUtils.map_key_escape)):
             line_part_a = line_part_a[1:]
