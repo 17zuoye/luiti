@@ -158,8 +158,8 @@ def check_runtime_range(**opts_1): # 装饰器
             opts = dict(default_opts.items() + opts_1.items())
 
             now            = ArrowParameter.now()           # get current time
-            hour_24        = int(now.format("H"))  # 0, 1, 2 ... 23, 24
-            day_of_week_7  = int(now.format("d"))  # 1, 2, 3 ... 6, 7
+            hour_24        = int(now.format("H"))  # 0, 1, 2, ..., 23, 24
+            day_of_week_7  = int(now.format("d"))  # 1, 2, 3, ..., 6, 7
 
             is_false = False
             if hour_24       not in opts['hour_num']:    is_false = True
@@ -182,12 +182,16 @@ luigi.check_runtime_range = check_runtime_range
 
 def plug_packages(*package_names):
     """
-    let luigi know which packages should be attached, and can send to YARN, etc.
+    Let luigi know which packages should be attached, and can send to YARN, etc.
 
-    package format can be any valid Python package name, such as "project_B" or "project_C==0.0.2", etc.
+    Package format can be any valid Python package name, such as "project_B" or "project_C==0.0.2", etc.
     """
     for p1 in package_names:
         manager.luiti_config.attached_package_names.add(p1)
 luigi.plug_packages = plug_packages
 
+
+
+luigi.ensure_setup_packages = lambda : manager.setup_packages # make a wrap
 luigi.luiti_config = manager.luiti_config
+manager.luiti_config.linked_luigi = luigi
