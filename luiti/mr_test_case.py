@@ -9,9 +9,11 @@ import json
 from .utils import MRUtils
 from .manager import Loader
 
-# NOTE 集成测试数据到 类中 ，这样就方便引用了。
 
 def MrTestCase(cls, verbose=False):
+    """
+    功能: 集成测试数据到 类中 ，这样就方便引用了。
+    """
 
     assert "mr_task_names" in dir(cls), "%s must assgin some task names!" % cls
 
@@ -26,7 +28,7 @@ def MrTestCase(cls, verbose=False):
             if verbose: print "[task_instance]", task_instance_1
 
             task_instance_1.lines         = [line1 for line1 in task_instance_1.mrtest_input().strip().split("\n") if line1.strip()]
-            result_expect = dict([tuple(MRUtils.split_mr_kv(line1.strip())) \
+            result_expect = sorted([json.loads(line1.strip()) \
                                         for line1 in task_instance_1.mrtest_output().strip().split("\n") if line1.strip()])
 
 
@@ -60,8 +62,8 @@ def run_map_reduce(task_instance_1):
             mapper_key_to_vals[key_1].append(val_1)
 
     # 3. reduce it!
-    result_key_to_vals = dict()
+    result_list = list()
     for key_1, vals_1 in mapper_key_to_vals.iteritems():
-        for key_2, val_2 in task_instance_1.reducer(key_1, vals_1):
-            result_key_to_vals[MRUtils.select_prefix_keys(unicode(key_2))] = json.loads(val_2)
-    return result_key_to_vals
+        for val_2 in task_instance_1.reducer(key_1, vals_1):
+            result_list.append(json.loads(val_2))
+    return sorted(result_list)
