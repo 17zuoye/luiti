@@ -40,15 +40,13 @@ def setup_packages(orig_func):
                 if version2: pkg_resources.require(p1)
 
                 # Let luigi know it.
-                luigi.hadoop.attach(package2)
+                package2_lib = lc.import2(package2)
+                luigi.hadoop.attach(package2_lib)
 
                 # Add valid package which has .luiti_tasks
-                try:
-                    if lc.import2(package2 + ".luiti_tasks"):
-                        lc.luiti_tasks_packages.add(lc.import2(package2)) # .__init_luiti Maybe not exists, so execute this first
-                except ImportError as ie:
-                    print "[ImportError]", ie # execute before MapReduce, so there is no output on MapReduce YARN
-                    pass
+                if os.path.exists(package2_lib.__path__[0] + "/luiti_tasks"):
+                    # .__init_luiti Maybe not exists, so execute this first
+                    lc.luiti_tasks_packages.add(package2_lib)
             processed_package_names.add(p1)
         return orig_func(*args, **kwargs) # call it at last.
     new_func.func_name = orig_func.func_name
