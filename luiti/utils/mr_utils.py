@@ -102,3 +102,8 @@ class MRUtils:
     @staticmethod
     def str_dump(result_dict):
         return JsonUtils.unicode_dump(result_dict).encode("UTF-8")
+
+    @staticmethod
+    def filter_dict(d1, keys):
+        if not isinstance(keys, list): keys = [keys]
+        return {k1:d1[k1] for k1 in keys}

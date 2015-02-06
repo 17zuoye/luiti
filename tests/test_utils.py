@@ -36,6 +36,10 @@ class TestLuitiUtils(unittest.TestCase):
         self.assertEqual(MRUtils.select_prefix_keys(prefix_str1, [0,1]), "232@@8923802")
         self.assertEqual(MRUtils.select_prefix_keys(prefix_str2, [0,1]), "232@@8923802")
 
+        self.assertEqual(MRUtils.str_dump({"hello":u"世界"}), """{"hello": "世界"}""")
+
+        self.assertEqual(MRUtils.filter_dict({"hello":"world", "foobar":"barfoo"}, "hello"), {"hello":"world"})
+
 
     def test_math(self):
         from luiti import MathUtils
