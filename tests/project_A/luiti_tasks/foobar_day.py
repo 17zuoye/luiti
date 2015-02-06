@@ -12,7 +12,7 @@ class FoobarDay(TaskDayHadoop):
         yield d2['uid'], d2
 
     def reducer(self, uid1, d1):
-        yield json.dumps({
+        yield '', json.dumps({
             "uid": uid1,
             "total": sum([i2['count'] for i2 in d1]),
             "ref": self.ref,

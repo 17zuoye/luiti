@@ -71,6 +71,6 @@ def run_map_reduce(task_instance_1):
     # 3. reduce it!
     result_list = list()
     for key_1, vals_1 in mapper_key_to_vals.iteritems():
-        for val_2 in task_instance_1.reducer(key_1, vals_1):
+        for _, val_2 in task_instance_1.reducer(key_1, vals_1):
             result_list.append(json.loads(val_2))
     return sorted(result_list)
