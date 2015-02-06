@@ -381,17 +381,17 @@ Manage multiple projects in luiti
 每个项目目录结构建议为以下格式，即可以当作一个正规的 Python package 来使用， 比如:
 
 ```text
-project_A
-  setup.py
-  README.markdown
-  project_A/
-  ├── __init__.py
-  └── luiti_tasks
-      ├── __init__.py
-      ├── __init_luiti.py
-      ├── exam_logs_english_app_day.py
-      ├── ..._day.py
-      └── templates
+project_A                                            --- project directory
+  setup.py                                           --- Python package install script
+  README.markdown                                    --- project README
+  project_A/                                         --- Python package install directory
+  ├── __init__.py                                    --- mark current directories on disk as a Python package directories
+  └── luiti_tasks                                    --- a directory name which indicates it contains several luiti tasks
+      ├── __init__.py                                --- mark current directories on disk as a Python package directories
+      ├── __init_luiti.py                            --- initialize luiti environment variables
+      ├── exam_logs_english_app_day.py               --- an example luiti task
+      ├── ..._day.py                                 --- another example luiti task
+      └── templates                                  --- some libraries
             ├── __init__.py
             └── ..._template.py
 ```
