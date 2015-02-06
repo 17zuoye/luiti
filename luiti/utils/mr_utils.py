@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 
 import json
+from etl_utils import JsonUtils
 
 
 class MRUtils:
@@ -97,3 +98,7 @@ class MRUtils:
             for idx_1 in idxes:
                 new_parts.append(parts[idx_1])
             return MRUtils.map_key_split.join(new_parts)
+
+    @staticmethod
+    def str_dump(result_dict):
+        return JsonUtils.unicode_dump(result_dict).encode("UTF-8")
