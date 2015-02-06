@@ -47,9 +47,9 @@ def setup_packages(orig_func):
                     if lc.import2(package2 + ".luiti_tasks"):
                         lc.luiti_tasks_packages.add(lc.import2(package2)) # .__init_luiti Maybe not exists, so execute this first
                 except ImportError as ie:
+                    print "[ImportError]", ie # execute before MapReduce, so there is no output on MapReduce YARN
                     pass
             processed_package_names.add(p1)
-        #import pdb; pdb.set_trace()
         return orig_func(*args, **kwargs) # call it at last.
     new_func.func_name = orig_func.func_name
     return new_func

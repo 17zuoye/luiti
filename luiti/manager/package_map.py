@@ -20,7 +20,16 @@ class PackageMapClass(object):
 
         result = dict()
         for project1 in lc.luiti_tasks_packages:
-            for f2 in glob.glob(os.path.join(project1.__path__[0], "luiti_tasks/[a-z]*.py")):
+            project_dir2 = project1.__path__[0]
+
+            # if it's not a zip file, but a normal package directory
+            is_zip_file = os.path.exists(os.path.join(project_dir2, "__init__.py"))
+            if not is_zip_file:
+                raise Exception("""[setup.py format error] make sure project "%s" zip_safe=False option exists!""" % project1.__name__)
+
+            task_path_pattern = os.path.join(project_dir2, "luiti_tasks/[a-z]*.py")
+
+            for f2 in glob.glob(task_path_pattern):
                 task_filename3        = os.path.basename(f2).rsplit(".", 1)[0]
                 task_clsname4         = Inflector().classify(task_filename3)
                 result[task_clsname4] = project1

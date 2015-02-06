@@ -58,7 +58,7 @@ subcommand = sys.argv[1]
 class LazyData(object):
 
     @cached_property
-    def all_task_classes(self): return [i1['task_cls'] for i1 in result['success']]
+    def all_task_classes(self): return [i1['task_cls'] for i1 in ld.result['success']]
 
     @cached_property
     def result(self): return manager.load_all_tasks()

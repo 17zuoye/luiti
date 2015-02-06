@@ -11,6 +11,8 @@ from .config         import luiti_config as lc
 from .setup_packages import setup_packages
 from .package_map    import PackageMap
 
+
+
 class Loader(object):
 
     @staticmethod
@@ -18,7 +20,7 @@ class Loader(object):
     def load_all_tasks():
         result     = {"success": list(), "failure": list()}
 
-        for task_clsname_1 in PackageMap.task_clsname_to_package.keys():
+        for task_clsname_1 in sorted(PackageMap.task_clsname_to_package.keys()):
             is_success = False
             task_cls   = None
             err        = None
