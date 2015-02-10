@@ -70,6 +70,6 @@ class Table(object):
         task_headers = ["Task name", curr_task.__name__]
         task_content = [
                 ["Tasks self dep on", str(list(curr_task._ref_tasks))],
-                ["Tasks dep on self", str(dep_tasks_on_curr_task)],
+                ["Tasks dep on self", str(sorted([t2.__name__ for t2 in dep_tasks_on_curr_task]))],
                 ]
         Table.puts(task_content, task_headers, tablefmt="grid")
