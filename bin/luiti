@@ -49,6 +49,12 @@ if len(sys.argv) == 1:
     exit(0)
 
 
+if not os.path.exists(os.path.join(os.getcwd(), "luiti_tasks")):
+    print u"""
+Current work directory '%s' has no sub directory 'luiti_tasks', make sure you have already `cd path/to/your/luiti/project/` .
+    """ % (os.getcwd())
+    exit(1)
+
 args_main  = parser_main.parse_args()
 subcommand = sys.argv[1]
 
