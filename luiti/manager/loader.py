@@ -42,12 +42,15 @@ class Loader(object):
 
     @staticmethod
     @setup_packages
-    def load_a_task_by_name(task_clsname_1):
-        assert task_clsname_1[0] in string.uppercase, \
-                                "Task name should begin with UpperCase !"
+    def load_a_task_by_name(s1):
+        task_clsname_1  = Inflector().classify(s1)    # force convert
+        task_filename_1 = Inflector().underscore(s1)  # force convert
+
+        assert task_clsname_1 in PackageMap.task_clsname_to_package, u"""
+        "%s" cannt be found. Auto converted class name is "%s", file name is "luiti_tasks/%s.py", please check it carefully.
+        """ % (s1, task_clsname_1, task_filename_1)
 
         package_path = PackageMap.task_clsname_to_package[task_clsname_1].__name__ + \
-                       ".luiti_tasks." + \
-                       Inflector().underscore(task_clsname_1)
+                       ".luiti_tasks." + task_filename_1
         task_lib     = lc.import2(package_path)
         return getattr(task_lib, task_clsname_1)
