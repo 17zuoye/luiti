@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 
-from .__setup import *
+from .__init_luiti import *
 
 class CDay(TaskDay):
 
