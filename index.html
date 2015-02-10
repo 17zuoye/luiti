@@ -439,7 +439,7 @@ arrow.Arrow 。</li>
 </ol>
 
 <h4>
-<a id="mr-读入文件处理-generate-方式" class="anchor" href="#mr-%E8%AF%BB%E5%85%A5%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86-generate-%E6%96%B9%E5%BC%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 读入文件处理, generate 方式</h4>
+<a id="mr-读入文件处理-generator-方式" class="anchor" href="#mr-%E8%AF%BB%E5%85%A5%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86-generator-%E6%96%B9%E5%BC%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>MR 读入文件处理, generator 方式</h4>
 
 <ol>
 <li>原始读入。 <code>TargetUtils.line_read(hdfs1)</code>。返回 unicode。</li>
@@ -485,21 +485,39 @@ arrow.Arrow 。</li>
 <a id="manage-multiple-projects-in-luiti" class="anchor" href="#manage-multiple-projects-in-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manage multiple projects in luiti</h2>
 
 <h4>
-<a id="解决方案" class="anchor" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>解决方案</h4>
+<a id="具体单个项目的目录结构" class="anchor" href="#%E5%85%B7%E4%BD%93%E5%8D%95%E4%B8%AA%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84" aria-hidden="true"><span class="octicon octicon-link"></span></a>具体单个项目的目录结构</h4>
 
-<p>直接 clone 依赖项目(含 <code>luiti_tasks</code> 目录)到当前项目的 <code>luiti_tasks</code>
-项目下即可。</p>
+<p>每个项目目录结构建议为以下格式，即可以当作一个正规的 Python package 来使用， 比如:</p>
+
+<pre lang="text"><code>project_A                                            --- project directory
+  setup.py                                           --- Python package install script
+  README.markdown                                    --- project README
+  project_A/                                         --- Python package install directory
+  ├── __init__.py                                    --- mark current directories on disk as a Python package directories
+  └── luiti_tasks                                    --- a directory name which indicates it contains several luiti tasks
+      ├── __init__.py                                --- mark current directories on disk as a Python package directories
+      ├── __init_luiti.py                            --- initialize luiti environment variables
+      ├── exam_logs_english_app_day.py               --- an example luiti task
+      ├── ..._day.py                                 --- another example luiti task
+      └── templates                                  --- some libraries
+            ├── __init__.py
+            └── ..._template.py
+</code></pre>
+
+<p>在安装好 <code>luiti</code> 后，运行如下命令行即可生成上述的项目基本目录结构，</p>
+
+<div class="highlight highlight-bash"><pre>luiti new project_A</pre></div>
+
+<p>这个树目录其实就是可以用来安装 package 的 Python 项目, 在根的 <code>project_A</code> 目录
+下运行 <code>python setup.py install</code> 即可把当前项目安装到当前 Python 环境的 package
+引用路径(即 <code>sys.path</code> )下。</p>
 
 <h4>
-<a id="实现细节" class="anchor" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82" aria-hidden="true"><span class="octicon octicon-link"></span></a>实现细节</h4>
+<a id="如何关联另一个项目的某个-task" class="anchor" href="#%E5%A6%82%E4%BD%95%E5%85%B3%E8%81%94%E5%8F%A6%E4%B8%80%E4%B8%AA%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%9F%90%E4%B8%AA-task" aria-hidden="true"><span class="octicon octicon-link"></span></a>如何关联另一个项目的某个 Task</h4>
 
-<p>为了方便在具体 Task 里 相对引用在当前 <code>luiti_tasks</code> 目录下的子目录里的
-Python 文件，比如 <code>from .utils import SomeUtils</code> ，而该 utils
-的实际目录是 <code>/curr_project/luiti_tasks/utils/</code>。</p>
-
-<p>如果直接把 <code>luiti_tasks</code> 放入到 Python 里的 <code>sys.path</code> 里的话，就会引起
-<code>ValueError: Attempted relative import in non-package</code> 错误。而 luiti
-对多 <code>luiti_tasks</code> 的引用也是通过动态修改 <code>sys.path</code> 实现的。</p>
+<p>每个项目都是类似 <code>project_A/luiti_tasks/another_feature_day.py</code> 结构，在 <code>__init_luiti.py</code> 只要
+用 <code>luigi.plug_packages("project_B", "project_C==0.0.2"])</code> 后， 像 <code>@luigi.ref_tasks("ArtistStreamDay')</code>
+就会现在当前 <code>project_A</code>, 和相关的 <code>project_B</code>, <code>project_C</code> 里去找 ArtistStreamDay Task 了。</p>
 
 <h2>
 <a id="extend-luiti" class="anchor" href="#extend-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extend luiti</h2>
