@@ -15,6 +15,9 @@ setup(
     packages=[
                 'luiti',
                 'luiti/manager',
+                'luiti/task_templates/',
+                'luiti/task_templates/time',
+                'luiti/task_templates/other',
                 'luiti/utils',
              ],
     scripts=[
