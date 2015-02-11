@@ -2,7 +2,7 @@
 
 from .task_week import TaskWeek
 
-from .utils import MRUtils
+from ...utils import MRUtils
 import json
 import re
 import luigi

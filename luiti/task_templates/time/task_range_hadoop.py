@@ -4,7 +4,7 @@ __all__ = ['TaskRangeHadoop', 'luigi', 'MRUtils', 'json', 're']
 
 from .task_range import TaskRange, luigi
 
-from .utils import MRUtils
+from ...utils import MRUtils
 import json
 import re
 

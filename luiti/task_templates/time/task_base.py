@@ -11,11 +11,11 @@ from inflector    import Inflector
 from etl_utils    import cached_property
 from dateutil     import tz
 
-from .luigi_ext   import luigi
-from .root_task   import RootTask
-from .utils       import DateUtils, ExtUtils
-from .parameter   import ArrowParameter
-from .manager     import luiti_config
+from ...luigi_ext        import luigi
+from ..other.root_task   import RootTask
+from ...utils            import DateUtils, ExtUtils
+from ...parameter        import ArrowParameter
+from ...manager          import luiti_config
 
 
 class TaskBase(luigi.Task, ExtUtils.ExtendClass):

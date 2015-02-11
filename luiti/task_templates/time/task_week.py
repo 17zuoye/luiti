@@ -3,7 +3,7 @@
 __all__ = ['TaskWeek']
 
 from .task_base import TaskBase
-from .utils  import DateUtils
+from ...utils  import DateUtils
 
 
 class TaskWeek(TaskBase):

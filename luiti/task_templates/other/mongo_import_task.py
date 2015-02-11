@@ -1,8 +1,8 @@
 #-*-coding:utf-8-*-
 
-from .task_base import *
+from ..time.task_base import *
 from etl_utils import cached_property
-from .utils import CommandUtils, TargetUtils, MRUtils, HDFSUtils
+from ...utils import CommandUtils, TargetUtils, MRUtils, HDFSUtils
 import luigi
 import os
 import arrow
