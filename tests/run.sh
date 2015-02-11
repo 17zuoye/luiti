@@ -5,3 +5,5 @@ do
   echo "[test] $file1"
   python tests/$file1
 done
+
+rm -rf build dist luiti.egg-info # clean tmp files
