@@ -34,6 +34,7 @@ class LuitiConfigClass(object):
 
     @staticmethod
     def get_time_task(name1):
+        """ return e.g. TaskDay """
         type2 = luiti_config.get_date_type(name1)
         return "Task" + Inflector().camelize(type2)
 

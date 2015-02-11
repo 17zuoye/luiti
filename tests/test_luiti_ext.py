@@ -75,6 +75,7 @@ class TestLuiti(unittest.TestCase):
         serialize_and_unserialize_a_task_instance('DDay', cPickle)
 
     def test_plug_packages(self):
+        global manager, luigi
         package_names = [i1.__name__ for i1 in luigi.luiti_config.luiti_tasks_packages]
         self.assertTrue("project_A" in package_names)
         self.assertTrue("project_B" in package_names)
@@ -84,6 +85,10 @@ class TestLuiti(unittest.TestCase):
         self.assertTrue("CDay" in manager.PackageMap.task_clsname_to_package)
         self.assertTrue("DDay" in manager.PackageMap.task_clsname_to_package)
         self.assertTrue("HDay" in manager.PackageMap.task_clsname_to_package)
+
+        from luiti import manager, luigi # test reload
+        luigi.plug_packages("can plug only once")
+        self.assertFalse("can plug only once" in manager.luiti_config.attached_package_names)
 
     def test_run_python_on_distributed_system(self):
         # 1. setup env

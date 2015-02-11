@@ -186,6 +186,9 @@ def plug_packages(*package_names):
 
     Package format can be any valid Python package name, such as "project_B" or "project_C==0.0.2", etc.
     """
+    if len(manager.luiti_config.attached_package_names) > 1:
+        return False # default is luiti. and can plug only once.
+
     for p1 in package_names:
         manager.luiti_config.attached_package_names.add(p1)
 luigi.plug_packages = plug_packages
