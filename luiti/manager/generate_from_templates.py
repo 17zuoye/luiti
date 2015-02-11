@@ -18,10 +18,13 @@ class GenerateFromTemplates(object):
 
     @staticmethod
     def generate_a_task(task_name):
-        return write_content_to_file(
+        path = os.path.join('luiti_tasks', Inflector().underscore(task_name) + ".py")
+        content = write_content_to_file(
                     a_task_template(Inflector().classify(task_name)),
-                    os.path.join('luiti_tasks', Inflector().underscore(task_name) + ".py"),
+                    path,
              )
+        print "[info] write to %s . " % path
+        return content
 
 
 """ 1. Project """
@@ -29,7 +32,7 @@ a_project_readme = lambda project_name: u"""
 %s
 =======================
 
-""" % (Inflector().titleize(project_name), )
+""".strip()  % (Inflector().titleize(project_name), )
 
 
 
@@ -44,7 +47,7 @@ from luiti import *
 class %s(%s):
 
     root_dir = "/foobar"
-""" % (task_clsname, luiti_config.get_time_task(task_clsname), )
+""".strip() % (task_clsname, luiti_config.get_time_task(task_clsname), )
 
 
 def write_content_to_file(content, path):

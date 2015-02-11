@@ -29,7 +29,7 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     _persist_files    = []
     _ref_tasks        = []
 
-    root_dir           = ""
+    root_dir           = NotImplemented
 
     # Default one, always return True
     def requires(self): return RootTask()
