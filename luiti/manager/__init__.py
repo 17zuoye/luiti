@@ -11,6 +11,8 @@ from .setup_packages      import setup_packages
 
 from .sys_argv            import SysArgv
 
+from .generate_from_templates import GenerateFromTemplates
+
 
 
 #################
@@ -25,6 +27,8 @@ load_a_task_by_name                               = Loader.load_a_task_by_name
 import2                                           = luiti_config.import2
 print_all_tasks                                   = Table.print_all_tasks
 print_files_by_task_cls_and_date_range            = Table.print_files_by_task_cls_and_date_range
+new_a_project                                     = GenerateFromTemplates.new_a_project
+generate_a_task                                   = GenerateFromTemplates.generate_a_task
 
 
 from etl_utils import singleton, cached_property

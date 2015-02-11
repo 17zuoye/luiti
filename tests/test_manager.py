@@ -9,13 +9,12 @@ import unittest
 from luiti import *
 
 
-# change work dir
-os.chdir(os.path.join(root_dir, "tests/project_A"))
-
-
 class TestManager(unittest.TestCase):
 
     def test_Loader(self):
+        # change work dir
+        os.chdir(os.path.join(root_dir, "tests/project_A"))
+
         self.assertEqual(
                 manager.load_a_task_by_name("ADay"),
                 manager.load_a_task_by_name("a_day"),
@@ -26,6 +25,22 @@ class TestManager(unittest.TestCase):
                 lambda : manager.load_a_task_by_name("i_day"),
               )
 
+
+    def test_generate_a_task(self):
+        dir1 = "/tmp/test_generate_a_task/"
+        os.system("rm -rf %s" % dir1) # clean prev error
+        os.system("mkdir -p %s/luiti_tasks" % dir1)
+        os.chdir(dir1)
+
+        content_a = manager.generate_a_task("ADay")
+        self.assertTrue("ADay"    in content_a)
+        self.assertTrue("TaskDay" in content_a)
+
+        content_b = manager.generate_a_task("b_week")
+        self.assertTrue("BWeek"    in content_b)
+        self.assertTrue("TaskWeek" in content_b)
+
+        os.system("rm -rf %s" % dir1)
 
 
 if __name__ == '__main__': unittest.main()

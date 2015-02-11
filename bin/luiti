@@ -23,6 +23,8 @@ subparsers     = parser_main.add_subparsers(title="subcommands", description='va
 parser_ls   = subparsers.add_parser('ls', help=u"list all current luiti tasks.")
 
 parser_new  = subparsers.add_parser('new', help=u"create a new luiti project.")
+# TODO remove argument key, just value only.
+parser_new.add_argument('--project-name',       help=u"必须指定项目名称，比如 --project-name=table_base", required=True, )
 
 parser_gene = subparsers.add_parser('generate', help=u"generate a new luiti task python file.")
 
@@ -37,10 +39,10 @@ parser_clean.add_argument('--force',             help=u"强制删除文件",    
 parser_run = subparsers.add_parser('run', help=u"run a luiti task.")
 parser_run.add_argument('--date-value',          help=u"必须指定具体时间，比如 --date-value=2014-09-01T00:00:01+08:00 。后面的时区信息是必须的。",   required=True, )
 
-for parser_1 in [parser_ls, parser_new, parser_gene, parser_info, parser_clean, parser_run]:
+for parser_1 in [parser_ls, parser_gene, parser_info, parser_clean, parser_run]:
     parser_1.add_argument("--project-dir", help=u"force use another project directory.", default=curr_dir)
 
-    if parser_1 != parser_ls:
+    if parser_1 not in [parser_ls, parser_new]:
         parser_1.add_argument('--task-name', help=u"必须指定任务名称，比如 --task-name=Redmine5954ParentReportWeek",   required=True, )
 
 
@@ -58,19 +60,21 @@ else:
 
 
 # check valid project.
-if not os.path.exists(os.path.join(lc.curr_project_dir, "luiti_tasks")):
-    print u"""
-Current work directory '%s' has no sub directory 'luiti_tasks', make sure you have already `cd path/to/your/luiti/project/` .
-    """ % (lc.curr_project_dir)
-    exit(1)
+if subcommand != "new": # not new a project
+    if not os.path.exists(os.path.join(lc.curr_project_dir, "luiti_tasks")):
+        print u"""
+    Current work directory '%s' has no sub directory 'luiti_tasks', make sure you have already `cd path/to/your/luiti/project/` .
+        """ % (lc.curr_project_dir)
+        exit(1)
 
-
-
-
-if "task_name" in args_main:
+if ("task_name" in args_main) and (subcommand not in ["generate"]):
     curr_task = manager.load_a_task_by_name(args_main.task_name)
 
+
 if subcommand == "ls": manager.print_all_tasks(manager.ld.result)
+
+if subcommand == "new": manager.new_a_project(args_main.project_name)
+if subcommand == "generate": manager.generate_a_task(args_main.task_name)
 
 if subcommand == "info":
     dep_tasks_on_curr_task = manager.find_dep_on_tasks(curr_task, manager.ld.all_task_classes)

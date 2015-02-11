@@ -15,12 +15,12 @@ from .luigi_ext   import luigi
 from .root_task   import RootTask
 from .utils       import DateUtils, ExtUtils
 from .parameter   import ArrowParameter
+from .manager     import luiti_config
 
 
 class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     """ 继承的子类在类名后 必须加 **时间类型**, 如 Day, Week, ... """
 
-    DateTypes          = ["range", "week"] + arrow.Arrow._ATTRS # ['year', 'month', ...]
     date_value         = ArrowParameter() # **统一** 时间类型, 防止同时跑多个任务
     orig_date_value    = None
 
@@ -69,7 +69,7 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
 
     @cached_property
     def date_type(self):
-        return TaskBase.get_date_type(self.__class__)
+        return luiti_config.get_date_type(self.__class__.__name__)
 
     @cached_property
     def date_value_by_type_in_last(self):
@@ -112,17 +112,8 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         if "Range" in cls.__name__:
             return list(set([cls(first_date), cls(last_date)])) # return head and tail directly
         else:
-            dates = arrow.Arrow.range(TaskBase.get_date_type(cls), first_date, last_date)
+            dates = arrow.Arrow.range(luiti_config.get_date_type(cls.__name__), first_date, last_date)
             return [cls(date1.datetime) for date1 in dates]
 
     @cached_property
     def task_class(self): return self.__class__
-
-
-    @staticmethod
-    def get_date_type(cls):
-        """ Inherit class must be in TaskBase{Day,Week,Month,Range} style.  """
-        # No underline in DateType
-        str1 = Inflector().underscore(cls.__name__).split("_")[-1].lower()
-        assert str1 in cls.DateTypes
-        return str1
