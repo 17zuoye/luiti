@@ -15,6 +15,7 @@ luiti 优势
 4. 众多 MapReduce / IO 实用操作函数。[#](#mapreduce-related)
 5. 基于输入输出数据的 MapReduce 测试方案。[#](#mr-test)
 6. 内置支持 Task 基类扩展。[#](#extend-luiti)
+7. 分析 Task 之间的依赖关系，包括依赖的和被依赖的。[#](#luiti-command-line)
 
 luigi 预备知识
 ------------------------
@@ -173,26 +174,28 @@ python setup.py install
 ```
 
 
-luiti 命令行
+luiti command line
 ------------------------
 安装后就可以直接在当前 Shell 里使用 luiti 命令了, 比如:
 ```text
 $ luiti
-usage: luiti [-h] {ls,info,clean,run} ...
+usage: luiti [-h] {ls,new,generate,info,clean,run} ...
 
 Luiti tasks manager.
 
 optional arguments:
-  -h, --help           show this help message and exit
+  -h, --help            show this help message and exit
 
 subcommands:
   valid subcommands
 
-  {ls,info,clean,run}
-    ls                 list all current luiti tasks.
-    info               show a detailed task.
-    clean              manage files that outputed by luiti tasks.
-    run                run a luiti task.
+  {ls,new,generate,info,clean,run}
+    ls                  list all current luiti tasks.
+    new                 create a new luiti project.
+    generate            generate a new luiti task python file.
+    info                show a detailed task.
+    clean               manage files that outputed by luiti tasks.
+    run                 run a luiti task.
 ```
 
 Core concepts based on time management
