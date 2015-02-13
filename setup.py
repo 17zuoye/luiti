@@ -39,7 +39,7 @@ setup(
         "pymongo       == 2.7.2",
         "snakebite     == 1.3.8", # 兼容 https://github.com/spotify/snakebite/issues/39#issuecomment-30954368
 
-        "etl_utils     == 0.1.8",
+        "etl_utils     == 0.1.9",
         "tabulate      == 0.7.3",
         "pipetools     == 0.2.7",
     ],
