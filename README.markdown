@@ -10,7 +10,7 @@ Luiti 是构建于 Luigi 之上的主要作用于时间管理相关的插件, �
 luiti 优势
 ------------------------
 1. 按时间和业务类型等属性去多目录划分基础表, 中间表, 统计表 等。[#](#core-concepts-based-on-time-management)
-2. 支持无缝 多项目 多版本 任务管理依赖, 兼容常规 Python 库引用机制。[#](#manage-multiple-projects-in-luiti)
+2. 支持无缝 多项目 多版本 管理, 兼容常规 Python 库引用机制。[#](#manage-multiple-projects-in-luiti)
 3. 任务的运行时间和业务时间的满足条件检查。[#](#task-decorators)
 4. 众多 MapReduce / IO 实用操作函数。[#](#mapreduce-related)
 5. 基于输入输出数据的 MapReduce 测试方案。[#](#mr-test)
