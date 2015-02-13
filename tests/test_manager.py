@@ -55,6 +55,11 @@ class TestManager(unittest.TestCase):
         self.assertTrue("Project C"           in file(files[0]).read())
         self.assertTrue("zip_safe"            in file(files[1]).read())
         self.assertTrue("luigi.plug_packages" in file(files[2]).read())
+        self.assertTrue("@MrTestCase"         in file(files[3]).read())
+
+        os.chdir("project_C")
+        os.system("./tests/run.sh")
+        os.chdir("..")
 
         os.system("rm -rf %s" % dir1)
 
