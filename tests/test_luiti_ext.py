@@ -10,13 +10,15 @@ import unittest
 
 # 1. change to work dir
 project_dir = root_dir + "/tests/project_A"
-os.chdir(project_dir) # let luiti find `luiti_tasks` dir
 
 # 3. setup tests variables
 from luiti import manager, luigi
 day_str                    = "2014-09-01T00:00:00+08:00"
 
 class TestLuiti(unittest.TestCase):
+
+    def setUp(self):
+        os.chdir(project_dir) # let luiti find `luiti_tasks` dir
 
     def test_ref_tasks(self):
         ADay = manager.load_a_task_by_name("ADay")
@@ -61,6 +63,8 @@ class TestLuiti(unittest.TestCase):
             task_instance          = task_cls(day_str)
 
             task_instance_2        = serialize.loads(serialize.dumps(task_instance))
+            package_name_2         = getattr(task_instance_2, "package_name") # already set when in serialize.laod
+            self.assertEqual(package_name_2, "project_A")
 
             self.assertEqual(hash(task_instance), hash(task_instance_2))
 
@@ -73,6 +77,8 @@ class TestLuiti(unittest.TestCase):
         serialize_and_unserialize_a_task_instance('ADay', cPickle)
         serialize_and_unserialize_a_task_instance('DDay', pickle)
         serialize_and_unserialize_a_task_instance('DDay', cPickle)
+
+        self.assertEqual(luigi.luiti_config.curr_project_name, "project_A")
 
     def test_plug_packages(self):
         global manager, luigi
