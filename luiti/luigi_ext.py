@@ -202,6 +202,6 @@ luigi.plug_packages = plug_packages
 
 
 
-luigi.ensure_setup_packages = lambda : manager.setup_packages # make a wrap
+luigi.ensure_active_packages = lambda : manager.active_packages # make a wrap
 luigi.luiti_config = manager.luiti_config
 manager.luiti_config.linked_luigi = luigi

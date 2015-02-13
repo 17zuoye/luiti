@@ -7,7 +7,7 @@ from .files               import Files
 
 from .config              import luiti_config
 from .package_map         import PackageMap
-from .setup_packages      import setup_packages
+from .active_packages     import active_packages
 
 from .sys_argv            import SysArgv
 

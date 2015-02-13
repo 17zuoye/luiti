@@ -5,8 +5,7 @@ from .config import luiti_config as lc
 
 processed_package_names = set([])
 
-# TODO rename to active
-def setup_packages(orig_func):
+def active_packages(orig_func):
     def new_func(*args, **kwargs):
         # 1. Setup env
         lc.link_packages()

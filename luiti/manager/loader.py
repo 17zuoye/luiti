@@ -7,16 +7,16 @@ import traceback
 import importlib
 from inflector import Inflector
 
-from .config         import luiti_config as lc
-from .setup_packages import setup_packages
-from .package_map    import PackageMap
+from .config            import luiti_config as lc
+from .active_packages   import active_packages
+from .package_map       import PackageMap
 
 
 
 class Loader(object):
 
     @staticmethod
-    @setup_packages
+    @active_packages
     def load_all_tasks():
         result     = {"success": list(), "failure": list()}
 
@@ -41,7 +41,7 @@ class Loader(object):
         return result
 
     @staticmethod
-    @setup_packages
+    @active_packages
     def load_a_task_by_name(s1):
         task_clsname_1  = Inflector().classify(s1)    # force convert
         task_filename_1 = Inflector().underscore(s1)  # force convert

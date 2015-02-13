@@ -6,14 +6,14 @@ from inflector import Inflector
 from etl_utils import singleton, cached_property
 
 from .config import luiti_config as lc
-from .setup_packages import setup_packages
+from .active_packages import active_packages
 
 
 @singleton()
 class PackageMapClass(object):
 
     @cached_property
-    @setup_packages
+    @active_packages
     def task_clsname_to_package(self):
 
         assert lc.luiti_tasks_packages, "At least have one project!"
