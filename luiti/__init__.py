@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 
 __all__ = [
-            'luigi', 'luiti_setup',
+            'luigi', 'luiti_setup', 'config',
 
             'TaskBase',
             'TaskHour',
@@ -86,3 +86,5 @@ def luiti_setup(opts=dict()):
 
     # 3. setup env
     env.setup()
+
+config = manager.luiti_config

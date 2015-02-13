@@ -101,4 +101,6 @@ def write_content_to_file(content, path):
     f1.write(content.encode("UTF-8"))
     f1.close()
 
+    print "[info] generate %s ." % path
+
     return content
