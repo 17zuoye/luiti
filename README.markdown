@@ -1,6 +1,6 @@
 Luiti
 ========================
-Luigi是一套基于python语言构建的复杂流式批处理任务管理系统。它也仅仅是一个任务
+Luigi 是一套基于 Python 语言构建的复杂流式批处理任务管理系统。它也仅仅是一个任务
 调度系统，具体逻辑全都由 Task 自己去实现，比如分布式计算交由 Hadoop 里的 YARN 实现处理。
 
 Luiti 是构建于 Luigi 之上的主要作用于时间管理相关的插件, 即
@@ -22,7 +22,7 @@ luigi 预备知识
 1. 英文文档   http://luigi.readthedocs.org/en/latest/index.html
   （推荐看这个，官方详细文档, 含最新)
 2. 中文介绍   http://vincentzhwg.iteye.com/blog/2063388   (Luigi
-    －－基于Python语言的流式任务调度框架教程, 国内的人写的，不保
+    －－基于 Python 语言的流式任务调度框架教程, 国内的人写的，不保
    证正确性。)
 
 

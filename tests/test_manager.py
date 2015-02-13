@@ -43,4 +43,21 @@ class TestManager(unittest.TestCase):
         os.system("rm -rf %s" % dir1)
 
 
+    def test_new_a_project(self):
+        os.chdir("/") # fix chdir err
+        dir1 = "/tmp/test_new_a_project/"
+        os.system("rm -rf %s" % dir1) # clean prev error
+        os.system("mkdir -p %s" % dir1)
+        os.chdir(dir1)
+
+        files = manager.new_a_project("project_C")
+
+        self.assertTrue("Project C"           in file(files[0]).read())
+        self.assertTrue("zip_safe"            in file(files[1]).read())
+        self.assertTrue("luigi.plug_packages" in file(files[2]).read())
+
+        os.system("rm -rf %s" % dir1)
+
+
+
 if __name__ == '__main__': unittest.main()
