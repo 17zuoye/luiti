@@ -12,7 +12,10 @@ def setup_packages(orig_func):
             if lc.curr_project_dir is None: lc.curr_project_dir = os.getcwd()
             # Check current work dir is under a valid a luiti_tasks project
             if not os.path.exists(os.path.join( lc.curr_project_dir, "luiti_tasks")):
-                raise ValueError("[error] current work dir [%s] has no luiti_tasks dir!" %  lc.curr_project_dir)
+                raise ValueError("[error] current work dir [%s] has no luiti_tasks dir! %s" %  (lc.curr_project_dir, os.listdir(lc.curr_project_dir), ) )
+
+            # TODO bind project variable
+#ValueError: [error] current work dir [/hdata-name/tmp/nm-local-dir/usercache/primary_user/appcache/application_1421303065493_0815/container_1421303065493_0815_01_000005] has no luiti_tasks dir! ['luiti', 'luiti_17zuoye', 'table_dump', 'table_base', 'table_tmp', 'luigi-1.0.19-py2.7.egg-info', 'table_middle', ]
 
             curr_project_name     = os.path.basename(lc.curr_project_dir) # "project_A"
             curr_project_syspath  = os.path.dirname(lc.curr_project_dir)  # project_A/

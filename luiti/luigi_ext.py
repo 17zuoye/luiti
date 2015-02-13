@@ -98,6 +98,14 @@ def ref_tasks(*tasks): # 装饰器
             if iname in self.__dict__:          del self.__dict__[iname]
         return self.__dict__
 
+    def __setstate__(self, d1):
+        # 1. default
+        self.__dict__.update(d1)
+        # 2. plug other package in `.__init_luiti`
+        lc.curr_project_name = self.package_name
+        if self.package_name == "__main__": return False
+        lc.import2(lc.curr_project_name + ".luiti_tasks.__init_luiti")
+
 # cached_property 捕获不了 ref_task_name 变量, 被重置为某一个了。。
 # property 可以捕获 ref_task_name 变量。
     def func(cls):

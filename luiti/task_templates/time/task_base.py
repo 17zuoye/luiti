@@ -44,7 +44,8 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         self.orig_date_value = ArrowParameter.get(self.date_value).replace(tzinfo=tz.tzlocal())
 
         self.reset_date() # reset date to at the beginning of current date type here
-        self.data_file # force load it now, or `output` still load it.
+        self.data_file      # force load it now, or `output` still load it.
+        self.package_name   # force load it now, use to serialize
 
 
     @cached_property
@@ -117,3 +118,9 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
 
     @cached_property
     def task_class(self): return self.__class__
+
+    @cached_property
+    def package_name(self):
+        module_name  = self.task_class.__module__
+        package_name = module_name.split(".")[0]
+        return package_name
