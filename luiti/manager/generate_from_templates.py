@@ -46,7 +46,6 @@ class GenerateFromTemplates(object):
                     a_task_template(Inflector().classify(task_name)),
                     path,
              )
-        print "[info] write to %s . " % path
         return content
 
 
@@ -117,7 +116,7 @@ if __name__ == '__main__': unittest.main()
 a_task_template = lambda task_clsname: u"""
 #-*-coding:utf-8-*-
 
-from luiti import *
+from .__init_luiti import *
 
 @luigi.ref_tasks()
 class %s(%s):

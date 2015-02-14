@@ -31,13 +31,7 @@ parser_gene = subparsers.add_parser('generate', help=u"generate a new luiti task
 parser_info = subparsers.add_parser('info', help=u"show a detailed task.")
 
 parser_clean   = subparsers.add_parser('clean', help=u"manage files that outputed by luiti tasks.")
-parser_clean.add_argument('--date-range',        help=u"必须指定时间周期，比如 --date-range=20141001-20141015",            required=True, )
-parser_clean.add_argument('--dry',               help=u"可以指定 **假运行** 模式 , 比如 --dry=true。",                     default=True,  choices=[True, False], type=bool_type)
-parser_clean.add_argument('--dep',               help=u"可以指定 --dep=true，这样就会寻找依赖于当前Task之上的任务",        default=False, choices=[True, False], type=bool_type)
-parser_clean.add_argument('--force',             help=u"强制删除文件",                                                     default=False, choices=[True, False], type=bool_type)
-
 parser_run = subparsers.add_parser('run', help=u"run a luiti task.")
-parser_run.add_argument('--date-value',          help=u"必须指定具体时间，比如 --date-value=2014-09-01T00:00:01+08:00 。后面的时区信息是必须的。",   required=True, )
 
 for parser_1 in [parser_ls, parser_gene, parser_info, parser_clean, parser_run]:
     parser_1.add_argument("--project-dir", help=u"force use another project directory.", default=curr_dir)
@@ -45,6 +39,12 @@ for parser_1 in [parser_ls, parser_gene, parser_info, parser_clean, parser_run]:
     if parser_1 not in [parser_ls, parser_new]:
         parser_1.add_argument('--task-name', help=u"必须指定任务名称，比如 --task-name=Redmine5954ParentReportWeek",   required=True, )
 
+parser_clean.add_argument('--date-range',        help=u"必须指定时间周期，比如 --date-range=20141001-20141015",            required=True, )
+parser_clean.add_argument('--dry',               help=u"可以指定 **假运行** 模式 , 比如 --dry=true。",                     default=True,  choices=[True, False], type=bool_type)
+parser_clean.add_argument('--dep',               help=u"可以指定 --dep=true，这样就会寻找依赖于当前Task之上的任务",        default=False, choices=[True, False], type=bool_type)
+parser_clean.add_argument('--force',             help=u"强制删除文件",                                                     default=False, choices=[True, False], type=bool_type)
+
+parser_run.add_argument('--date-value',          help=u"必须指定具体时间，比如 --date-value=2014-09-01T00:00:01+08:00 。后面的时区信息是必须的。",   required=True, )
 
 
 # check arguments
