@@ -14,9 +14,10 @@ class ArrowParameter(luigi.DateParameter):
     "2014-11-24"                # => len 10
     """
 
-    arrow = arrow
+    arrow = arrow # make a ref
 
     def parse(self, s):
+        """ overwrite default implement. """
         s = str(s)         # ensure `s` is a str
         assert len(s) in [25, 10], "Date format must be 2014-11-24T00:00:00+00:00 or 2014-11-24 !"
         return arrow.get(s)

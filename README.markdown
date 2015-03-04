@@ -46,7 +46,7 @@ luigi 的核心概念是用一系列 Task 类来管理任务，主要包含四�
 
 luiti 简单示例
 ------------------------
-#### luigi 的写法示例。以上代码 Copy 自 [luigi官方示例](http://luigi.readthedocs.org/en/latest/example_top_artists.html)
+#### luigi 的写法示例。以下代码 Copy 自 [luigi官方示例](http://luigi.readthedocs.org/en/latest/example_top_artists.html)
 ```python
 import luigi
 from collections import defaultdict

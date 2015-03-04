@@ -35,9 +35,9 @@ class DateUtils:
         last_date  = arrow.get(date_range_str[11:21])
         dates = DateUtils.weeks_in_range(first_date, last_date)
         if len(dates) > 0:
-            if dates[-1] != last_date:
+            if last_date.weekday() != 6:    # 6 index is Sunday
                 dates = dates[:-1]
-            if dates[0]  != first_date:
+            if first_date.weekday()  != 0:  # 0 index is Monday
                 dates = dates[1:]
         return dates
 
