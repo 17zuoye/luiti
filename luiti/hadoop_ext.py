@@ -29,9 +29,10 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
     iosort_memory_GB  = 0.5
 
     output_format     = [
-                            "TextOutputFormat",          # 单路输出
-                            "MultipleTextOutputFormat",  # 多路输出
-                        ][0]                             # 默认单路输出
+                            #"org.apache.hadoop.mapreduce.lib.output.TextOutputFormat",         # 单路输出。这个版本有问题。
+                            "org.apache.hadoop.mapred.TextOutputFormat",                        # 单路输出
+                            "org.apache.hadoop.mapred.lib.MultipleTextOutputFormat",            # 多路输出
+                        ][0]                                                                    # 默认是 单路输出
 
 
     def __init__(self, *args, **kwargs):
