@@ -5,6 +5,20 @@ __all__ = ['HadoopExt']
 import luigi.hadoop
 from .utils import ExtUtils
 
+
+class LuitiHadoopJobRunner(luigi.hadoop.HadoopJobRunner):
+    """ overwrite DefaultHadoopJobRunner.class """
+
+    # params are copied from HadoopJobRunner
+    def __init__(self, output_format=None):
+        config = luigi.hadoop.configuration.get_config()
+        opts = {
+                "streaming_jar"         : config.get('hadoop', 'streaming-jar'),
+                "output_format"         : output_format,
+            }
+        super(LuitiHadoopJobRunner, self).__init__(**opts)
+
+
 class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
     n_reduce_tasks    = 1 # 体现在 输出的part-00000数量为reduce数量
@@ -13,6 +27,11 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
     reduce_memory_GB  = 2
     (  map_memory_GB) = 0.6
     iosort_memory_GB  = 0.5
+
+    output_format     = [
+                            "TextOutputFormat",          # 单路输出
+                            "MultipleTextOutputFormat",  # 多路输出
+                        ][0]                             # 默认单路输出
 
 
     def __init__(self, *args, **kwargs):
@@ -26,7 +45,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
     # overwrite
     def job_runner(self):
-        return luigi.hadoop.DefaultHadoopJobRunner()
+        return LuitiHadoopJobRunner(output_format=self.output_format)
 
     def output(self):
         return luigi.hdfs.HdfsTarget(self.data_file)
