@@ -33,20 +33,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
     def jobconfs_opts(self):
         return [
-                "fs.defaultFS=hdfs://BJ-NAMENODE-145:8020",
-                "mapred.job.tracker=BJ-NAMENODE-145:8031",
-                "yarn.resourcemanager.address=BJ-NAMENODE-145:8032",
-                "yarn.resourcemanager.scheduler.address=BJ-NAMENODE-145:8030",
-                "yarn.resourcemanager.admin.address=BJ-NAMENODE-145:8033",
-                "yarn.resourcemanager.webapp.address=BJ-NAMENODE-145:8088",
                 "mapreduce.framework.name=yarn",
-
-                # 这些参数好像一直就没怎么有用。
-                # NOTE 配置了以下 会导致 Java heap space 错误。
-                # "mapreduce.tasktracker.reserved.physicalmemory=%s" % (1024*self.__class__.physicalmemory),
-                #"mapreduce.map.java.opts=-Xmx%sM"    % int(1024*self.__class__.map_memory_GB), # 修改为整数, 下同。
-                #"mapreduce.reduce.java.opts=-Xmx%sM" % int(1024*self.__class__.reduce_memory_GB),
-                #"mapreduce.task.io.sort.mb=%s"       % int(1024*self.__class__.iosort_memory_GB),
                 'mapred.reduce.tasks=%s' % self.n_reduce_tasks,
                ]
 
