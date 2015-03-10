@@ -34,6 +34,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
                             "org.apache.hadoop.mapred.TextOutputFormat",                        # 单路输出
                             "org.apache.hadoop.mapred.lib.MultipleTextOutputFormat",            # 多路输出
                         ][0]                                                                    # 默认是 单路输出
+    libjars           = []
 
 
     def __init__(self, *args, **kwargs):
