@@ -202,6 +202,58 @@ luigi.plug_packages = plug_packages
 
 
 
+orig_create_packages_archive = luigi.hadoop.create_packages_archive
+def create_packages_archive_with_support_egg(packages, filename):
+    """
+    Fix original luigi's `create_packages_archive` cannt attach egg packages
+    (zip file type) to tarfile, Cause it's coping file mechanism by absolute
+    path.
+    """
+    # 1. original create tar file
+    orig_create_packages_archive(packages, filename)
+
+    # 2. append python egg packages that 1. not covered
+    import tarfile
+    tar = tarfile.open(filename, "a")
+
+    logger = luigi.hadoop.logger
+    fake_exists_path = "/" # root is awlays exists
+    def get_parent_zip_file_within_absolute_path(path1):
+        path2      = path1[:]
+        is_success = False
+        while path2 != fake_exists_path:
+            path2 = os.path.dirname(path2)
+            if os.path.isfile(path2):
+                is_success = True
+                break
+        return is_success, path2
+
+    def add(src, dst):
+        logger.debug('adding to tar: %s -> %s', src, dst)
+        tar.add(src, dst)
+
+    import zipfile
+    import tempfile
+    for package1 in packages:
+        path2 = getattr(package1, "__path__", [fake_exists_path])[0]
+        if os.path.exists(path2):     continue # so luigi can import it.
+        if not path2.startswith("/"): continue # we only care about libraries.
+
+        is_success, zipfilename3 = get_parent_zip_file_within_absolute_path(path2)
+        if is_success:
+            tmp_dir3 = tempfile.mkdtemp()
+            zipfile.ZipFile(zipfilename3).extractall(tmp_dir3)
+
+            for root4, dirs4, files4 in os.walk(tmp_dir3):
+                curr_dir5 = os.path.basename(root4)
+                for file5 in files4:
+                    add(os.path.join(root4, file5), os.path.join(curr_dir5, file5))
+    tar.close()
+luigi.hadoop.create_packages_archive = create_packages_archive_with_support_egg
+
+
+
+
 luigi.ensure_active_packages = lambda : manager.active_packages # make a wrap
 luigi.luiti_config = manager.luiti_config
 manager.luiti_config.linked_luigi = luigi

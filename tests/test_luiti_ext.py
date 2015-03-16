@@ -110,10 +110,11 @@ class TestLuiti(unittest.TestCase):
         # 2. package it
         import luiti
         import etl_utils
+        import zip_package_by_luiti
         # mimic luigi.hadoop.create_packages_archive
         new_packages = list(luigi.luiti_config.luiti_tasks_packages) + \
                        [__import__(DDay_task.__module__, None, None, 'dummy')] + \
-                       [luigi, luiti, etl_utils]
+                       [luigi, luiti, etl_utils, zip_package_by_luiti]
         luigi.hadoop.create_packages_archive(new_packages, tar_file)
 
         # 3. unpackage it
@@ -132,6 +133,7 @@ class TestLuiti(unittest.TestCase):
         self.assertTrue("luiti" in unziped_items)
         self.assertTrue("project_A" in unziped_items)
         self.assertTrue("project_B" in unziped_items)
+        self.assertTrue("zip_package_by_luiti" in unziped_items)
 
         # 5. clean up
         os.system("rm -rf /tmp/luiti_tests")
