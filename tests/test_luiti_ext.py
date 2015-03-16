@@ -133,7 +133,9 @@ class TestLuiti(unittest.TestCase):
         self.assertTrue("luiti" in unziped_items)
         self.assertTrue("project_A" in unziped_items)
         self.assertTrue("project_B" in unziped_items)
+
         self.assertTrue("zip_package_by_luiti" in unziped_items)
+        self.assertTrue("subfold" not in unziped_items) # it's a subfold
 
         # 5. clean up
         os.system("rm -rf /tmp/luiti_tests")
@@ -141,7 +143,8 @@ class TestLuiti(unittest.TestCase):
     def test_egg_zip_python_package(self):
         ImportPackagesDay = manager.load_a_task_by_name("ImportPackagesDay")
         self.assertTrue(".egg" in ImportPackagesDay(day_str).egg_library.__path__[0])
-
+        import zip_package_by_luiti
+        import zip_package_by_luiti.subfold
 
 
 if __name__ == '__main__': unittest.main()

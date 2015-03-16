@@ -247,7 +247,8 @@ def create_packages_archive_with_support_egg(packages, filename):
             for root4, dirs4, files4 in os.walk(tmp_dir3):
                 curr_dir5 = os.path.basename(root4)
                 for file5 in files4:
-                    add(os.path.join(root4, file5), os.path.join(curr_dir5, file5))
+                    if file5.endswith(".pyc"): continue
+                    add(os.path.join(root4, file5), os.path.join(root4.replace(tmp_dir3, "").lstrip("/"), file5))
     tar.close()
 luigi.hadoop.create_packages_archive = create_packages_archive_with_support_egg
 

@@ -8,5 +8,6 @@ setup(
     version='0.0.1',
     packages=[
                 'zip_package_by_luiti',
+                'zip_package_by_luiti/subfold',
              ],
 )

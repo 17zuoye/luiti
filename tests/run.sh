@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd tests/zip_package_by_luiti; python setup.py bdist_egg 2&>1; cd -;
+cd tests/zip_package_by_luiti; rm -rf build dist zip_package_by_luiti-info; python setup.py bdist_egg >> /dev/null; cd -;
 
 
 
