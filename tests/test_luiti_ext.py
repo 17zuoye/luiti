@@ -136,5 +136,10 @@ class TestLuiti(unittest.TestCase):
         # 5. clean up
         os.system("rm -rf /tmp/luiti_tests")
 
+    def test_egg_zip_python_package(self):
+        ImportPackagesDay = manager.load_a_task_by_name("ImportPackagesDay")
+        self.assertTrue(".egg" in ImportPackagesDay(day_str).egg_library.__path__[0])
+
+
 
 if __name__ == '__main__': unittest.main()
