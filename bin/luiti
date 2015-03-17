@@ -84,6 +84,7 @@ if subcommand == "clean":
     dep_tasks_on_curr_task = [curr_task]
     if args_main.dep:
         dep_tasks_on_curr_task = manager.find_dep_on_tasks(curr_task, manager.ld.all_task_classes)
+        dep_tasks_on_curr_task.insert(0, curr_task)
     dep_file_to_task_instances = manager.get_all_date_file_to_task_instances(args_main.date_range, dep_tasks_on_curr_task)
 
     manager.print_files_by_task_cls_and_date_range(
