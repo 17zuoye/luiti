@@ -5,13 +5,13 @@ from setuptools import setup
 
 setup(
     name='luiti',
-    version='0.1.0',
+    version='0.1.1',
     url='http://github.com/17zuoye/luiti/',
     license='MIT',
     author='David Chen',
     author_email=''.join(reversed("moc.liamg@emojvm")),
     description='Luiti = Luigi + time',
-    long_description='Luiti = Luigi + time',
+    long_description=open("README.markdown").read(),
     packages=[
                 'luiti',
                 'luiti/manager',
@@ -27,7 +27,9 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
-        "luigi         == 1.0.19",
+        "luigi         == 1.1.2",
+        "snakebite     == 2.5.2",
+
         "arrow         == 0.4.4",
         "inflector     == 2.0.11",
         "protobuf      == 2.6.1",
@@ -37,7 +39,6 @@ setup(
         "python-daemon == 1.6.1",
         "MySQL-python  == 1.2.5",
         "pymongo       == 2.7.2",
-        "snakebite     == 1.3.8", # 兼容 https://github.com/spotify/snakebite/issues/39#issuecomment-30954368
 
         "etl_utils     == 0.1.9",
         "tabulate      == 0.7.3",
