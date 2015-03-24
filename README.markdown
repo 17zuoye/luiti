@@ -15,7 +15,10 @@ luiti 优势
 4. 众多 MapReduce / IO 实用操作函数。[#](#mapreduce-related)
 5. 基于输入输出数据的 MapReduce 测试方案。[#](#mr-test)
 6. 内置支持 Task 基类扩展。[#](#extend-luiti)
-7. 分析 Task 之间的依赖关系，包括依赖的和被依赖的。[#](#luiti-command-line)
+7. luiti 命令行管理 Task。分析 Task 之间的依赖关系，包括依赖的和被依赖的。[#](#luiti-command-line)
+
+
+如果有相关问题，请参照 [FAQ](#FAQ) 里的说明。
 
 luigi 预备知识
 ------------------------
@@ -429,6 +432,24 @@ TaskWeek.extend({
 或者其他任意类属性。在覆写 `property` 和 `cached_property`
 传一个函数值即可，`extend` 会自动转化为本来的 `property` 和
 `cached_property` 类型。
+
+FAQ
+------------------------
+Q: How atomic file is supported?
+
+A: As luigi's document mentioned that "Simple class that writes to a temp file and moves it on close()
+    Also cleans up the temp file if close is not invoked", so use the `self.input().open("r")` or
+    `self.output().open("w")` instead of `open("some_file", "w")`.
+
+Q: Can luigi detect the interdependent tasks?
+
+A: It's not question inside of luigi, but it's a question about [topological sorting](https://en.wikipedia.org/wiki/Topological_sorting)
+   as a general computer science topic. The task scheduler is implemented at `luigi/scheduler.py` .
+
+
+
+If you have other unresolved questions, please feel free to ask
+questions at [issues](https://github.com/17zuoye/luiti/issues).
 
 
 Run tests
