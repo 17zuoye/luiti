@@ -61,6 +61,10 @@ else:
 
 # check valid project.
 if subcommand != "new": # not new a project
+    _try_dir   = os.path.join(curr_dir, os.path.basename(curr_dir))
+    if os.path.exists(_try_dir): # cause of the same name
+        lc.curr_project_dir = _try_dir
+
     if not os.path.exists(os.path.join(lc.curr_project_dir, "luiti_tasks")):
         print u"""
     Current work directory '%s' has no sub directory 'luiti_tasks', make sure you have already `cd path/to/your/luiti/project/` .
@@ -74,7 +78,7 @@ if ("task_name" in args_main) and (subcommand not in ["generate"]):
 if subcommand == "ls": manager.print_all_tasks(manager.ld.result)
 
 if subcommand == "new": manager.new_a_project(args_main.project_name)
-if subcommand == "generate": manager.generate_a_task(args_main.task_name)
+if subcommand == "generate": manager.generate_a_task(args_main.task_name, lc.curr_project_dir)
 
 if subcommand == "info":
     dep_tasks_on_curr_task = manager.find_dep_on_tasks(curr_task, manager.ld.all_task_classes)

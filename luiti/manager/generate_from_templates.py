@@ -40,8 +40,9 @@ class GenerateFromTemplates(object):
 
 
     @staticmethod
-    def generate_a_task(task_name):
+    def generate_a_task(task_name, project_dir=None,):
         path = join('luiti_tasks', Inflector().underscore(task_name) + ".py")
+        if project_dir: path = join(project_dir, path)
         content = write_content_to_file(
                     a_task_template(Inflector().classify(task_name)),
                     path,
