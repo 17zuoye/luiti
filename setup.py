@@ -37,8 +37,8 @@ setup(
         "mechanize     == 0.2.5",
 
         "python-daemon == 1.6.1",
-        "MySQL-python  == 1.2.5",
-        "pymongo       == 2.7.2",
+        "MySQL-python  >= 1.2.5",
+        "pymongo       >= 2.7.2",
 
         "etl_utils     == 0.1.9",
         "tabulate      == 0.7.3",
