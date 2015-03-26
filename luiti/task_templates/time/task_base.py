@@ -13,7 +13,7 @@ from dateutil     import tz
 
 from ...luigi_ext        import luigi
 from ..other.root_task   import RootTask
-from ...utils            import DateUtils, ExtUtils
+from ...utils            import DateUtils, ExtUtils, IOUtils
 from ...parameter        import ArrowParameter
 from ...manager          import luiti_config
 
@@ -63,6 +63,9 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
 
     def output(self):
         return IOUtils.local_target(self.data_file)
+
+    def errput(self):
+        return IOUtils.local_target(self.data_file + ".err")
 
     @cached_property
     def date_str(self):
