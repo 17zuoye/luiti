@@ -15,6 +15,8 @@ class MongoImportTask(TaskBase):
     report_status_namespace           = "latestCollection"
     report_name                       = NotImplemented
 
+    system_tmp = "/tmp" # default
+
     @cached_property
     def report_status_collection_model(self):
         return self.mongodb_connection[self.database_name][self.report_status_collection_name]
@@ -143,6 +145,6 @@ class MongoImportTask(TaskBase):
 
     @cached_property
     def tmp_dir(self):
-        dir1 = "/tmp/" + self.task_class.__name__
+        dir1 = self.system_tmp + "/" + self.task_class.__name__
         os.system("mkdir -p %s" % dir1)
         return dir1
