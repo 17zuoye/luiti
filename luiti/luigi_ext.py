@@ -188,6 +188,12 @@ luigi.check_runtime_range = check_runtime_range
 
 
 def mr_local(**opts):
+    """
+    Sometimes Hadoop streaming sucks, so we only use the solid HDFS, and turn MapReduce job into local mode.
+
+    And `mr_local` is optimized by a fixed chunk write operation.
+    """
+
     def mr_run(self):
         """ Overwrite BaseHadoopJobTask#run function. """
 # TODO maybe model cache
@@ -200,13 +206,20 @@ def mr_local(**opts):
                     map_kv_dict[map_key_3].append(map_val_3)
 
         with self.output().open("w") as output1:
+            fixed_chunk = list()
             for reduce_key_2, reduce_vals_2 in process_notifier(map_kv_dict):
                 for _, reduce_val_2 in self.reducer(reduce_key_2, reduce_vals_2):
-                    output1.write(reduce_val_2 + "\n")
+                    fixed_chunk.append(reduce_val_2)
+
+                    if len(fixed_chunk) % self.chunk_size == 0:
+                        output1.write("\n".join(fixed_chunk) + "\n")
+                        fixed_chunk = list()
+            output1.write("\n".join(fixed_chunk) + "\n")
 
 
     def wrap(cls):
         cls.run = mr_run
+        cls.chunk_size = 100
         return cls
     return wrap
 luigi.mr_local = mr_local # bind it.
