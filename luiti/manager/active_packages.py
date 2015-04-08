@@ -35,7 +35,8 @@ def active_packages(orig_func):
                 luigi.hadoop.attach(package2_lib)
 
                 # Add valid package which has .luiti_tasks
-                if os.path.exists(package2_lib.__path__[0] + "/luiti_tasks"):
+                #   compact with package with a plain python file.
+                if os.path.exists((package2_lib.__path__ + [""])[0] + "/luiti_tasks"):
                     # .__init_luiti Maybe not exists, so execute this first
                     lc.luiti_tasks_packages.add(package2_lib)
             processed_package_names.add(p1)

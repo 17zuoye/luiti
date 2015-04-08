@@ -283,7 +283,7 @@ def create_packages_archive_with_support_egg(packages, filename):
     import zipfile
     import tempfile
     for package1 in packages:
-        path2 = getattr(package1, "__path__", [fake_exists_path])[0]
+        path2 = (getattr(package1, "__path__", []) + [fake_exists_path])[0]
         if os.path.exists(path2):     continue # so luigi can import it.
         if not path2.startswith("/"): continue # we only care about libraries.
 
