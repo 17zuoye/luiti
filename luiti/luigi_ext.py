@@ -219,7 +219,11 @@ def mr_local(**opts):
 
     def wrap(cls):
         cls.run = mr_run
-        cls.chunk_size = 100
+
+        opts["chunk_size"] = opts.get("chunk_size", 100)
+        for k1, v1 in opts.iteritems():
+            setattr(cls, k1, v1)
+
         return cls
     return wrap
 luigi.mr_local = mr_local # bind it.
