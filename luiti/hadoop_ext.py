@@ -48,6 +48,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
     # overwrite
     def job_runner(self):
+        """ will be wraped in `run` function. """
         return LuitiHadoopJobRunner(output_format=self.output_format, libjars=self.libjars)
 
     def output(self):

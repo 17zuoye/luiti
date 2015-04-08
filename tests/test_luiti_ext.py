@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import os, sys
-root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, root_dir)
-os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
+RootDir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, RootDir)
+os.environ['LUIGI_CONFIG_PATH'] = RootDir + '/tests/client.cfg'
 
 import unittest
 
 
 # 1. change to work dir
-project_dir = root_dir + "/tests/project_A"
+project_dir = RootDir + "/tests/project_A"
 
 # 3. setup tests variables
 from luiti import manager, luigi
@@ -139,6 +139,44 @@ class TestLuiti(unittest.TestCase):
 
         # 5. clean up
         os.system("rm -rf /tmp/luiti_tests")
+
+    def test_mr_local(self):
+        from luiti import TaskDayHadoop, luigi, StaticFile, IOUtils, json, MRUtils
+
+        class JsonsData(StaticFile):
+            root_dir = "/" # fix luiti requirement
+            filepath = os.path.join(RootDir, "tests/jsons_data/mr_local.json")
+
+            def output(self):
+                assert self.filepath, u"Please assign `filepath` !"
+                return IOUtils.local_target(self.filepath)
+
+        @luigi.mr_local()
+        class MrLocalDay(TaskDayHadoop):
+            root_dir = "/" # fix luiti requirement
+            filepath = os.path.join(RootDir, "tests/jsons_data/mr_local_output.json")
+
+            def requires(self):
+                return [JsonsData(), ] # as a list
+
+            def output(self):
+                return IOUtils.local_target(self.filepath)
+
+            def mapper(self, line1):
+                item1 = MRUtils.json_parse(line1)
+                yield item1["uid"], item1
+
+            def reducer(self, uid_1, vals_1):
+                yield "", MRUtils.str_dump({"uid": uid_1, "count": len(vals_1)})
+
+        t1 = MrLocalDay(day_str)
+        t1.run()
+        result = sorted([json.loads(line1) for line1 in file(t1.filepath).read().split("\n") if line1])
+
+        self.assertEqual(result, [{"count": 1, "uid": 2}, {"count": 1, "uid": 3}, {"count": 3, "uid": 1}])
+        os.system("rm -f %s" % t1.filepath)
+
+
 
     def test_egg_zip_python_package(self):
         ImportPackagesDay = manager.load_a_task_by_name("ImportPackagesDay")

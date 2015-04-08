@@ -20,6 +20,7 @@ from .parameter import ArrowParameter
 import importlib
 from inflector import Inflector
 from etl_utils import cached_property, singleton
+from collections import defaultdict
 
 from .utils import IOUtils, TargetUtils
 from . import manager
@@ -183,6 +184,33 @@ def check_runtime_range(**opts_1): # 装饰器
         return cls
     return func
 luigi.check_runtime_range = check_runtime_range
+
+
+
+def mr_local(**opts):
+    def mr_run(self):
+        """ Overwrite BaseHadoopJobTask#run function. """
+# TODO maybe model cache
+        from etl_utils import process_notifier
+        map_kv_dict = defaultdict(list)
+
+        for input_hdfs_1 in self.input():
+            for line2 in TargetUtils.line_read(input_hdfs_1):
+                for map_key_3, map_val_3 in self.mapper(line2):
+                    map_kv_dict[map_key_3].append(map_val_3)
+
+        with self.output().open("w") as output1:
+            for reduce_key_2, reduce_vals_2 in process_notifier(map_kv_dict):
+                for _, reduce_val_2 in self.reducer(reduce_key_2, reduce_vals_2):
+                    output1.write(reduce_val_2 + "\n")
+
+
+    def wrap(cls):
+        cls.run = mr_run
+        return cls
+    return wrap
+luigi.mr_local = mr_local # bind it.
+
 
 
 
