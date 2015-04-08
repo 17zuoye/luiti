@@ -10,4 +10,5 @@ class CommandUtils:
         if verbose:   print "[command]", command_str
         if dry:       return False
 
-        return commands.getstatusoutput(command_str)
+        #return commands.getstatusoutput(command_str)
+        return os.system(command_str) # print logs in realtime.
