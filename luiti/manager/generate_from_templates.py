@@ -75,6 +75,13 @@ setup(
 )
 """.strip() % (project_name, project_name, project_name, )
 
+""" has bugs ...
+from setuptools import setup, find_packages
+    packages=find_packages("%s"),
+    package_dir = {"": "%s"},
+"""
+
+
 a_project_init_luiti = lambda : u"""
 #-*-coding:utf-8-*-
 
