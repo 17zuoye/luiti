@@ -38,3 +38,21 @@ class TargetUtils:
         for line1 in TargetUtils.line_read(hdfs1):
             k_1, v_1 = MRUtils.split_mr_kv(line1)
             yield k_1, v_1
+
+    @staticmethod
+    def isdir(path1): return HdfsClient.client.isdir(path1)
+
+    @staticmethod
+    def exists(path1): return HdfsClient.client.exists(path1)
+
+
+from etl_utils import singleton, cached_property
+
+@singleton()
+class HdfsClientClass(object):
+    # TODO use delegate
+    @cached_property
+    def client(self):
+        import luigi.hdfs
+        return luigi.hdfs.client
+HdfsClient = HdfsClientClass()
