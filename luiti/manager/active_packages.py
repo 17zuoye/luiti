@@ -20,8 +20,12 @@ def active_packages(orig_func):
             if package2 in processed_package_names:
                 continue
             else:
+                # Pip cant manage versions packages, only exist one version at one time.
+                pkg_resources.require(package2)
+
+                # TODO luiti 拷之前需要版本，之后不需要，分布式时判断目录packages即可。
                 # Notice Python to import special version package.
-                if version2: pkg_resources.require(p1)
+                # if version2: pkg_resources.require(p1)
 
                 # Let luigi know it.
                 package2_lib = lc.import2(package2)
