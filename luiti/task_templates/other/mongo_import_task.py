@@ -67,6 +67,7 @@ class MongoImportTask(TaskBase):
         tmp_errfile1 = open(self.tmp_errfilepath, 'w')
 
         for line1 in TargetUtils.line_read(source1):
+            if len(line1) == 0: continue # meaningless data.
             stat_2 = self.convert_line_to_json(line1)
             if self.find_invalid_record(stat_2):
                 tmp_errfile1.write(line1 + "\n")
