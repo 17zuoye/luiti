@@ -22,6 +22,8 @@ class LuitiHadoopJobRunner(luigi.hadoop.HadoopJobRunner):
 
 class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
+    run_mode           = "mr_distribute"
+
     n_reduce_tasks    = 1 # 体现在 输出的part-00000数量为reduce数量
 
     physicalmemory    = 2

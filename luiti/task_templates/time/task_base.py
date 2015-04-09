@@ -21,6 +21,8 @@ from ...manager          import luiti_config
 class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     """ 继承的子类在类名后 必须加 **时间类型**, 如 Day, Week, ... """
 
+    run_mode           = ["local", "mr_distribute", "mr_local"][0]
+
     date_value         = ArrowParameter() # **统一** 时间类型, 防止同时跑多个任务
     orig_date_value    = None
 

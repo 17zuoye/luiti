@@ -223,6 +223,7 @@ def mr_local(**opts):
 
     def wrap(cls):
         cls.run = mr_run
+        cls.run_mode = "mr_local"
 
         opts["chunk_size"] = opts.get("chunk_size", 100)
         for k1, v1 in opts.iteritems():
