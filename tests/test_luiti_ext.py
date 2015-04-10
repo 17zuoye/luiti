@@ -93,8 +93,8 @@ class TestLuiti(unittest.TestCase):
         self.assertTrue("HDay" in manager.PackageMap.task_clsname_to_package)
 
         from luiti import manager, luigi # test reload
-        luigi.plug_packages("can plug only once")
-        self.assertFalse("can plug only once" in manager.luiti_config.attached_package_names)
+        #luigi.plug_packages("can plug only once")
+        #self.assertFalse("can plug only once" in manager.luiti_config.attached_package_names)
 
     def test_run_python_on_distributed_system(self):
         # 1. setup env
