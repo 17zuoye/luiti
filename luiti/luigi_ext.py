@@ -302,6 +302,10 @@ def create_packages_archive_with_support_egg(packages, filename):
                 for file5 in files4:
                     if file5.endswith(".pyc"): continue
                     add(os.path.join(root4, file5), os.path.join(root4.replace(tmp_dir3, "").lstrip("/"), file5))
+
+    client_cfg = os.path.join(os.getcwd(), "client.cfg")
+    if os.path.exists(client_cfg):
+        tar.add(client_cfg, "client.cfg")
     tar.close()
 luigi.hadoop.create_packages_archive = create_packages_archive_with_support_egg
 
