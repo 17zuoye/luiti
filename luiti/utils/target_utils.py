@@ -56,3 +56,4 @@ class HdfsClientClass(object):
         import luigi.hdfs
         return luigi.hdfs.client
 HdfsClient = HdfsClientClass()
+TargetUtils.HdfsClient = HdfsClient

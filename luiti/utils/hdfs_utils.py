@@ -2,6 +2,7 @@
 
 import os
 from .command_utils import CommandUtils
+from .target_utils  import TargetUtils
 
 
 class HDFSUtils:
@@ -10,8 +11,7 @@ class HDFSUtils:
 
     @staticmethod
     def exists(path1):
-        """ e.g. /server/hadoop-2.0.0-cdh4.5.0/bin/hdfs dfs  -Dfs.defaultFS=hdfs://10.0.1.145:8020/  -cp /user/hadoop/questions_results/english_exam/20141113.json /primary/question_result/en_exam/en_exam_20141113.json """
-        return CommandUtils.execute(HDFSUtils.hdfs_cli + " -test -e " + path1)[0] == 0 # 比较返回状态码
+        return TargetUtils.exists(path1)
 
     @staticmethod
     def copy(path1, path2):

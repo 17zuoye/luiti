@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 
 from ..time.task_base import *
-from etl_utils import cached_property
+from etl_utils import cached_property, process_notifier
 from ...utils import CommandUtils, TargetUtils, MRUtils, HDFSUtils
 import luigi
 import os
@@ -63,15 +63,16 @@ class MongoImportTask(TaskBase):
 
         # 3. output json with err
         source1 = luigi.HDFS(self.source_task(self.date_value).data_file)
-        tmp_file1 = open(self.tmp_filepath, 'w')
+        tmp_file1    = open(self.tmp_filepath,    'w')
         tmp_errfile1 = open(self.tmp_errfilepath, 'w')
 
-        for line1 in TargetUtils.line_read(source1):
+        for line1 in process_notifier(TargetUtils.line_read(source1), u"[read lines] %s" % source1):
             if len(line1) == 0: continue # meaningless data.
             stat_2 = self.convert_line_to_json(line1)
             if self.find_invalid_record(stat_2):
                 tmp_errfile1.write(line1 + "\n")
-            tmp_file1.write(json.dumps(stat_2) + "\n")
+            else:
+                tmp_file1.write(json.dumps(stat_2) + "\n")
         tmp_file1.close()
         tmp_errfile1.close()
 
