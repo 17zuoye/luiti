@@ -6,6 +6,9 @@ from .config import luiti_config as lc
 processed_package_names = set([])
 
 def active_packages(orig_func):
+    """
+    called by `PackageMap.task_clsname_to_package`
+    """
     def new_func(*args, **kwargs):
         # 1. Setup env
         lc.link_packages()
@@ -36,11 +39,12 @@ def active_packages(orig_func):
 
                 # Add valid package which has .luiti_tasks
                 #   compact with package with a plain python file.
-                print "[package2_lib]", package2_lib
                 try:
                     path = (package2_lib.__path__ + [""])[0]
                 except:
+                    print "[package2_lib load error]", package2_lib
                     path = "/package/load/error"
+                # TODO 兼容 egg zip 格式，看看里面有没有 luiti_tasks 文件，然后提示加 zip_safe=False
                 if os.path.exists(path + "/luiti_tasks"):
                     # .__init_luiti Maybe not exists, so execute this first
                     lc.luiti_tasks_packages.add(package2_lib)

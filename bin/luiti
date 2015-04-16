@@ -61,9 +61,7 @@ else:
 
 # check valid project.
 if subcommand != "new": # not new a project
-    _try_dir   = os.path.join(curr_dir, os.path.basename(curr_dir))
-    if os.path.exists(_try_dir): # cause of the same name
-        lc.curr_project_dir = _try_dir
+    lc.fix_project_dir()
 
     if not os.path.exists(os.path.join(lc.curr_project_dir, "luiti_tasks")):
         print u"""
