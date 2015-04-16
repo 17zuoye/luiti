@@ -458,7 +458,6 @@ Run tests
 ./tests/run.sh
 ```
 
-
 License
 ------------------------
 MIT. David Chen @ 17zuoye.

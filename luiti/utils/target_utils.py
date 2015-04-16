@@ -2,6 +2,8 @@
 
 import json
 import luigi
+from etl_utils import singleton, cached_property
+
 
 class TargetUtils:
 
@@ -46,7 +48,6 @@ class TargetUtils:
     def exists(path1): return HdfsClient.client.exists(path1)
 
 
-from etl_utils import singleton, cached_property
 
 @singleton()
 class HdfsClientClass(object):

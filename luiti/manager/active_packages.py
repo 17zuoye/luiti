@@ -36,7 +36,12 @@ def active_packages(orig_func):
 
                 # Add valid package which has .luiti_tasks
                 #   compact with package with a plain python file.
-                if os.path.exists((package2_lib.__path__ + [""])[0] + "/luiti_tasks"):
+                print "[package2_lib]", package2_lib
+                try:
+                    path = (package2_lib.__path__ + [""])[0]
+                except:
+                    path = "/package/load/error"
+                if os.path.exists(path + "/luiti_tasks"):
                     # .__init_luiti Maybe not exists, so execute this first
                     lc.luiti_tasks_packages.add(package2_lib)
             processed_package_names.add(p1)
