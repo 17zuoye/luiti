@@ -28,8 +28,9 @@ class TargetUtils:
             is_curr_dir = len(list(f1.fs.listdir(data_file1))) > 1 # isdir 在 luigi/hdfs.py 没有实现哦
 
             if is_curr_dir:
-                if luigi.hdfs.HdfsTarget(data_file1 + "/part-00000").exists() and \
-                    luigi.hdfs.HdfsTarget(data_file1 + "/_SUCCESS").exists():
+                # There's no part-000 when use multiple text output in streaming
+                #if luigi.hdfs.HdfsTarget(data_file1 + "/part-00000").exists() and \
+                if luigi.hdfs.HdfsTarget(data_file1 + "/_SUCCESS").exists():
                     return luigi.hdfs.HdfsTarget(data_file1, format=luigi.hdfs.PlainDir)
 
         return luigi.hdfs.HdfsTarget(data_file1)
