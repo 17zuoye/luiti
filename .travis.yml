@@ -1,0 +1,40 @@
+language: python
+
+jdk: oraclejdk7
+
+env:
+  global:
+    - PIP_DOWNLOAD_CACHE=$HOME/.pip-cache
+  matrix:
+    - TOXENV=pep8
+    - TOXENV=docs
+    - TOXENV=py27-nonhdfs
+    - TOXENV=py33-nonhdfs
+    - TOXENV=py34-nonhdfs
+    - TOXENV=py27-cdh
+    - TOXENV=py33-cdh
+    - TOXENV=py34-cdh
+
+sudo: false
+
+cache:
+  - $HOME/.pip-cache
+
+install:
+  - pip install tox
+
+before_script:
+  # allow ssh loopback
+  - ssh-keygen -t rsa -N '' -C '' -f ~/.ssh/id_rsa
+  - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+  - ssh -o StrictHostKeyChecking=no localhost true
+
+script:
+  - ./tests/run.sh
+
+after_failure:
+  - cat /home/travis/build/spotify/luigi/.tox/cdh/log/cdh-1.log
+
+branches:
+  only:
+    - master
