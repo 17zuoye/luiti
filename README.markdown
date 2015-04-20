@@ -1,5 +1,7 @@
 Luiti
 ========================
+[![Build Status](https://travis-ci.org/mvj3/luiti.png)](https://travis-ci.org/mvj3/luiti)
+
 Luigi 是一套基于 Python 语言构建的复杂流式批处理任务管理系统。它也仅仅是一个任务
 调度系统，具体逻辑全都由 Task 自己去实现，比如分布式计算交由 Hadoop 里的 YARN 实现处理。
 
