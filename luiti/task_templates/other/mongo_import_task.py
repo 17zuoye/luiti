@@ -27,24 +27,31 @@ class MongoImportTask(TaskBase):
 
     # 1. config
     @cached_property
-    def source_task(self): raise NotImplemented
+    def source_task(self):
+        raise NotImplemented
 
     @cached_property
-    def mongodb_connection(self): raise NotImplemented
+    def mongodb_connection(self):
+        raise NotImplemented
 
     @cached_property
-    def database_name(self): raise NotImplemented
+    def database_name(self):
+        raise NotImplemented
 
     @cached_property
-    def index_schema(self): raise NotImplemented
+    def index_schema(self):
+        raise NotImplemented
 
     def convert_line_to_json(self, line1):
         classid_uid_1, val_1 = MRUtils.split_mr_kv(line1)
         return val_1
 
-    def run_before_hook(self): pass
-    def run_after_hook(self): pass
-    def find_invalid_record(self, stat_1): return False
+    def run_before_hook(self):
+        pass
+    def run_after_hook(self):
+        pass
+    def find_invalid_record(self, stat_1):
+        return False
 
     # 2. common
     def requires(self):
