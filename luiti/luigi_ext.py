@@ -103,8 +103,8 @@ def ref_tasks(*tasks): # 装饰器
         # 1. default
         self.__dict__.update(d1)
         # 2. plug other package in `.__init_luiti`
-        lc.curr_project_name = self.package_name
-        lc.link_packages()
+        luigi.luiti_config.curr_project_name = self.package_name
+        luigi.luiti_config.link_packages()
 
 # cached_property 捕获不了 ref_task_name 变量, 被重置为某一个了。。
 # property 可以捕获 ref_task_name 变量。

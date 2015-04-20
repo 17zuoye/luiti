@@ -69,7 +69,8 @@ class MongoImportTask(TaskBase):
         assert self.report_status_collection_model.count() == 1, "更新纪录 只能有一条！"
 
         # 3. output json with err
-        data_file1   = self.source_task(self.date_value).data_file
+        task1        = self.source_task(self.date_value)
+        data_file1   = task1.data_file
         source1      = luigi.HDFS(data_file1)
         tmp_file1    = open(self.tmp_filepath,    'w')
         tmp_errfile1 = open(self.tmp_errfilepath, 'w')

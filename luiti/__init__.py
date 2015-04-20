@@ -71,14 +71,14 @@ from .mr_test_case         import MrTestCase
 
 
 # TODO 整理
-def luiti_setup(opts={}):
+def luiti_setup(opts=None):
     # 1. default value
     assert 'sys_path' in opts, "opts['sys_path'] must be configed! Or there will is none sys.path existed in distributed Hadoop servers."
     default_opts = {
             'sys_path'                : [],
             'LUIGI_CONFIG_PATH'       : '/etc/luigi/client.cfg',
         }
-    opts = dict(default_opts.items() + opts.items())
+    opts = dict(default_opts.items() + (opts or dict()).items())
 
     # 2. config
     env.sys_path                      = opts['sys_path']
