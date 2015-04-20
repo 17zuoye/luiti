@@ -16,10 +16,12 @@ class LuitiConfigClass(object):
     linked_luigi      = None
 
     @cached_property
-    def attached_package_names(self): return set(['luiti'])
+    def attached_package_names(self):
+        return set(['luiti'])
 
     @cached_property
-    def luiti_tasks_packages(self): return set([])
+    def luiti_tasks_packages(self):
+        return set([])
 
     @staticmethod
     def import2(a_package):

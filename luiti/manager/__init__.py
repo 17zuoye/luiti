@@ -36,8 +36,11 @@ from etl_utils import singleton, cached_property
 class LazyData(object):
 
     @cached_property
-    def all_task_classes(self): return [i1['task_cls'] for i1 in ld.result['success']]
+    def all_task_classes(self):
+        return [i1['task_cls'] for i1 in ld.result['success']]
 
     @cached_property
-    def result(self): return load_all_tasks()
+    def result(self):
+        return load_all_tasks()
+
 ld = LazyData()

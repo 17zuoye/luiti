@@ -5,6 +5,7 @@ omit =
     *__init__*
     */__init__.py
     */*/__init__.py
+    luiti/utils/__init__.py
     *test/*
     */setup.py
 [run]

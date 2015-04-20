@@ -249,7 +249,7 @@ def plug_packages(*package_names):
     #    return False # default is luiti. and can plug only once.
 
     for p1 in package_names:
-    # load all packages's depended pacakges.
+        # load all packages's depended pacakges.
         manager.luiti_config.attached_package_names.add(p1)
 # TODO why should do `luigi.hadoop.attach` in `active_packages`
 luigi.plug_packages = plug_packages

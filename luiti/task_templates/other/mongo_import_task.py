@@ -13,7 +13,7 @@ class MongoImportTask(TaskBase):
 
     report_status_collection_name     = "report_status"
     report_status_namespace           = "latestCollection"
-    report_name                       = NotImplemented
+    report_name                       = NotImplementedError
 
     system_tmp = "/tmp" # default
 
@@ -28,19 +28,19 @@ class MongoImportTask(TaskBase):
     # 1. config
     @cached_property
     def source_task(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     @cached_property
     def mongodb_connection(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     @cached_property
     def database_name(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     @cached_property
     def index_schema(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def convert_line_to_json(self, line1):
         classid_uid_1, val_1 = MRUtils.split_mr_kv(line1)

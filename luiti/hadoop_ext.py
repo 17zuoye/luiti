@@ -73,10 +73,10 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
     # TestCase related attrs
     def mrtest_input(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def mrtest_output(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def mrtest_attrs(self):
         return dict()
