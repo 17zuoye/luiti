@@ -4,6 +4,7 @@ omit =
     */site-packages/nose/*
     *__init__*
     */__init__.py
+    */*/__init__.py
     *test/*
     */setup.py
 [run]

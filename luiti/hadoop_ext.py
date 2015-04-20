@@ -3,7 +3,8 @@
 __all__ = ['HadoopExt']
 
 import luigi.hadoop
-from .utils import ExtUtils
+from .utils import ExtUtils, TargetUtils
+from .parameter import ArrowParameter
 
 
 class LuitiHadoopJobRunner(luigi.hadoop.HadoopJobRunner):
@@ -42,7 +43,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
     def __init__(self, *args, **kwargs):
         """ 参考 TaskBase, 确保在 继承时还可以有TaskBase的覆写日期功能。 """
         super(HadoopExt, self).__init__(*args, **kwargs)
-        self.orig_date_value = self.orig_date_value or arrow.get(self.date_value)
+        self.orig_date_value = self.orig_date_value or ArrowParameter.get(self.date_value)
         self.reset_date()
 
     def output(self):
@@ -54,7 +55,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
         return LuitiHadoopJobRunner(output_format=self.output_format, libjars=self.libjars)
 
     def output(self):
-        return luigi.hdfs.HdfsTarget(self.data_file)
+        return TargetUtils.hdfs(self.data_file)
 
     def jobconfs_opts(self):
         return [
@@ -71,18 +72,11 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
 
     # TestCase related attrs
-    def mrtest_input(self):  raise NotImplemented
-    def mrtest_output(self): raise NotImplemented
-    def mrtest_attrs(self):  return dict()
+    def mrtest_input(self):
+        raise NotImplemented
 
+    def mrtest_output(self):
+        raise NotImplemented
 
-
-# http://doc.mapr.com/display/MapR/mapred-site.xml
-"""
-mapreduce.framework.name	yarn	Execution framework set to Hadoop YARN.
-mapreduce.map.java.opts	-Xmx1024M	Larger heap-size for child jvms of maps.
-mapreduce.map.memory.mb	1024	Larger resource limit for maps.
-mapreduce.reduce.java.opts	-Xmx2560M	Larger heap-size for child jvms of reduces.
-mapreduce.reduce.memory.mb	3072	Larger resource limit for reduces.
-mapreduce.reduce.shuffle.parallelcopies	50	Higher number of parallel copies run by reduces to fetch outputs from very large number of maps.
-"""
+    def mrtest_attrs(self):
+        return dict()
