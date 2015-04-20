@@ -8,6 +8,7 @@ omit =
     luiti/utils/__init__.py
     *test/*
     */setup.py
+
 [run]
 parallel = True
 source   = luiti
