@@ -21,6 +21,7 @@ cache:
   - $HOME/.pip-cache
 
 install:
+  - pip install coveralls
   - pip install tox
 
 before_script:
@@ -31,9 +32,13 @@ before_script:
 
 script:
   - ./tests/run.sh
+  - coverage run --source=luiti setup.py test
 
 after_failure:
   - cat /home/travis/build/spotify/luigi/.tox/cdh/log/cdh-1.log
+
+after_success:
+  - coveralls
 
 branches:
   only:

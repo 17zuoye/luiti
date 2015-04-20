@@ -9,4 +9,5 @@ omit =
     *test/*
     */setup.py
 [run]
-parallel=True
+parallel = True
+source   = luiti
