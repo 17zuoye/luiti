@@ -1,6 +1,11 @@
 Luiti
 ========================
-[![Build Status](https://travis-ci.org/mvj3/luiti.png)](https://travis-ci.org/mvj3/luiti)
+[![Build Status](https://img.shields.io/travis/17zuoye/luiti/master.svg?style=flat)](https://travis-ci.org/17zuoye/luiti)
+[![Code coverage](https://img.shields.io/coveralls/17zuoye/luiti/master.svg?style=flat)](https://coveralls.io/r/17zuoye/luiti?branch=master)
+[![Health](https://landscape.io/github/17zuoye/luiti/master/landscape.svg?style=flat)](https://landscape.io/github/17zuoye/luiti/master)
+[![Download](https://img.shields.io/pypi/dm/luiti.svg?style=flat)](https://pypi.python.org/pypi/luiti)
+[![License](https://img.shields.io/pypi/l/luiti.svg?style=flat)](https://pypi.python.org/pypi/luiti)
+[![Python Versions](https://pypip.in/py_versions/luiti/badge.svg?style=flat)](https://pypi.python.org/pypi/luiti)
 
 Luigi 是一套基于 Python 语言构建的复杂流式批处理任务管理系统。它也仅仅是一个任务
 调度系统，具体逻辑全都由 Task 自己去实现，比如分布式计算交由 Hadoop 里的 YARN 实现处理。
