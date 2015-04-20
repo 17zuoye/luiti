@@ -1,7 +1,7 @@
 Luiti
 ========================
 [![Build Status](https://img.shields.io/travis/17zuoye/luiti/master.svg?style=flat)](https://travis-ci.org/17zuoye/luiti)
-[![Code coverage](https://img.shields.io/coveralls/17zuoye/luiti/master.svg?style=flat)](https://coveralls.io/r/17zuoye/luiti?branch=master)
+[![Coverage Status](https://coveralls.io/repos/17zuoye/luiti/badge.svg)](https://coveralls.io/r/17zuoye/luiti)
 [![Health](https://landscape.io/github/17zuoye/luiti/master/landscape.svg?style=flat)](https://landscape.io/github/17zuoye/luiti/master)
 [![Download](https://img.shields.io/pypi/dm/luiti.svg?style=flat)](https://pypi.python.org/pypi/luiti)
 [![License](https://img.shields.io/pypi/l/luiti.svg?style=flat)](https://pypi.python.org/pypi/luiti)
