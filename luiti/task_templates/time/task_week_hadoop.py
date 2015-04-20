@@ -1,6 +1,8 @@
 #-*-coding:utf-8-*-
 
-from .task_week import TaskWeek
+__all__ = ["TaskWeekHadoop"]
+
+from .task_week import *
 
 from ...utils import MRUtils
 import json

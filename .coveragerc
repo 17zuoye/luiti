@@ -3,6 +3,7 @@ omit =
     */python?.?/*
     */site-packages/nose/*
     *__init__*
+    */__init__.py
     *test/*
     */setup.py
 [run]
