@@ -9,8 +9,11 @@ class StaticFile(luigi.Task):
     filepath = None
 
     # Mimic default luigi.ExternalTask
-    def run(self): pass
-    def complete(self): return True
+    def run(self):
+        pass
+
+    def complete(self):
+        return True
 
     def output(self):
         assert self.filepath, u"Please assign `filepath` !"

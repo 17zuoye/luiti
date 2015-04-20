@@ -34,8 +34,11 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     root_dir           = NotImplemented
 
     # Default one, always return True
-    def requires(self): return RootTask()
-    def run     (self): raise NotImplementedError
+    def requires(self):
+        return RootTask()
+
+    def run     (self):
+        raise NotImplementedError
 
     def __init__(self, *args, **kwargs):
         super(TaskBase, self).__init__(*args, **kwargs)
@@ -95,7 +98,8 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         return RootTask() if self.is_reach_the_edge else self.__class__(self.date_value_by_type_in_last)
 
     @cached_property
-    def is_reach_the_edge(self): return False # default. e.g. add semester
+    def is_reach_the_edge(self):
+        return False # default. e.g. add semester
 
     def reset_date(self):
         # **强制** 写为统一时间格式(arrow格式)，这样luigi就不会同时跑两个任务了。
@@ -122,7 +126,8 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
             return [cls(date1.datetime) for date1 in dates]
 
     @cached_property
-    def task_class(self): return self.__class__
+    def task_class(self):
+        return self.__class__
 
     @cached_property
     def package_name(self):

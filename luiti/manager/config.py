@@ -55,7 +55,9 @@ class LuitiConfigClass(object):
         # 2. setup current project as root
         if lc.curr_project_dir is None: lc.curr_project_dir = os.getcwd() # auto from current class
         lc.fix_project_dir()
-        def exists(filename1): return os.path.exists(os.path.join(lc.curr_project_dir, filename1))
+
+        def exists(filename1):
+            return os.path.exists(os.path.join(lc.curr_project_dir, filename1))
 
         # These files are created by luigi.
         if exists("job-instance.pickle") and exists("job.jar") and exists("packages.tar") and exists("luigi"):

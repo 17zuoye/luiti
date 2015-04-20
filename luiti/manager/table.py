@@ -34,7 +34,8 @@ class Table(object):
 
 
     @staticmethod
-    def print_files_by_task_cls_and_date_range(curr_task, args, opts=dict()):
+    def print_files_by_task_cls_and_date_range(curr_task, args, opts=None):
+        opts = opts or dict()
         # 打印 依赖类 和 执行配置 信息
         task_headers = ["Current Env Key", "Current Env Value"]
         task_table   = [
