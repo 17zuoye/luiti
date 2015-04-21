@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 
 from ..parameter import ArrowParameter
-import luigi
+import luigi.hdfs
 from datetime import datetime
 
 class Files(object):
