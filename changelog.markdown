@@ -1,4 +1,4 @@
-### 0.1.2   - March 24, 2015
+### 0.1.2   - Aprial 20, 2015
 * Project is more solid, add services such as travis, etc.
 
 ### 0.1.0   - March 24, 2015
