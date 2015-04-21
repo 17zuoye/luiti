@@ -26,8 +26,10 @@ class CompressUtils:
         # 兼容 zip 文件是多层级目录
         while ( os.path.isdir(unzip_file) ):
             next_dirs = glob.glob(unzip_file + "/*")
-            if len(next_dirs) >  1: raise ValueError("%s should only one dir in a zip file!" % unzip_file)
-            if len(next_dirs) == 0: raise ValueError("%s must always exists one file or one dir in a zip file, but there are %s ." % (unzip_file, str(next_dirs)))
+            if len(next_dirs) >  1:
+                raise ValueError("%s should only one dir in a zip file!" % unzip_file)
+            if len(next_dirs) == 0:
+                raise ValueError("%s must always exists one file or one dir in a zip file, but there are %s ." % (unzip_file, str(next_dirs)))
             unzip_file = next_dirs[0]
 
         # 4. push file to hdfs

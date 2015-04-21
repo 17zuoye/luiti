@@ -16,7 +16,7 @@ luigi.hadoop.HadoopExt = HadoopExt # write back
 
 import os, sys
 from .parameter import ArrowParameter
-from etl_utils import cached_property, singleton
+from etl_utils import cached_property
 from collections import defaultdict
 
 from .utils import IOUtils, TargetUtils
@@ -33,12 +33,13 @@ def persist_files(*files): # 装饰器
             return _file
 
         setattr(cls, "__persist_files", files)
-        for file1 in cls.__persist_files:
+        for file1 in getattr(cls, "__persist_files"):
             setattr(cls, file1, property(wrap(file1))) # @decorator
 
         # 2. 绑定 失败时删除这些文件
         def clean_tmp(task, exception):
-            for file1 in files: IOUtils.remove_files(getattr(task, file1))
+            for file1 in files:
+                IOUtils.remove_files(getattr(task, file1))
             # IOUtils.remove_files(task.data_file) # NOTE 好像 Hadoop 会自动处理失败任务的输出文件的，否则就会导致其在N次重试一直在running。
         cls.event_handler(Event.FAILURE)(clean_tmp)
 
@@ -106,7 +107,7 @@ def ref_tasks(*tasks): # 装饰器
 # cached_property 捕获不了 ref_task_name 变量, 被重置为某一个了。。
 # property 可以捕获 ref_task_name 变量。
     def func(cls):
-        cls._ref_tasks = tasks
+        setattr(cls, "_ref_tasks", tasks)
         for ref_task_name in cls._ref_tasks:
             setattr(cls, ref_task_name, property(wrap_cls(ref_task_name)))
 

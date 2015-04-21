@@ -34,4 +34,5 @@ class IOUtils:
                 luigi.hdfs.remove(file1)
 
     @staticmethod
-    def local_target(path1): return LocalTarget(path1)
+    def local_target(path1):
+        return LocalTarget(path1)

@@ -12,7 +12,8 @@ class TaskRange(TaskBase):
     # 1. date_value 是写到那个日期目录
     # 2. date_range 是指定了依赖的日期范围
 
-    def date_range(self): raise ValueError("Overwrite Me!")
+    def date_range(self):
+        raise ValueError("Overwrite Me!")
     # date_range = luigi.DateIntervalParameter()
     # date_range = luigi.Parameter() # 临时现为 str 类型吧
 
