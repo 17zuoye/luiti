@@ -43,10 +43,12 @@ class TargetUtils:
             yield k_1, v_1
 
     @staticmethod
-    def isdir(path1): return HdfsClient.client.get_bite().test(path1, directory=True)
+    def isdir(path1):
+        return HdfsClient.client.get_bite().test(path1, directory=True)
 
     @staticmethod
-    def exists(path1): return HdfsClient.client.exists(path1)
+    def exists(path1):
+        return HdfsClient.client.exists(path1)
 
 
 

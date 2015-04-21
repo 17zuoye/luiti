@@ -26,7 +26,7 @@ __all__ = [
 
             'ArrowParameter',
 
-            'os', 're', 'defaultdict', 'json', 'cached_property',
+            'os', 're', 'sys', 'defaultdict', 'json', 'cached_property',
             'arrow',
 
             'MrTestCase',

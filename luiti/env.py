@@ -2,7 +2,7 @@
 
 __all__ = ['env']
 
-import os, sys
+import sys
 from etl_utils import singleton, cached_property
 
 @singleton()

@@ -9,7 +9,8 @@ class DateUtils:
     arrow = arrow
 
     @staticmethod
-    def arrow_str(arrow1): return arrow.get(arrow1).datetime.strftime("%Y-%m-%d")
+    def arrow_str(arrow1):
+        return arrow.get(arrow1).datetime.strftime("%Y-%m-%d")
 
     @staticmethod
     def days_in_week(arrow1):

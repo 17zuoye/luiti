@@ -15,10 +15,7 @@ luigi.hadoop.HadoopExt = HadoopExt # write back
 
 
 import os, sys
-import arrow
 from .parameter import ArrowParameter
-import importlib
-from inflector import Inflector
 from etl_utils import cached_property, singleton
 from collections import defaultdict
 
@@ -35,7 +32,7 @@ def persist_files(*files): # 装饰器
                 return os.path.join(self.data_dir, file1 + ".json")
             return _file
 
-        cls.__persist_files = files
+        setattr(cls, "__persist_files", files)
         for file1 in cls.__persist_files:
             setattr(cls, file1, property(wrap(file1))) # @decorator
 
