@@ -5,21 +5,19 @@ import luigi
 from etl_utils import singleton, cached_property
 
 
-class TargetUtils:
+@singleton()
+class TargetUtilsClass(object):
 
-    @staticmethod
-    def line_read(hdfs1):
+    def line_read(self, hdfs1):
         with hdfs1.open('r') as data1:
             for line1 in data1:
                 yield line1.decode("UTF-8").strip()
 
-    @staticmethod
-    def json_read(hdfs1):
+    def json_read(self, hdfs1):
         for line1 in TargetUtils.line_read(hdfs1):
             yield json.loads(line1) # as item1
 
-    @staticmethod
-    def hdfs(data_file1):
+    def hdfs(self, data_file1):
         # [兼容] 可以判断出 data_file1 是否包含 part-00000 的目录。
 
         # 兼容 snakebite 对 不存在目录的 test 有bug，或者是因为从hadoop用户切换到primary_user导致。
@@ -35,21 +33,23 @@ class TargetUtils:
 
         return luigi.hdfs.HdfsTarget(data_file1)
 
-    @staticmethod
-    def mr_read(hdfs1):
+    def mr_read(self, hdfs1):
         from .mr_utils import MRUtils
         for line1 in TargetUtils.line_read(hdfs1):
             k_1, v_1 = MRUtils.split_mr_kv(line1)
             yield k_1, v_1
 
-    @staticmethod
-    def isdir(path1):
-        return HdfsClient.client.get_bite().test(path1, directory=True)
+    def isdir(self, path1):
+        return self.client.get_bite().test(path1, directory=True)
 
-    @staticmethod
-    def exists(path1):
-        return HdfsClient.client.exists(path1)
+    def exists(self, path1):
+        return self.client.exists(path1)
 
+    @cached_property
+    def client(self):
+        return HdfsClient.client
+
+TargetUtils = TargetUtilsClass()
 
 
 @singleton()

@@ -6,6 +6,7 @@ import os
 import commands
 from ..utils import CommandUtils
 
+
 def multiple_text_files(task_cls):
     """
     让当前 MapReduce 任务的结果可以输出到多个文件。
@@ -30,6 +31,9 @@ def multiple_text_files(task_cls):
 
     而不是默认输出的
     1. man_and_woman_day.json/part-00000
+
+    WARN:
+        when use `@luigi.multiple_text_files`, consider to wrap subfolders with StaticFile task class.
     """
 
     java_namespace = "com.voxlearning.bigdata.MrOutput"
