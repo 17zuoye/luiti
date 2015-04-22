@@ -23,20 +23,15 @@ class LuitiHadoopJobRunner(luigi.hadoop.HadoopJobRunner):
 
 class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
-    run_mode           = "mr_distribute"
-
+    run_mode          = "mr_distribute"
     n_reduce_tasks    = 1 # 体现在 输出的part-00000数量为reduce数量
-
-    physicalmemory    = 2
-    reduce_memory_GB  = 2
-    (  map_memory_GB) = 0.6
-    iosort_memory_GB  = 0.5
 
     output_format     = [
                             #"org.apache.hadoop.mapreduce.lib.output.TextOutputFormat",         # 单路输出。这个版本有问题。
                             "org.apache.hadoop.mapred.TextOutputFormat",                        # 单路输出
                             "org.apache.hadoop.mapred.lib.MultipleTextOutputFormat",            # 多路输出
                         ][0]                                                                    # 默认是 单路输出
+    output_format_default = output_format[:]
     libjars           = []
 
 
@@ -49,6 +44,10 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
     # overwrite
     def job_runner(self):
         """ will be wraped in `run` function. """
+        # Auto compile java code
+        if self.output_format != self.output_format_default:
+            self.compile_java_code()
+
         return LuitiHadoopJobRunner(output_format=self.output_format, libjars=self.libjars)
 
     def output(self):

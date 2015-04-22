@@ -24,16 +24,18 @@ luigi.HDFS = TargetUtils.hdfs # 本来就是需要读取全局配置，所以索
 from .check_date_range     import check_date_range
 from .check_runtime_range  import check_runtime_range
 from .mr_local             import mr_local
+from .multiple_text_files  import multiple_text_files
 from .persist_files        import persist_files
 from .plug_packages        import plug_packages
 from .ref_tasks            import ref_tasks
 
-luigi.persist_files = persist_files
-luigi.ref_tasks = ref_tasks
-luigi.check_date_range = check_date_range
-luigi.check_runtime_range = check_runtime_range
-luigi.mr_local = mr_local # bind it.
-luigi.plug_packages = plug_packages
+luigi.persist_files        = persist_files
+luigi.ref_tasks            = ref_tasks
+luigi.check_date_range     = check_date_range
+luigi.check_runtime_range  = check_runtime_range
+luigi.mr_local             = mr_local
+luigi.multiple_text_files  = multiple_text_files
+luigi.plug_packages        = plug_packages
 
 
 

@@ -14,6 +14,7 @@ setup(
     long_description=open("README.markdown").read(),
     packages=[
                 'luiti',
+                'luiti/luigi_ext',
                 'luiti/manager',
                 'luiti/task_templates/',
                 'luiti/task_templates/time',
@@ -23,7 +24,10 @@ setup(
     scripts=[
         'bin/luiti',
     ],
+
+    package_data={'luiti': ["luiti/java/*.java"]},
     include_package_data=True,
+
     zip_safe=False,
     platforms='any',
     install_requires=[
