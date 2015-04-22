@@ -88,3 +88,5 @@ def luiti_setup(opts=None):
     env.setup()
 
 config = manager.luiti_config
+
+luigi.tmp_dir = "/tmp" # default one
