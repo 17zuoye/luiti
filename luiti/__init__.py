@@ -40,7 +40,7 @@ import json
 import arrow
 from etl_utils import cached_property
 
-from .luigi_ext            import luigi
+from .luigi_decorators     import luigi
 from .hadoop_ext           import HadoopExt
 from .env                  import env
 

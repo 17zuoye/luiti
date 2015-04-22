@@ -14,7 +14,7 @@ setup(
     long_description=open("README.markdown").read(),
     packages=[
                 'luiti',
-                'luiti/luigi_ext',
+                'luiti/luigi_decorators',
                 'luiti/manager',
                 'luiti/task_templates/',
                 'luiti/task_templates/time',

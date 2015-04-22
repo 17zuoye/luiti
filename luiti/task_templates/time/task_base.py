@@ -11,7 +11,7 @@ from inflector    import Inflector
 from etl_utils    import cached_property
 from dateutil     import tz
 
-from ...luigi_ext        import luigi
+from ...luigi_decorators import luigi
 from ..other.root_task   import RootTask
 from ...utils            import DateUtils, ExtUtils, IOUtils
 from ...parameter        import ArrowParameter

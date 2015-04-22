@@ -1,8 +1,8 @@
 #-*-coding:utf-8-*-
 
 
-from ...luigi_ext import luigi
-from ...utils import TargetUtils
+from ...luigi_decorators import luigi
+from ...utils            import TargetUtils
 
 
 class StaticFile(luigi.Task):
