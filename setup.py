@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 
 from setuptools import setup
@@ -19,8 +19,7 @@ setup(
                 'luiti/task_templates/',
                 'luiti/task_templates/time',
                 'luiti/task_templates/other',
-                'luiti/utils',
-             ],
+                'luiti/utils', ],
     scripts=[
         'bin/luiti',
     ],
@@ -44,7 +43,7 @@ setup(
         "MySQL-python  >= 1.2.5",
         "pymongo       >= 2.7.2",
 
-        "etl_utils     == 0.1.9",
+        "etl_utils     == 0.1.10",
         "tabulate      == 0.7.3",
         "pipetools     == 0.2.7",
     ],
