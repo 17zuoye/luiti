@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 import json
 import luigi
@@ -11,25 +11,33 @@ class TargetUtilsClass(object):
     def line_read(self, hdfs1):
         with hdfs1.open('r') as data1:
             for line1 in data1:
+                line1 = line1.decode("UTF-8").strip()
+                # filter blank line
+                if len(line1) == 0:
+                    continue
                 yield line1.decode("UTF-8").strip()
 
     def json_read(self, hdfs1):
         for line1 in TargetUtils.line_read(hdfs1):
-            yield json.loads(line1) # as item1
+            yield json.loads(line1)  # as item1
 
     def hdfs(self, data_file1):
         # [兼容] 可以判断出 data_file1 是否包含 part-00000 的目录。
 
         # 兼容 snakebite 对 不存在目录的 test 有bug，或者是因为从hadoop用户切换到primary_user导致。
         f1 = luigi.hdfs.HdfsTarget(data_file1)
-        if f1.exists():
-            is_curr_dir = len(list(f1.fs.listdir(data_file1))) > 1 # isdir 在 luigi/hdfs.py 没有实现哦
+        # isdir 在 luigi/hdfs.py 没有实现哦
+        is_curr_dir = len(list(f1.fs.listdir(data_file1))) > 1
 
-            if is_curr_dir:
-                # There's no part-000 when use multiple text output in streaming
-                #if luigi.hdfs.HdfsTarget(data_file1 + "/part-00000").exists() and \
-                if luigi.hdfs.HdfsTarget(data_file1 + "/_SUCCESS").exists():
-                    return luigi.hdfs.HdfsTarget(data_file1, format=luigi.hdfs.PlainDir)
+        # There's no part-000 when use multiple text output in streaming
+        if is_curr_dir:
+            def _exists(name):
+                return luigi.hdfs.HdfsTarget(data_file1 + name).exists()
+            is_mr_output_root = _exists("/_SUCCESS")
+            has_part_000000 = _exists("/part-00000")
+            if is_mr_output_root or has_part_000000:
+                return luigi.hdfs.HdfsTarget(data_file1,
+                                             format=luigi.hdfs.PlainDir)
 
         return luigi.hdfs.HdfsTarget(data_file1)
 
