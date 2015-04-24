@@ -1,10 +1,11 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
-__all__ = ['ArrowParameter']
+__all__ = ['ArrowParameter', "arrow"]
 
 import luigi
 import arrow
 from dateutil import tz
+
 
 class ArrowParameter(luigi.DateParameter):
     """
@@ -14,14 +15,14 @@ class ArrowParameter(luigi.DateParameter):
     "2014-11-24"                # => len 10
     """
 
-    arrow = arrow # make a ref
+    arrow = arrow  # make a ref
 
     def parse(self, s):
         """ overwrite default implement. """
         s = str(s)         # ensure `s` is a str
-        assert len(s) in [25, 10], "Date format must be 2014-11-24T00:00:00+00:00 or 2014-11-24 !"
+        assert len(s) in [25, 10], \
+            "Date format must be 2014-11-24T00:00:00+00:00 or 2014-11-24 !"
         return arrow.get(s)
-
 
     @staticmethod
     def get(*strs):

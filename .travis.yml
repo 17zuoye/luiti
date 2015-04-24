@@ -1,7 +1,5 @@
 language: python
 
-jdk: oraclejdk7
-
 env:
   global:
     - PIP_DOWNLOAD_CACHE=$HOME/.pip-cache
@@ -31,7 +29,8 @@ before_script:
   - ssh -o StrictHostKeyChecking=no localhost true
 
 script:
-  - ./tests/run.sh
+  - python setup.py install
+  - nosetests
   - coverage run --source=luiti setup.py test
 
 after_failure:
