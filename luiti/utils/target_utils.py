@@ -15,7 +15,7 @@ class TargetUtilsClass(object):
                 # filter blank line
                 if len(line1) == 0:
                     continue
-                yield line1.decode("UTF-8").strip()
+                yield line1
 
     def json_read(self, hdfs1):
         for line1 in TargetUtils.line_read(hdfs1):
@@ -26,11 +26,12 @@ class TargetUtilsClass(object):
 
         # 兼容 snakebite 对 不存在目录的 test 有bug，或者是因为从hadoop用户切换到primary_user导致。
         f1 = luigi.hdfs.HdfsTarget(data_file1)
-        # isdir 在 luigi/hdfs.py 没有实现哦
-        is_curr_dir = len(list(f1.fs.listdir(data_file1))) > 1
 
-        # There's no part-000 when use multiple text output in streaming
-        if is_curr_dir:
+        # isdir 在 luigi/hdfs.py 没有实现哦
+        is_curr_dir = lambda: len(list(f1.fs.listdir(data_file1))) > 1
+
+        if f1.exists() and is_curr_dir():
+            # There's no part-000 when use multiple text output in streaming
             def _exists(name):
                 return luigi.hdfs.HdfsTarget(data_file1 + name).exists()
             is_mr_output_root = _exists("/_SUCCESS")
@@ -39,7 +40,7 @@ class TargetUtilsClass(object):
                 return luigi.hdfs.HdfsTarget(data_file1,
                                              format=luigi.hdfs.PlainDir)
 
-        return luigi.hdfs.HdfsTarget(data_file1)
+        return f1
 
     def mr_read(self, hdfs1):
         from .mr_utils import MRUtils
