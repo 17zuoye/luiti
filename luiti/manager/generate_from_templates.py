@@ -1,4 +1,5 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
+# :PEP8 -E221 -W603
 
 __all__ = ['GenerateFromTemplates']
 
@@ -6,7 +7,7 @@ import os
 from inflector import Inflector
 from .config import luiti_config
 
-join   = os.path.join
+join = os.path.join
 exists = os.path.exists
 
 
@@ -60,7 +61,7 @@ TODO ...
 """.strip()  % (Inflector().titleize(project_name), )
 
 a_project_setup = lambda project_name: u"""
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 from setuptools import setup
 
@@ -83,7 +84,7 @@ from setuptools import setup, find_packages
 
 
 a_project_init_luiti = lambda : u"""
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 from luiti import *
 luigi.plug_packages("package_a", "package_b==4.2")
