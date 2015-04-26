@@ -16,6 +16,5 @@ class TaskWeekHadoop(luigi.hadoop.HadoopExt, TaskWeek):
         total_tasks = [ref_task1(date1) for date1 in self.days_in_week]
         prev_week_stat_task1 = self.pre_task_by_self
         if isinstance(prev_week_stat_task1, self.task_class):
-            total_tasks.append(prev_week_stat_task1) # 如果不是 RootTask 的话
+            total_tasks.append(prev_week_stat_task1)  # 如果不是 RootTask 的话
         return total_tasks
-

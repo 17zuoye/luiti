@@ -3,8 +3,8 @@
 __all__ = ["mr_local"]
 
 from collections import defaultdict
-from etl_utils   import process_notifier
-from ..utils     import TargetUtils
+from etl_utils import process_notifier
+from ..utils import TargetUtils
 
 def mr_local(**opts):
     """
@@ -20,7 +20,8 @@ def mr_local(**opts):
         map_kv_dict = defaultdict(list)
 
         inputs = self.input()
-        if not isinstance(inputs, list): inputs = [inputs]
+        if not isinstance(inputs, list):
+            inputs = [inputs]
         for input_hdfs_1 in inputs:
             for line2 in TargetUtils.line_read(input_hdfs_1):
                 for map_key_3, map_val_3 in self.mapper(line2):
@@ -38,7 +39,6 @@ def mr_local(**opts):
                         fixed_chunk = list()
                 del map_kv_dict[reduce_key_2]
             output1.write("\n".join(fixed_chunk) + "\n")
-
 
     def wrap(cls):
         cls.run = mr_run

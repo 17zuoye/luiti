@@ -5,7 +5,7 @@ __all__ = ["ref_tasks"]
 
 from ..manager import load_a_task_by_name, luiti_config
 
-def ref_tasks(*tasks): # 装饰器
+def ref_tasks(*tasks):  # 装饰器
     """
     自动把依赖 Task 链接起来，通过属性访问。
 
@@ -42,14 +42,16 @@ def ref_tasks(*tasks): # 装饰器
         """ Fix luiti_tasks module namespace conflicts. """
         for ref_task1 in self._ref_tasks:
             cname = ref_task1           # class    name
-            iname = ref_task1 + "_task" # instance name
+            iname = ref_task1 + "_task"  # instance name
 
             # delete instance property is enough.
             #if hasattr(self.__class__, cname):  delattr(self.__class__, cname)
             #if hasattr(self.__class__, iname):  delattr(self.__class__, iname)
 
-            if cname in self.__dict__:          del self.__dict__[cname]
-            if iname in self.__dict__:          del self.__dict__[iname]
+            if cname in self.__dict__:
+                del self.__dict__[cname]
+            if iname in self.__dict__:
+                del self.__dict__[iname]
         return self.__dict__
 
     def __setstate__(self, d1):

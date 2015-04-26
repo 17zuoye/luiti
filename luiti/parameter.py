@@ -8,6 +8,7 @@ from dateutil import tz
 
 
 class ArrowParameter(luigi.DateParameter):
+
     """
     Convert date or time type into Arrow type.
 

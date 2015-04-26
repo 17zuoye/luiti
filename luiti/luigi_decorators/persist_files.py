@@ -6,18 +6,18 @@ import os
 from luigi import Event
 from ..utils import IOUtils
 
-def persist_files(*files): # 装饰器
+def persist_files(*files):  # 装饰器
     """ 多个data_file 可以用 DSL 描述，然后和 event_handler(Event.FAILURE) 绑定在一起 """
     def func(cls):
         # 1. 设置 持久化文件属性
-        def wrap(file1): # 这样才可以保存 file1 变量，而不至于被覆写。
+        def wrap(file1):  # 这样才可以保存 file1 变量，而不至于被覆写。
             def _file(self):
                 return os.path.join(self.data_dir, file1 + ".json")
             return _file
 
         setattr(cls, "__persist_files", files)
         for file1 in getattr(cls, "__persist_files"):
-            setattr(cls, file1, property(wrap(file1))) # @decorator
+            setattr(cls, file1, property(wrap(file1)))  # @decorator
 
         # 2. 绑定 失败时删除这些文件
         def clean_tmp(task, exception):

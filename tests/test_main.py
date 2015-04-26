@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import os, sys
+import os
+import sys
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, root_dir)
 os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
@@ -10,14 +11,15 @@ import unittest
 
 class TestLuiti(unittest.TestCase):
 
-
     def test_check_date_range(self):
         from luiti import luigi, TaskWeek, arrow
 
         @luigi.check_date_range()
         class CheckDateRangeExampleWeek(TaskWeek):
             root_dir = "/foobar"
-            def run(self): return "data"
+
+            def run(self):
+                return "data"
 
         next_week = arrow.now().replace(weeks=1)
 
@@ -28,16 +30,17 @@ class TestLuiti(unittest.TestCase):
     def test_check_runtime_range(self):
         from luiti import luigi, TaskWeek, arrow
 
-        @luigi.check_runtime_range(hour_num=[5,6,7,8], weekday_num=[1], )
+        @luigi.check_runtime_range(hour_num=[5, 6, 7, 8], weekday_num=[1], )
         class CheckRuntimeRangeExampleWeek(TaskWeek):
             root_dir = "/foobar"
-            def run(self): return "data"
 
+            def run(self):
+                return "data"
 
-        day_1 = arrow.get("2014-09-01 06:28") # valid
+        day_1 = arrow.get("2014-09-01 06:28")  # valid
 
         def func(d1):
-            arrow.now = lambda : arrow.get(d1) # overwrite arrow's method directly.
+            arrow.now = lambda: arrow.get(d1)  # overwrite arrow's method directly.
             return CheckRuntimeRangeExampleWeek(d1).run()
 
         #import pdb ;pdb.set_trace()
@@ -49,4 +52,5 @@ class TestLuiti(unittest.TestCase):
         self.assertEqual(func("2014-09-01 08:59"), "data")
 
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+    unittest.main()

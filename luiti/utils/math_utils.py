@@ -1,14 +1,15 @@
 #-*-coding:utf-8-*-
 
 
-
 class MathUtils:
 
     @staticmethod
     def percent(a, b):
         # reset other False type obj to 0, e.g. None.
-        if not b: b = 0
-        if not a: a = 0
+        if not b:
+            b = 0
+        if not a:
+            a = 0
 
         if b == 0:
             return 0.0

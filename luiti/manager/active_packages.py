@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 
-import os, sys
+import os
+import sys
 from .config import luiti_config as lc
 
 processed_package_names = set([])
@@ -18,14 +19,15 @@ def active_packages(orig_func):
         import luigi.hadoop
         import re
 
-        for p1 in list(lc.attached_package_names): # fix Set changed size during iteration
-            package2, version2 =  re.compile("(^[a-z0-9\_]+)(.*)", re.IGNORECASE).match(p1).groups()
+        for p1 in list(lc.attached_package_names):  # fix Set changed size during iteration
+            package2, version2 = re.compile("(^[a-z0-9\_]+)(.*)", re.IGNORECASE).match(p1).groups()
             if package2 in processed_package_names:
                 continue
             else:
                 # Pip cant manage versions packages, only exist one version at one time.
                 try:
-                    if version2: pkg_resources.require(p1)
+                    if version2:
+                        pkg_resources.require(p1)
                 except:
                     pkg_resources.require(package2)
 
@@ -49,6 +51,6 @@ def active_packages(orig_func):
                     # .__init_luiti Maybe not exists, so execute this first
                     lc.luiti_tasks_packages.add(package2_lib)
             processed_package_names.add(p1)
-        return orig_func(*args, **kwargs) # call it at last.
+        return orig_func(*args, **kwargs)  # call it at last.
     new_func.func_name = orig_func.func_name
     return new_func

@@ -3,7 +3,7 @@
 __all__ = ['TaskRange']
 
 from .task_base import TaskBase, luigi
-from ...utils  import DateUtils
+from ...utils import DateUtils
 
 
 class TaskRange(TaskBase):
@@ -17,11 +17,10 @@ class TaskRange(TaskBase):
     # date_range = luigi.DateIntervalParameter()
     # date_range = luigi.Parameter() # 临时现为 str 类型吧
 
-
     @property
     def dates_in_range(self):
         # method_1 = self.date_type + "s_in_range" # e.g. weeks_in_range
-        method_1 = 'week' + "s_in_range" # NOTE 目前直接为 week, 因为是range.
+        method_1 = 'week' + "s_in_range"  # NOTE 目前直接为 week, 因为是range.
 
 # s1 = "2014-10-01-2014-10-07"
 # s1[0:10]  => '2014-10-01'

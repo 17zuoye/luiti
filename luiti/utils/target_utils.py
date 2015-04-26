@@ -64,6 +64,7 @@ TargetUtils = TargetUtilsClass()
 @singleton()
 class HdfsClientClass(object):
     # TODO use delegate
+
     @cached_property
     def client(self):
         import luigi.hdfs

@@ -8,4 +8,3 @@ from .task_base import TaskBase
 class TaskDay(TaskBase):
 
     pass
-

@@ -4,7 +4,7 @@ __all__ = ["check_date_range"]
 
 from ..parameter import ArrowParameter
 
-def check_date_range(): # 装饰器
+def check_date_range():  # 装饰器
     """
     从数据库导数据时，必须注意时间范围内的所有数据是否都齐全了。如果未齐全，
     即在当前时间范围里导的话，那么就会缺失数据了，相当于提前导了。

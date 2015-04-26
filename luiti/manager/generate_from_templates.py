@@ -15,41 +15,40 @@ class GenerateFromTemplates(object):
 
     @staticmethod
     def new_a_project(project_name):
-        project_name                 = Inflector().underscore(project_name)
-        readme_path                  = join(project_name, "README.markdown")
-        setup_path                   = join(project_name, "setup.py")
-        package_dir                  = join(project_name, project_name)
-        package_init                 = join(package_dir, "__init__.py")
-        package_luiti_tasks_init     = join(package_dir, "luiti_tasks/__init__.py")
-        package_luiti_tasks_luiti    = join(package_dir, "luiti_tasks/__init_luiti.py")
-        tests_dir                    = join(project_name, "tests")
-        tests_run_sh                 = join(tests_dir, "run.sh")
-        tests_test_main              = join(tests_dir, "test_main.py")
+        project_name = Inflector().underscore(project_name)
+        readme_path = join(project_name, "README.markdown")
+        setup_path = join(project_name, "setup.py")
+        package_dir = join(project_name, project_name)
+        package_init = join(package_dir, "__init__.py")
+        package_luiti_tasks_init = join(package_dir, "luiti_tasks/__init__.py")
+        package_luiti_tasks_luiti = join(package_dir, "luiti_tasks/__init_luiti.py")
+        tests_dir = join(project_name, "tests")
+        tests_run_sh = join(tests_dir, "run.sh")
+        tests_test_main = join(tests_dir, "test_main.py")
 
-        write_content_to_file(a_project_readme(project_name),     readme_path)
-        write_content_to_file(a_project_setup(project_name),      setup_path)
-        write_content_to_file(u"",                                package_init)
-        write_content_to_file(u"",                                package_luiti_tasks_init)
-        write_content_to_file(a_project_init_luiti(),             package_luiti_tasks_luiti)
-        write_content_to_file(a_project_run_sh(),                 tests_run_sh)
-        write_content_to_file(a_project_test_main(project_name),  tests_test_main)
+        write_content_to_file(a_project_readme(project_name), readme_path)
+        write_content_to_file(a_project_setup(project_name), setup_path)
+        write_content_to_file(u"", package_init)
+        write_content_to_file(u"", package_luiti_tasks_init)
+        write_content_to_file(a_project_init_luiti(), package_luiti_tasks_luiti)
+        write_content_to_file(a_project_run_sh(), tests_run_sh)
+        write_content_to_file(a_project_test_main(project_name), tests_test_main)
 
         os.chmod(tests_run_sh, 0700)
 
         # important files
         return [readme_path, setup_path, package_luiti_tasks_luiti, tests_test_main]
 
-
     @staticmethod
     def generate_a_task(task_name, project_dir=None,):
         path = join('luiti_tasks', Inflector().underscore(task_name) + ".py")
-        if project_dir: path = join(project_dir, path)
+        if project_dir:
+            path = join(project_dir, path)
         content = write_content_to_file(
-                    a_task_template(Inflector().classify(task_name)),
-                    path,
-             )
+            a_task_template(Inflector().classify(task_name)),
+            path,
+        )
         return content
-
 
 
 """ 1. Project """
@@ -134,13 +133,13 @@ class %s(%s):
 """.strip() % (task_clsname, luiti_config.get_time_task(task_clsname), )
 
 
-
 def write_content_to_file(content, path):
     if exists(path):
         raise ValueError("path [%s] is already exists!" % path)
 
     dir1 = os.path.dirname(path)
-    if not exists(dir1): os.mkdir(dir1)
+    if not exists(dir1):
+        os.mkdir(dir1)
 
     f1 = open(path, 'w')
     f1.write(content.encode("UTF-8"))

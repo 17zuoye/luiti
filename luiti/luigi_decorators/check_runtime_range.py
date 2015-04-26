@@ -4,7 +4,7 @@ __all__ = ["check_runtime_range"]
 
 from ..parameter import ArrowParameter
 
-def check_runtime_range(**opts_1): # 装饰器
+def check_runtime_range(**opts_1):  # 装饰器
     """
     Support hour/weekday indexed range.
 
@@ -16,18 +16,20 @@ def check_runtime_range(**opts_1): # 装饰器
     def decorator(orig_run):
         def new_run(self):
             default_opts = {
-                    "hour_num"      : range(1, 25),
-                    "weekday_num"   : range(1, 8),
-                }
+                "hour_num": range(1, 25),
+                "weekday_num": range(1, 8),
+            }
             opts = dict(default_opts.items() + opts_1.items())
 
-            now            = ArrowParameter.now()           # get current time
-            hour_24        = int(now.format("H"))  # 0, 1, 2, ..., 23, 24
-            day_of_week_7  = int(now.format("d"))  # 1, 2, 3, ..., 6, 7
+            now = ArrowParameter.now()           # get current time
+            hour_24 = int(now.format("H"))  # 0, 1, 2, ..., 23, 24
+            day_of_week_7 = int(now.format("d"))  # 1, 2, 3, ..., 6, 7
 
             is_false = False
-            if hour_24       not in opts['hour_num']:    is_false = True
-            if day_of_week_7 not in opts['weekday_num']: is_false = True
+            if hour_24 not in opts['hour_num']:
+                is_false = True
+            if day_of_week_7 not in opts['weekday_num']:
+                is_false = True
             if is_false:
                 print "[info]", now, " is not in ", opts, ", so the task exited."
                 return False

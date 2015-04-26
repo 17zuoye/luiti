@@ -17,44 +17,47 @@ def MrTestCase(cls, verbose=False):
 
     assert "mr_task_names" in dir(cls), "%s must assgin some task names!" % cls
 
-    cls.maxDiff = None # compact large json diff
+    cls.maxDiff = None  # compact large json diff
 
     def map_lines(text):
         assert isinstance(text, unicode)
         result = list()
         for l1 in text.split("\n"):
             l1 = l1.strip()
-            if not l1: continue
+            if not l1:
+                continue
             result.append(l1)
         return result
 
     def generate_closure_function(mr_task_name1):
-        task_cls      = Loader.load_a_task_by_name(mr_task_name1) # keep it!
-        if verbose: print "[task_cls]", task_cls
+        task_cls = Loader.load_a_task_by_name(mr_task_name1)  # keep it!
+        if verbose:
+            print "[task_cls]", task_cls
 
         def test_mr(self):
             task_instance_1 = task_cls("2014-09-01")
-            if verbose: print "[task_instance]", task_instance_1
+            if verbose:
+                print "[task_instance]", task_instance_1
 
-            task_instance_1.lines  = map_lines(task_instance_1.mrtest_input())
-            result_expect          = sorted([json.loads(i2) for i2 in map_lines(task_instance_1.mrtest_output())])
+            task_instance_1.lines = map_lines(task_instance_1.mrtest_input())
+            result_expect = sorted([json.loads(i2) for i2 in map_lines(task_instance_1.mrtest_output())])
 
             self.assertEqual(result_expect, run_map_reduce(task_instance_1))
         return test_mr
 
-
     for mr_task_name1 in cls.mr_task_names:
         test_method_name = "test_" + mr_task_name1
-        if verbose: print
-        if verbose: print "[test_method_name]", test_method_name
+        if verbose:
+            print
+        if verbose:
+            print "[test_method_name]", test_method_name
         setattr(cls, test_method_name, generate_closure_function(mr_task_name1))
-        if verbose: print
-        if verbose: print
+        if verbose:
+            print
+        if verbose:
+            print
 
     return cls
-
-
-
 
 
 def run_map_reduce(task_instance_1):

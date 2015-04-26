@@ -1,8 +1,9 @@
 #-*-coding:utf-8-*-
 
-import os, glob
+import os
+import glob
 from .command_utils import CommandUtils
-from .hdfs_utils    import HDFSUtils
+from .hdfs_utils import HDFSUtils
 
 class CompressUtils:
 
@@ -24,9 +25,9 @@ class CompressUtils:
 
         unzip_file = unzip_dir
         # 兼容 zip 文件是多层级目录
-        while ( os.path.isdir(unzip_file) ):
+        while (os.path.isdir(unzip_file)):
             next_dirs = glob.glob(unzip_file + "/*")
-            if len(next_dirs) >  1:
+            if len(next_dirs) > 1:
                 raise ValueError("%s should only one dir in a zip file!" % unzip_file)
             if len(next_dirs) == 0:
                 raise ValueError("%s must always exists one file or one dir in a zip file, but there are %s ." % (unzip_file, str(next_dirs)))

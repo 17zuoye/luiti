@@ -12,11 +12,10 @@ def plug_packages(*package_names):
 
     Usage: use `active_packages` decorator to notice luigi that these packages should include.
     """
-    #if len(manager.luiti_config.attached_package_names) > 1:
+    # if len(manager.luiti_config.attached_package_names) > 1:
     #    return False # default is luiti. and can plug only once.
 
     for p1 in package_names:
         # load all packages's depended pacakges.
         luiti_config.attached_package_names.add(p1)
 # TODO why should do `luigi.hadoop.attach` in `active_packages`
-

@@ -7,4 +7,5 @@ class BDay(TaskDay):
     root_dir = "/foobar"
 
     @cached_property
-    def count(self): return 2
+    def count(self):
+        return 2

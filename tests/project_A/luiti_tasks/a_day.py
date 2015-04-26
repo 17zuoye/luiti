@@ -8,8 +8,8 @@ class ADay(TaskDay):
     root_dir = "/foobar"
 
     @cached_property
-    def count(self): return 1
-
+    def count(self):
+        return 1
 
     @cached_property
     def total_count(self):

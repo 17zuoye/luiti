@@ -6,16 +6,17 @@ from etl_utils import JsonUtils
 
 class MRUtils:
 
-    map_key_split   = u"@@"              # map 多维度键 分隔符
-    map_key_escape  = u"\""              # map 字符串默认 JSON dump
-    mr_separator    = u"\t"              # map reduce 分隔符
+    map_key_split = u"@@"              # map 多维度键 分隔符
+    map_key_escape = u"\""              # map 字符串默认 JSON dump
+    mr_separator = u"\t"              # map reduce 分隔符
 
     @staticmethod
     def mr_key(item1, postfix=''):
         """ example is "104017@@37771707" """
 # TODO 业务代码应该剥离
         str1 = u"%s%s%s" % (item1.get('class_id', 0), MRUtils.map_key_split, item1.get('uid', 0),)
-        if postfix: str1 += (MRUtils.map_key_split + unicode(postfix))
+        if postfix:
+            str1 += (MRUtils.map_key_split + unicode(postfix))
         return str1
 
     @staticmethod
@@ -39,20 +40,21 @@ class MRUtils:
     @staticmethod
     def unicode_value(item1, key1):
         val1 = item1.get(key1, u"")
-        if isinstance(val1, str): val1 = val1.decode("UTF-8")
+        if isinstance(val1, str):
+            val1 = val1.decode("UTF-8")
         return val1
 
     @staticmethod
     def split_mr_kv(line1):
         """ 返回一个 解析好的 [k,v] 数组。 """
-        if isinstance(line1, str): line1 = line1.decode("UTF-8")
+        if isinstance(line1, str):
+            line1 = line1.decode("UTF-8")
         k_str, v_str = line1.split(MRUtils.mr_separator, 1)
 
         return [
-                MRUtils.select_prefix_keys(k_str),
-                json.loads(v_str),
-               ]
-
+            MRUtils.select_prefix_keys(k_str),
+            json.loads(v_str),
+        ]
 
     ##############################
     #####   key related     ######
@@ -60,7 +62,7 @@ class MRUtils:
     @staticmethod
     def merge_keys_in_dict(vals_1, keys_1):
         """ 合并多个键的整数值。 """
-        merge = {key_1:0 for key_1 in keys_1}
+        merge = {key_1: 0 for key_1 in keys_1}
         for v_2 in vals_1:
             for key_1 in keys_1:
                 merge[key_1] += v_2[key_1]
@@ -83,11 +85,12 @@ class MRUtils:
         根据索引数组 转化出新的 map key
         e.g. select_prefix_keys("232@@8923802@@afenti", [0,1]) # => "232@8923802"
         """
-        if isinstance(line_part_a, str): line_part_a = line_part_a.decode("UTF-8")
+        if isinstance(line_part_a, str):
+            line_part_a = line_part_a.decode("UTF-8")
         # 兼容解析格式错误的jsonkey
         if line_part_a.startswith(MRUtils.map_key_escape) and (not line_part_a.endswith(MRUtils.map_key_escape)):
             line_part_a = line_part_a[1:]
-        if line_part_a.startswith(MRUtils.map_key_escape): # is a json
+        if line_part_a.startswith(MRUtils.map_key_escape):  # is a json
             line_part_a = json.loads(line_part_a)
 
         if idxes is None:
@@ -105,5 +108,6 @@ class MRUtils:
 
     @staticmethod
     def filter_dict(d1, keys):
-        if not isinstance(keys, list): keys = [keys]
-        return {k1:d1[k1] for k1 in keys}
+        if not isinstance(keys, list):
+            keys = [keys]
+        return {k1: d1[k1] for k1 in keys}

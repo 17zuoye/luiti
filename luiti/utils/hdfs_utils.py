@@ -2,7 +2,7 @@
 
 import os
 from .command_utils import CommandUtils
-from .target_utils  import TargetUtils
+from .target_utils import TargetUtils
 
 
 class HDFSUtils:

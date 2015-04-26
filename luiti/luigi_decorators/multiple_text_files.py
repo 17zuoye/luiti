@@ -37,37 +37,37 @@ def multiple_text_files(task_cls):
     """
 
     java_namespace = "com.voxlearning.bigdata.MrOutput"
-    java_lib       = "MultipleTextFiles"
-    output_format  = ".".join([java_namespace, java_lib])
+    java_lib = "MultipleTextFiles"
+    output_format = ".".join([java_namespace, java_lib])
 
-    root_dir       = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    java_file      = java_lib + ".java"
-    target_class   = java_lib + ".class"
-    target_jar     = os.path.join(root_dir, "java", java_lib + ".jar")
+    java_file = java_lib + ".java"
+    target_class = java_lib + ".class"
+    target_jar = os.path.join(root_dir, "java", java_lib + ".jar")
 
     def compile_java_code(self):
         """ compile java code dynamically. """
         if os.path.exists(target_jar):
             return False
 
-        classes_dir     = java_namespace.replace(".", "/")
-        javac_cmd       = commands.getoutput("which javac")
-        java_classpath  = commands.getoutput("hadoop classpath")
-        jar_cmd         = commands.getoutput("which jar")
+        classes_dir = java_namespace.replace(".", "/")
+        javac_cmd = commands.getoutput("which javac")
+        java_classpath = commands.getoutput("hadoop classpath")
+        jar_cmd = commands.getoutput("which jar")
 
         CommandUtils.execute(
             ";\n".join([
-                "cd %s/java" % root_dir, # no absolute path, compact with java namespace.
+                "cd %s/java" % root_dir,  # no absolute path, compact with java namespace.
                 """%s -classpath "%s" %s""" % (javac_cmd, java_classpath, java_file, ),
                 "rm -rf %s" % classes_dir,
                 "mkdir -p %s" % classes_dir,
                 "cp %s %s" % (target_class, classes_dir),
                 "%s cvf %s %s/*.class" % (jar_cmd, target_jar, classes_dir, ),
-                ])
-            )
+            ])
+        )
 
-    setattr(task_cls, "output_format",     output_format)
-    setattr(task_cls, "libjars",           [target_jar,])
+    setattr(task_cls, "output_format", output_format)
+    setattr(task_cls, "libjars", [target_jar, ])
     setattr(task_cls, "compile_java_code", compile_java_code)
     return task_cls

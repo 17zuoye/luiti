@@ -13,11 +13,12 @@ class SysArgv(object):
             return parser1.__dict__['_option_string_actions'].keys()
 
         luiti_only_opts = subparsers.choices.keys() + list(set([k3 for p2 in subparsers._name_parser_map.values() for k3 in fetch_keys(p2)]))
-        luiti_only_opts = [i1 for i1 in luiti_only_opts if i1 not in  luigi_keep_opts]
+        luiti_only_opts = [i1 for i1 in luiti_only_opts if i1 not in luigi_keep_opts]
 
         delete_argv_idxes = set([])
         for idx1, arg1 in enumerate(sys.argv):
-            if idx1 in delete_argv_idxes: continue
+            if idx1 in delete_argv_idxes:
+                continue
             # 1. 排除 tasks, files, run 等
             if (not arg1.startswith("--")) and (arg1 in luiti_only_opts):
                 delete_argv_idxes.add(idx1)

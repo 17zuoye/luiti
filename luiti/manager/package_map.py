@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 
-import os, sys
+import os
+import sys
 import glob
 from inflector import Inflector
 from etl_utils import singleton, cached_property
@@ -30,8 +31,8 @@ class PackageMapClass(object):
             task_path_pattern = os.path.join(project_dir2, "luiti_tasks/[a-z]*.py")
 
             for f2 in glob.glob(task_path_pattern):
-                task_filename3        = os.path.basename(f2).rsplit(".", 1)[0]
-                task_clsname4         = Inflector().classify(task_filename3)
+                task_filename3 = os.path.basename(f2).rsplit(".", 1)[0]
+                task_clsname4 = Inflector().classify(task_filename3)
                 result[task_clsname4] = project1
         return result
 PackageMap = PackageMapClass()
