@@ -21,7 +21,7 @@ project_dir = RootDir + "/tests/project_A"
 from luiti import manager, luigi, ArrowParameter
 luiti_config = luigi.luiti_config  # make a ref
 day_str = "2014-09-01T00:00:00+08:00"  # ISO 8601 format
-day_arrow = ArrowParameter.get(day_str)
+day_arrow = ArrowParameter.get(day_str)  # Fix maybe tested in other time zone.
 
 
 class TestLuiti(unittest.TestCase):
