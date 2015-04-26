@@ -44,6 +44,6 @@ class DateUtils:
 
     @staticmethod
     def date_value_by_type_in_last(date_value_1, date_type_1):
-        val1 = arrow.get(date_value_1).replace(**{(date_type_1+'s'): -1}) \
+        val1 = arrow.get(date_value_1).replace(**{(date_type_1 + 's'): -1}) \
                                       .floor(date_type_1)
         return val1

@@ -19,7 +19,7 @@ class Table(object):
             return cls.__name__
 
         task_headers = ["", "All Tasks"]
-        task_table = [[idx1+1, task_cls_inspect(item1['task_cls'])]
+        task_table = [[idx1 + 1, task_cls_inspect(item1['task_cls'])]
                       for idx1, item1 in enumerate(sorted(result['success']))]
         task_table.extend([["total", len(result['success'])]])
 
@@ -74,7 +74,7 @@ class Table(object):
         print
         print "Files related infos"
         Table.puts(file_table, file_headers, tablefmt="grid")
-        print "\n"*3
+        print "\n" * 3
 
     @staticmethod
     def print_task_info(curr_task, dep_tasks_on_curr_task):

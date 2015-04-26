@@ -22,7 +22,7 @@ class TestLuitiUtils(unittest.TestCase):
 
         self.assertFalse(MRUtils.is_mr_line("[1,2]"))
         self.assertTrue(MRUtils.is_mr_line("hello\t{framework:luigi}"))
-        self.assertTrue(MRUtils.is_mr_line("1@@" + "2"*40 + "\t[world]"))
+        self.assertTrue(MRUtils.is_mr_line("1@@" + "2" * 40 + "\t[world]"))
 
         self.assertEqual(
             MRUtils.unicode_value({u"hello": u"世界"}, "hello"), u"世界")

@@ -86,8 +86,8 @@ class TestLuiti(unittest.TestCase):
                     getattr(task_instance, ref_task_name_3),
                     getattr(task_instance_2, ref_task_name_3))
                 self.assertEqual(
-                    hash(getattr(task_instance, ref_task_name_3+"_task")),
-                    hash(getattr(task_instance_2, ref_task_name_3+"_task")))
+                    hash(getattr(task_instance, ref_task_name_3 + "_task")),
+                    hash(getattr(task_instance_2, ref_task_name_3 + "_task")))
 
         serialize_and_unserialize_a_task_instance('ADay', pickle)
         serialize_and_unserialize_a_task_instance('ADay', cPickle)
