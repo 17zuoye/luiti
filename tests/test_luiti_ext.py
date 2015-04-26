@@ -56,7 +56,8 @@ class TestLuiti(unittest.TestCase):
         self.assertEqual(DDay_task.total_count, 12)
 
         # hash is luigi's test task unique method
-        self.assertEqual(hash(DDay_task.HDay_task), hash(HDay(day_str)))
+        method = unicode  # hash
+        self.assertEqual(method(DDay_task.HDay_task), method(HDay(day_str)))
 
     def test_serialize_and_unserialize(self):
         """
