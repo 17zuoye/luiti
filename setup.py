@@ -46,6 +46,8 @@ setup(
         "etl_utils     == 0.1.10",
         "tabulate      == 0.7.3",
         "pipetools     == 0.2.7",
+
+        "six",
     ],
     classifiers=[
         'Intended Audience :: Developers',
