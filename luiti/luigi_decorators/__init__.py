@@ -37,6 +37,8 @@ luigi.plug_packages = plug_packages
 
 
 orig_create_packages_archive = luigi.hadoop.create_packages_archive
+
+
 def create_packages_archive_with_support_egg(packages, filename):
     """
     Fix original luigi's `create_packages_archive` cannt attach egg packages
@@ -76,17 +78,20 @@ def create_packages_archive_with_support_egg(packages, filename):
         if not path2.startswith("/"):
             continue  # we only care about libraries.
 
-        is_success, zipfilename3 = get_parent_zip_file_within_absolute_path(path2)
+        is_success, zipfilename3 = \
+            get_parent_zip_file_within_absolute_path(path2)
         if is_success:
             tmp_dir3 = tempfile.mkdtemp()
             zipfile.ZipFile(zipfilename3).extractall(tmp_dir3)
 
             for root4, dirs4, files4 in os.walk(tmp_dir3):
-                curr_dir5 = os.path.basename(root4)
                 for file5 in files4:
                     if file5.endswith(".pyc"):
                         continue
-                    add(os.path.join(root4, file5), os.path.join(root4.replace(tmp_dir3, "").lstrip("/"), file5))
+                    add(
+                        os.path.join(root4, file5),
+                        os.path.join(
+                            root4.replace(tmp_dir3, "").lstrip("/"), file5))
 
     client_cfg = os.path.join(os.getcwd(), "client.cfg")
     if os.path.exists(client_cfg):

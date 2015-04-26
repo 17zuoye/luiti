@@ -49,14 +49,14 @@ class TestManager(unittest.TestCase):
         os.system("mkdir -p %s" % dir1)
         os.chdir(dir1)
 
-        files = manager.new_a_project("project_C")
+        files = manager.new_a_project("project_c")
 
         self.assertTrue("Project C" in file(files[0]).read())
         self.assertTrue("zip_safe" in file(files[1]).read())
         self.assertTrue("luigi.plug_packages" in file(files[2]).read())
         self.assertTrue("@MrTestCase" in file(files[3]).read())
 
-        os.chdir("project_C")
+        os.chdir("project_c")
         os.system("./tests/run.sh")
         os.chdir("..")
 
