@@ -1,11 +1,8 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ['TaskBase']
 
 import os
-import re
-from collections import defaultdict
-import json
 import arrow
 from inflector import Inflector
 from etl_utils import cached_property
@@ -47,9 +44,12 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         # 在跨期的时候用于判断 该周应该是该周的哪些天。
         # 比如这学期开学是 2015-02-17(星期二) 开学, 那么这周的数据只有 0217-0222。
         # 而在寒假里(即run 2015-02-16(星期天) 的 task 时，那么该周的天只有 0216 一天。
-        self.orig_date_value = ArrowParameter.get(self.date_value).replace(tzinfo=tz.tzlocal())
+        self.orig_date_value = \
+            ArrowParameter.get(self.date_value).replace(tzinfo=tz.tzlocal())
 
-        self.reset_date()  # reset date to at the beginning of current date type here
+        # reset date to at the beginning of current date type here
+        self.reset_date()
+
         self.data_file      # force load it now, or `output` still load it.
         self.package_name   # force load it now, use to serialize
 
@@ -82,7 +82,8 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
 
     @cached_property
     def date_value_by_type_in_last(self):
-        return DateUtils.date_value_by_type_in_last(self.date_value, self.date_type)
+        return DateUtils.date_value_by_type_in_last(
+            self.date_value, self.date_type)
 
     @cached_property
     def date_value_by_type_in_begin(self):
@@ -95,7 +96,8 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     @cached_property
     def pre_task_by_self(self):
         """ 如果跨了两个周期就没有上次数据文件了 """
-        return RootTask() if self.is_reach_the_edge else self.__class__(self.date_value_by_type_in_last)
+        return RootTask() if self.is_reach_the_edge else \
+            self.__class__(self.date_value_by_type_in_last)
 
     @cached_property
     def is_reach_the_edge(self):
@@ -109,7 +111,8 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         if self.date_type != 'range':
             new_date = orig_date.floor(self.date_type)
             if orig_date != new_date:
-                print "[reset date by %s] from %s to %s" % (self.date_type, orig_date, new_date)
+                print "[reset date by %s] from %s to %s" % \
+                    (self.date_type, orig_date, new_date)
                 self.date_value = new_date
 
     @classmethod
@@ -119,9 +122,12 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         assert isinstance(last_date, arrow.Arrow)
 
         if "Range" in cls.__name__:
-            return list(set([cls(first_date), cls(last_date)]))  # return head and tail directly
+            # return head and tail directly
+            return list(set([cls(first_date), cls(last_date)]))
         else:
-            dates = arrow.Arrow.range(luiti_config.get_date_type(cls.__name__), first_date, last_date)
+            dates = arrow.Arrow.range(
+                luiti_config.get_date_type(cls.__name__),
+                first_date, last_date)
             return [cls(date1.datetime) for date1 in dates]
 
     @cached_property

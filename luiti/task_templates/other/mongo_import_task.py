@@ -1,7 +1,7 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
-from ..time.task_base import *
-from etl_utils import cached_property, process_notifier
+from ..time.task_base import TaskBase, cached_property
+from etl_utils import process_notifier
 from ...utils import CommandUtils, TargetUtils, MRUtils, HDFSUtils
 import luigi
 import os
@@ -18,12 +18,16 @@ class MongoImportTask(TaskBase):
     system_tmp = "/tmp"  # default
 
     @cached_property
+    def mongodb_db(self):
+        return self.mongodb_connection[self.database_name]
+
+    @cached_property
     def report_status_collection_model(self):
-        return self.mongodb_connection[self.database_name][self.report_status_collection_name]
+        return self.mongodb_db[self.report_status_collection_name]
 
     @cached_property
     def data_file_collection_model(self):
-        return self.mongodb_connection[self.database_name][self.collection_name]
+        return self.mongodb_db[self.collection_name]
 
     # 1. config
     @cached_property
@@ -57,7 +61,8 @@ class MongoImportTask(TaskBase):
 
     # 2. common
     def requires(self):
-        return [getattr(self, _ref_task_1)(self.date_value) for _ref_task_1 in self._ref_tasks]
+        return [getattr(self, _ref_task_1)(self.date_value)
+                for _ref_task_1 in self._ref_tasks]
 
     def run(self):
         self.run_before_hook()
@@ -68,7 +73,8 @@ class MongoImportTask(TaskBase):
 
         # 2. check report status collection is valid
         if self.report_status_collection_model.count() == 0:
-            self.report_status_collection_model.insert({self.report_status_namespace: {}})
+            self.report_status_collection_model.insert(
+                {self.report_status_namespace: {}})
         assert self.report_status_collection_model.count() == 1, "更新纪录 只能有一条！"
 
         # 3. output json with err
@@ -77,7 +83,8 @@ class MongoImportTask(TaskBase):
         tmp_file1 = open(self.tmp_filepath, 'w')
         tmp_errfile1 = open(self.tmp_errfilepath, 'w')
 
-        for line1 in process_notifier(TargetUtils.line_read(source1), u"[read lines] %s" % source1):
+        for line1 in process_notifier(
+                TargetUtils.line_read(source1), u"[read lines] %s" % source1):
             if len(line1) == 0:
                 continue  # meaningless data.
             stat_2 = self.convert_line_to_json(line1)
@@ -124,22 +131,23 @@ class MongoImportTask(TaskBase):
     @cached_property
     def mongoimport_command(self):
         return "/usr/bin/mongoimport " + \
-            ("--host %s "        % self.mongodb_connection.host) + \
-            ("--port %s "        % self.mongodb_connection.port) + \
-            ("--db %s "          % self.database_name) + \
-            ("--collection %s "  % self.collection_name) + \
+            ("--host %s " % self.mongodb_connection.host) + \
+            ("--port %s " % self.mongodb_connection.port) + \
+            ("--db %s " % self.database_name) + \
+            ("--collection %s " % self.collection_name) + \
             ("--file %s " % self.tmp_filepath)
 
     @cached_property
     def mongo_ensure_index(self):
         if not isinstance(self.index_schema, (str, unicode)):
             self.index_schema = json.dumps(self.index_schema)
-        js_str = "db.%s.ensureIndex(%s)" % (self.collection_name, self.index_schema)
+        js_str = "db.%s.ensureIndex(%s)" % \
+            (self.collection_name, self.index_schema)
         return self.mongo_eval(js_str)
 
     def mongo_eval(self, js_str):
         return "/usr/bin/mongo " + \
-            ("%s:%s/%s "        % (self.mongodb_connection.host, self.mongodb_connection.port, self.database_name)) + \
+            ("%s:%s/%s " % (self.mongodb_connection.host, self.mongodb_connection.port, self.database_name)) + \
             ("--eval \"%s\" " % js_str)
 
     @cached_property

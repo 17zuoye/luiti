@@ -6,7 +6,6 @@ __all__ = ['MrTestCase']
 from collections import defaultdict
 import json
 
-from .utils import MRUtils
 from .manager import Loader
 
 
@@ -40,7 +39,9 @@ def MrTestCase(cls, verbose=False):
                 print "[task_instance]", task_instance_1
 
             task_instance_1.lines = map_lines(task_instance_1.mrtest_input())
-            result_expect = sorted([json.loads(i2) for i2 in map_lines(task_instance_1.mrtest_output())])
+            result_expect = sorted(
+                [json.loads(i2) for i2
+                 in map_lines(task_instance_1.mrtest_output())])
 
             self.assertEqual(result_expect, run_map_reduce(task_instance_1))
         return test_mr
@@ -51,7 +52,10 @@ def MrTestCase(cls, verbose=False):
             print
         if verbose:
             print "[test_method_name]", test_method_name
-        setattr(cls, test_method_name, generate_closure_function(mr_task_name1))
+
+        setattr(
+            cls, test_method_name, generate_closure_function(mr_task_name1))
+
         if verbose:
             print
         if verbose:

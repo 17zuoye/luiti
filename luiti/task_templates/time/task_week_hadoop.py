@@ -1,13 +1,11 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ["TaskWeekHadoop"]
 
-from .task_week import *
+from .task_week import TaskWeek
 
-from ...utils import MRUtils
-import json
-import re
 import luigi
+
 
 class TaskWeekHadoop(luigi.hadoop.HadoopExt, TaskWeek):
 

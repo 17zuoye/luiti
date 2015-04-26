@@ -11,7 +11,8 @@ import unittest
 # add egg libarary
 # import pdb
 # pdb.set_trace()
-sys.path.insert(0, os.path.join(RootDir, "tests/zip_package_by_luiti"))
+sys.path.insert(0, os.path.join(
+    RootDir, "tests/zip_package_by_luiti"))
 
 # 1. change to work dir
 project_dir = RootDir + "/tests/project_A"

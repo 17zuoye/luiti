@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 import json
 from etl_utils import JsonUtils
@@ -14,7 +14,9 @@ class MRUtils:
     def mr_key(item1, postfix=''):
         """ example is "104017@@37771707" """
 # TODO 业务代码应该剥离
-        str1 = u"%s%s%s" % (item1.get('class_id', 0), MRUtils.map_key_split, item1.get('uid', 0),)
+        str1 = u"%s%s%s" % (
+            item1.get('class_id', 0),
+            MRUtils.map_key_split, item1.get('uid', 0),)
         if postfix:
             str1 += (MRUtils.map_key_split + unicode(postfix))
         return str1
@@ -30,7 +32,8 @@ class MRUtils:
     def is_mr_line(line1):
         # 1. 目前标准的 MapReduce 输出
         head = line1[0:30]
-        is_true_1 = (MRUtils.map_key_split in head) or (MRUtils.mr_separator in head)
+        is_true_1 = (MRUtils.map_key_split in head) or \
+            (MRUtils.mr_separator in head)
         # 2. value 必须是 } 或 ]
         is_true_2 = (line1.endswith("}") or line1.endswith("]"))
         # 3. 外部Python程序写的一行一行JSON, 没有 map key 。
@@ -56,9 +59,7 @@ class MRUtils:
             json.loads(v_str),
         ]
 
-    ##############################
-    #####   key related     ######
-    ##############################
+    # key related
     @staticmethod
     def merge_keys_in_dict(vals_1, keys_1):
         """ 合并多个键的整数值。 """
@@ -83,12 +84,14 @@ class MRUtils:
     def select_prefix_keys(line_part_a, idxes=None):
         """
         根据索引数组 转化出新的 map key
-        e.g. select_prefix_keys("232@@8923802@@afenti", [0,1]) # => "232@8923802"
+        e.g. select_prefix_keys("232@@8923802@@afenti", [0,1])
+                # => "232@8923802"
         """
         if isinstance(line_part_a, str):
             line_part_a = line_part_a.decode("UTF-8")
         # 兼容解析格式错误的jsonkey
-        if line_part_a.startswith(MRUtils.map_key_escape) and (not line_part_a.endswith(MRUtils.map_key_escape)):
+        if line_part_a.startswith(MRUtils.map_key_escape) and \
+                (not line_part_a.endswith(MRUtils.map_key_escape)):
             line_part_a = line_part_a[1:]
         if line_part_a.startswith(MRUtils.map_key_escape):  # is a json
             line_part_a = json.loads(line_part_a)

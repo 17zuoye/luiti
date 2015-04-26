@@ -7,7 +7,7 @@ sys.path.insert(0, root_dir)
 os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
 
 import unittest
-from luiti import *
+from luiti import manager
 
 
 class TestManager(unittest.TestCase):

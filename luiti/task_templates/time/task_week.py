@@ -1,10 +1,9 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ['TaskWeek']
 
-from .task_base import *
+from .task_base import TaskBase, cached_property
 from ...utils import DateUtils
-from etl_utils import cached_property
 
 
 class TaskWeek(TaskBase):

@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ["mr_local"]
 
@@ -6,9 +6,11 @@ from collections import defaultdict
 from etl_utils import process_notifier
 from ..utils import TargetUtils
 
+
 def mr_local(**opts):
     """
-    Sometimes Hadoop streaming sucks, so we only use the solid HDFS, and turn MapReduce job into local mode.
+    Sometimes Hadoop streaming sucks, so we only use the solid HDFS, and turn
+    MapReduce job into local mode.
 
     And `mr_local` is optimized by a fixed chunk write operation.
     """
@@ -16,7 +18,6 @@ def mr_local(**opts):
     def mr_run(self):
         """ Overwrite BaseHadoopJobTask#run function. """
 # TODO maybe model cache
-        from etl_utils import process_notifier
         map_kv_dict = defaultdict(list)
 
         inputs = self.input()
@@ -31,7 +32,8 @@ def mr_local(**opts):
             fixed_chunk = list()
             for reduce_key_2 in process_notifier(map_kv_dict.keys()):
                 reduce_vals_2 = map_kv_dict[reduce_key_2]
-                for _, reduce_val_2 in self.reducer(reduce_key_2, reduce_vals_2):
+                for _, reduce_val_2 in self.reducer(
+                        reduce_key_2, reduce_vals_2):
                     fixed_chunk.append(reduce_val_2)
 
                     if len(fixed_chunk) % self.chunk_size == 0:

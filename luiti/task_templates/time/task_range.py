@@ -1,8 +1,8 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ['TaskRange']
 
-from .task_base import TaskBase, luigi
+from .task_base import TaskBase
 from ...utils import DateUtils
 
 

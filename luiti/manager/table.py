@@ -1,6 +1,7 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 import os
+
 
 class Table(object):
 
@@ -18,7 +19,8 @@ class Table(object):
             return cls.__name__
 
         task_headers = ["", "All Tasks"]
-        task_table = [[idx1+1, task_cls_inspect(item1['task_cls'])] for idx1, item1 in enumerate(sorted(result['success']))]
+        task_table = [[idx1+1, task_cls_inspect(item1['task_cls'])]
+                      for idx1, item1 in enumerate(sorted(result['success']))]
         task_table.extend([["total", len(result['success'])]])
 
         Table.puts(task_table, task_headers, tablefmt="grid")
@@ -49,15 +51,23 @@ class Table(object):
         Table.puts(task_table, task_headers, tablefmt="grid")
 
         # 打印 要删除的文件列表
-        file_headers = ["Generated from task", "Storage", "Date value", "Filename"]
+        file_headers = ["Generated from task", "Storage",
+                        "Date value", "Filename"]
 
         dep_file_to_task_instances = opts['dep_file_to_task_instances']
-        file_table = [[dep_file_to_task_instances[f1].__class__.__name__, 'HDFS', dep_file_to_task_instances[f1].date_str, os.path.basename(f1), ]
-                      for f1 in sorted(dep_file_to_task_instances.keys())]
-        file_table.append(['', '', '', "Total count %s" % len(dep_file_to_task_instances)])
+        file_table = [
+            [dep_file_to_task_instances[f1].__class__.__name__,
+             'HDFS', dep_file_to_task_instances[f1].date_str,
+             os.path.basename(f1), ]
+            for f1 in sorted(dep_file_to_task_instances.keys())]
+        file_table.append(
+            ['', '', '', "Total count %s" % len(dep_file_to_task_instances)])
         file_table.append(['', '', '', ''])
-        file_uniq_root_dir = set([t1.root_dir for t1 in opts['dep_tasks_on_curr_task']])
-        file_table.append(['All root dirs', '', '', 'Total count %s' % len(file_uniq_root_dir)])
+        file_uniq_root_dir = set(
+            [t1.root_dir for t1 in opts['dep_tasks_on_curr_task']])
+        file_table.append(
+            ['All root dirs', '', '',
+             'Total count %s' % len(file_uniq_root_dir)])
         for dir1 in file_uniq_root_dir:
             file_table.append(['', '', '', dir1])
 
@@ -71,6 +81,7 @@ class Table(object):
         task_headers = ["Task name", curr_task.__name__]
         task_content = [
             ["Tasks self dep on", str(list(curr_task._ref_tasks))],
-            ["Tasks dep on self", str(sorted([t2.__name__ for t2 in dep_tasks_on_curr_task]))],
+            ["Tasks dep on self",
+             str(sorted([t2.__name__ for t2 in dep_tasks_on_curr_task]))],
         ]
         Table.puts(task_content, task_headers, tablefmt="grid")

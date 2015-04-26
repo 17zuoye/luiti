@@ -1,8 +1,9 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ["check_date_range"]
 
 from ..parameter import ArrowParameter
+
 
 def check_date_range():  # 装饰器
     """
@@ -14,7 +15,8 @@ def check_date_range():  # 装饰器
     def decorator(orig_run):
         def new_run(self):
             # 说明时间未到，然后就直接退出
-            if self.date_value_by_type_in_begin <= ArrowParameter.now() < self.date_value_by_type_in_end:
+            if self.date_value_by_type_in_begin <= \
+                    ArrowParameter.now() < self.date_value_by_type_in_end:
                 return False
             return orig_run(self)
         return new_run

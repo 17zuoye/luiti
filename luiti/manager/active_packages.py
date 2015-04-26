@@ -1,10 +1,10 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 import os
-import sys
 from .config import luiti_config as lc
 
 processed_package_names = set([])
+
 
 def active_packages(orig_func):
     """
@@ -19,12 +19,15 @@ def active_packages(orig_func):
         import luigi.hadoop
         import re
 
-        for p1 in list(lc.attached_package_names):  # fix Set changed size during iteration
-            package2, version2 = re.compile("(^[a-z0-9\_]+)(.*)", re.IGNORECASE).match(p1).groups()
+        # fix Set changed size during iteration
+        for p1 in list(lc.attached_package_names):
+            package2, version2 = re.compile("(^[a-z0-9\_]+)(.*)", re.IGNORECASE) \
+                .match(p1).groups()
             if package2 in processed_package_names:
                 continue
             else:
-                # Pip cant manage versions packages, only exist one version at one time.
+                # Pip cant manage versions packages, only exist one version at
+                # one time.
                 try:
                     if version2:
                         pkg_resources.require(p1)
@@ -46,7 +49,8 @@ def active_packages(orig_func):
                 except:
                     print "[package2_lib load error]", package2_lib
                     path = "/package/load/error"
-                # TODO 兼容 egg zip 格式，看看里面有没有 luiti_tasks 文件，然后提示加 zip_safe=False
+                # TODO 兼容 egg zip 格式，看看里面有没有 luiti_tasks
+                #      文件，然后提示加 zip_safe=False
                 if os.path.exists(path + "/luiti_tasks"):
                     # .__init_luiti Maybe not exists, so execute this first
                     lc.luiti_tasks_packages.add(package2_lib)

@@ -1,6 +1,7 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 from luiti import TaskDay, cached_property
+
 
 class HDay(TaskDay):
 

@@ -1,6 +1,5 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
-import os
 from .command_utils import CommandUtils
 from .target_utils import TargetUtils
 
@@ -21,7 +20,8 @@ class HDFSUtils:
 
     @staticmethod
     def copyFromLocal(path1, path2):
-        command1 = HDFSUtils.hdfs_cli + " -copyFromLocal %s %s" % (path1, path2)
+        command1 = HDFSUtils.hdfs_cli + \
+            " -copyFromLocal %s %s" % (path1, path2)
         print "[command]", command1
         CommandUtils.execute(command1)
 

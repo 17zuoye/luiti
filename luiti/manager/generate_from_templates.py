@@ -21,7 +21,8 @@ class GenerateFromTemplates(object):
         package_dir = join(project_name, project_name)
         package_init = join(package_dir, "__init__.py")
         package_luiti_tasks_init = join(package_dir, "luiti_tasks/__init__.py")
-        package_luiti_tasks_luiti = join(package_dir, "luiti_tasks/__init_luiti.py")
+        package_luiti_tasks_luiti = join(
+            package_dir, "luiti_tasks/__init_luiti.py")
         tests_dir = join(project_name, "tests")
         tests_run_sh = join(tests_dir, "run.sh")
         tests_test_main = join(tests_dir, "test_main.py")
@@ -30,14 +31,17 @@ class GenerateFromTemplates(object):
         write_content_to_file(a_project_setup(project_name), setup_path)
         write_content_to_file(u"", package_init)
         write_content_to_file(u"", package_luiti_tasks_init)
-        write_content_to_file(a_project_init_luiti(), package_luiti_tasks_luiti)
+        write_content_to_file(
+            a_project_init_luiti(), package_luiti_tasks_luiti)
         write_content_to_file(a_project_run_sh(), tests_run_sh)
-        write_content_to_file(a_project_test_main(project_name), tests_test_main)
+        write_content_to_file(
+            a_project_test_main(project_name), tests_test_main)
 
-        os.chmod(tests_run_sh, 0700)
+        os.chmod(tests_run_sh, 0o700)
 
         # important files
-        return [readme_path, setup_path, package_luiti_tasks_luiti, tests_test_main]
+        return [readme_path, setup_path,
+                package_luiti_tasks_luiti, tests_test_main]
 
     @staticmethod
     def generate_a_task(task_name, project_dir=None,):
@@ -57,7 +61,7 @@ a_project_readme = lambda project_name: u"""
 =======================
 
 TODO ...
-""".strip()  % (Inflector().titleize(project_name), )
+""".strip() % (Inflector().titleize(project_name), )
 
 a_project_setup = lambda project_name: u"""
 # -*-coding:utf-8-*-
@@ -82,14 +86,14 @@ from setuptools import setup, find_packages
 """
 
 
-a_project_init_luiti = lambda : u"""
+a_project_init_luiti = lambda: u"""
 # -*-coding:utf-8-*-
 
 from luiti import *
 luigi.plug_packages("package_a", "package_b==4.2")
 """.strip()
 
-a_project_run_sh = lambda : u"""
+a_project_run_sh = lambda: u"""
 #!/usr/bin/env bash
 
 for file1 in test_main.py

@@ -1,9 +1,9 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ["ref_tasks"]
 
-
 from ..manager import load_a_task_by_name, luiti_config
+
 
 def ref_tasks(*tasks):  # 装饰器
     """
@@ -44,10 +44,6 @@ def ref_tasks(*tasks):  # 装饰器
             cname = ref_task1           # class    name
             iname = ref_task1 + "_task"  # instance name
 
-            # delete instance property is enough.
-            #if hasattr(self.__class__, cname):  delattr(self.__class__, cname)
-            #if hasattr(self.__class__, iname):  delattr(self.__class__, iname)
-
             if cname in self.__dict__:
                 del self.__dict__[cname]
             if iname in self.__dict__:
@@ -70,7 +66,8 @@ def ref_tasks(*tasks):  # 装饰器
 
             # TODO 根据当前日期返回。
             task_name = "%s_%s" % (ref_task_name, "task")
-            setattr(cls, task_name, property(wrap_instance(ref_task_name, task_name)))
+            setattr(cls, task_name,
+                    property(wrap_instance(ref_task_name, task_name)))
 
             # clear ref task info when pickle.dump
             setattr(cls, "__getstate__", __getstate__)

@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ["multiple_text_files"]
 
@@ -33,7 +33,8 @@ def multiple_text_files(task_cls):
     1. man_and_woman_day.json/part-00000
 
     WARN:
-        when use `@luigi.multiple_text_files`, consider to wrap subfolders with StaticFile task class.
+        when use `@luigi.multiple_text_files`, consider to wrap subfolders with
+        StaticFile task class.
     """
 
     java_namespace = "com.voxlearning.bigdata.MrOutput"
@@ -56,16 +57,19 @@ def multiple_text_files(task_cls):
         java_classpath = commands.getoutput("hadoop classpath")
         jar_cmd = commands.getoutput("which jar")
 
-        CommandUtils.execute(
-            ";\n".join([
-                "cd %s/java" % root_dir,  # no absolute path, compact with java namespace.
-                """%s -classpath "%s" %s""" % (javac_cmd, java_classpath, java_file, ),
-                "rm -rf %s" % classes_dir,
-                "mkdir -p %s" % classes_dir,
-                "cp %s %s" % (target_class, classes_dir),
-                "%s cvf %s %s/*.class" % (jar_cmd, target_jar, classes_dir, ),
-            ])
-        )
+        compile_cmd = ";\n".join([
+            # no absolute path, compact with java namespace.
+            "cd %s/java" % root_dir,
+
+            """%s -classpath "%s" %s""" % (javac_cmd,
+                                           java_classpath, java_file, ),
+            "rm -rf %s" % classes_dir,
+            "mkdir -p %s" % classes_dir,
+            "cp %s %s" % (target_class, classes_dir),
+            "%s cvf %s %s/*.class" % (jar_cmd, target_jar, classes_dir, ),
+        ])
+
+        CommandUtils.execute(compile_cmd)
 
     setattr(task_cls, "output_format", output_format)
     setattr(task_cls, "libjars", [target_jar, ])

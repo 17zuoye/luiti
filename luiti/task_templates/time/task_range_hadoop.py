@@ -1,12 +1,10 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
-__all__ = ['TaskRangeHadoop', 'luigi', 'MRUtils', 'json', 're']
+__all__ = ['TaskRangeHadoop']
 
-from .task_range import TaskRange, luigi
+from .task_base import luigi
+from .task_range import TaskRange
 
-from ...utils import MRUtils
-import json
-import re
 
 class TaskRangeHadoop(luigi.hadoop.HadoopExt, TaskRange):
 

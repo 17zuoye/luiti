@@ -38,12 +38,13 @@ class TestLuiti(unittest.TestCase):
                 return "data"
 
         day_1 = arrow.get("2014-09-01 06:28")  # valid
+        self.assertTrue(day_1)
 
         def func(d1):
-            arrow.now = lambda: arrow.get(d1)  # overwrite arrow's method directly.
+            # overwrite arrow's method directly.
+            arrow.now = lambda: arrow.get(d1)
             return CheckRuntimeRangeExampleWeek(d1).run()
 
-        #import pdb ;pdb.set_trace()
         self.assertEqual(func("2014-09-01 09:00"), False)
         self.assertEqual(func("2014-09-02 06:28"), False)
         self.assertEqual(func("2014-09-01 04:28"), False)

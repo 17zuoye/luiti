@@ -1,6 +1,7 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
-from .__init_luiti import *
+from .__init_luiti import cached_property, TaskDay
+
 
 class CDay(TaskDay):
 

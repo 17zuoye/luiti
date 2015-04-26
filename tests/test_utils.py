@@ -24,22 +24,32 @@ class TestLuitiUtils(unittest.TestCase):
         self.assertTrue(MRUtils.is_mr_line("hello\t{framework:luigi}"))
         self.assertTrue(MRUtils.is_mr_line("1@@" + "2"*40 + "\t[world]"))
 
-        self.assertEqual(MRUtils.unicode_value({u"hello": u"世界"}, "hello"), u"世界")
+        self.assertEqual(
+            MRUtils.unicode_value({u"hello": u"世界"}, "hello"), u"世界")
 
-        self.assertEqual(MRUtils.split_mr_kv("hello\t[1,2,3,4]"), ["hello", [1, 2, 3, 4]])
+        self.assertEqual(
+            MRUtils.split_mr_kv("hello\t[1,2,3,4]"), ["hello", [1, 2, 3, 4]])
 
-        self.assertEqual(MRUtils.merge_keys_in_dict([{"a": 1}, {"a": 2}], ["a"]), {"a": 3})
+        self.assertEqual(
+            MRUtils.merge_keys_in_dict([{"a": 1}, {"a": 2}], ["a"]), {"a": 3})
 
-        self.assertEqual(MRUtils.split_prefix_keys("1@@2@@other"), ["1", "2", "other"])
+        self.assertEqual(
+            MRUtils.split_prefix_keys("1@@2@@other"), ["1", "2", "other"])
 
         prefix_str1 = "232@@8923802@@afenti"
         prefix_str2 = "\"" + prefix_str1
-        self.assertEqual(MRUtils.select_prefix_keys(prefix_str1, [0, 1]), "232@@8923802")
-        self.assertEqual(MRUtils.select_prefix_keys(prefix_str2, [0, 1]), "232@@8923802")
+        self.assertEqual(
+            MRUtils.select_prefix_keys(prefix_str1, [0, 1]), "232@@8923802")
+        self.assertEqual(
+            MRUtils.select_prefix_keys(prefix_str2, [0, 1]), "232@@8923802")
 
-        self.assertEqual(MRUtils.str_dump({"hello": u"世界"}), """{"hello": "世界"}""")
+        self.assertEqual(
+            MRUtils.str_dump({"hello": u"世界"}), """{"hello": "世界"}""")
 
-        self.assertEqual(MRUtils.filter_dict({"hello": "world", "foobar": "barfoo"}, "hello"), {"hello": "world"})
+        self.assertEqual(
+            MRUtils.filter_dict(
+                {"hello": "world", "foobar": "barfoo"}, "hello"),
+            {"hello": "world"})
 
     def test_math(self):
         from luiti import MathUtils
@@ -63,10 +73,14 @@ class TestLuitiUtils(unittest.TestCase):
 
         self.assertEqual(len(DateUtils.weeks_in_range(arrow1, arrow2)), 3)
 
-        self.assertEqual(len(DateUtils.fixed_weeks_in_range("2014-10-01-2014-10-15")), 1)
-        self.assertEqual(len(DateUtils.fixed_weeks_in_range("2014-09-29-2014-10-15")), 2)
+        self.assertEqual(
+            len(DateUtils.fixed_weeks_in_range("2014-10-01-2014-10-15")), 1)
+        self.assertEqual(
+            len(DateUtils.fixed_weeks_in_range("2014-09-29-2014-10-15")), 2)
 
-        self.assertEqual(DateUtils.date_value_by_type_in_last("2014-09-01", "week"), arrow.get("2014-08-25"))
+        self.assertEqual(
+            DateUtils.date_value_by_type_in_last("2014-09-01", "week"),
+            arrow.get("2014-08-25"))
 
     def test_ext(self):
         from etl_utils import cached_property

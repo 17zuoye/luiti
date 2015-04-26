@@ -1,8 +1,9 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 __all__ = ["check_runtime_range"]
 
 from ..parameter import ArrowParameter
+
 
 def check_runtime_range(**opts_1):  # 装饰器
     """
@@ -31,7 +32,8 @@ def check_runtime_range(**opts_1):  # 装饰器
             if day_of_week_7 not in opts['weekday_num']:
                 is_false = True
             if is_false:
-                print "[info]", now, " is not in ", opts, ", so the task exited."
+                print "[info]", now, " is not in ", opts, \
+                      ", so the task exited."
                 return False
 
             return orig_run(self)
