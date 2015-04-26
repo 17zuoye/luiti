@@ -18,9 +18,10 @@ sys.path.insert(0, os.path.join(
 project_dir = RootDir + "/tests/project_A"
 
 # 3. setup tests variables
-from luiti import manager, luigi
+from luiti import manager, luigi, ArrowParameter
 luiti_config = luigi.luiti_config  # make a ref
 day_str = "2014-09-01T00:00:00+08:00"  # ISO 8601 format
+day_arrow = ArrowParameter.get(day_str)
 
 
 class TestLuiti(unittest.TestCase):
@@ -34,7 +35,7 @@ class TestLuiti(unittest.TestCase):
         BDay = manager.load_a_task_by_name("BDay")
         CDay = manager.load_a_task_by_name("CDay")
 
-        ADay_task = ADay(day_str)
+        ADay_task = ADay(day_arrow)
 
         self.assertEqual(ADay_task.BDay, BDay)
         self.assertEqual(ADay_task.CDay, CDay)
@@ -51,13 +52,13 @@ class TestLuiti(unittest.TestCase):
         DDay = manager.load_a_task_by_name("DDay")
         HDay = manager.load_a_task_by_name("HDay")
 
-        DDay_task = DDay(day_str)
+        DDay_task = DDay(day_arrow)
         self.assertEqual(DDay_task.HDay, HDay)
         self.assertEqual(DDay_task.total_count, 12)
 
         # hash is luigi's test task unique method
-        method = unicode  # hash
-        self.assertEqual(method(DDay_task.HDay_task), method(HDay(day_str)))
+        method = hash
+        self.assertEqual(method(DDay_task.HDay_task), method(HDay(day_arrow)))
 
     def test_serialize_and_unserialize(self):
         """
@@ -71,7 +72,7 @@ class TestLuiti(unittest.TestCase):
 
         def serialize_and_unserialize_a_task_instance(cls_name, serialize):
             task_cls = manager.load_a_task_by_name(cls_name)
-            task_instance = task_cls(day_str)
+            task_instance = task_cls(day_arrow)
 
             task_instance_2 = serialize.loads(serialize.dumps(task_instance))
             # already set when in serialize.laod
@@ -185,7 +186,7 @@ class TestLuiti(unittest.TestCase):
                 yield "", MRUtils.str_dump(
                     {"uid": uid_1, "count": len(vals_1)})
 
-        t1 = MrLocalDay(day_str)
+        t1 = MrLocalDay(day_arrow)
         t1.run()
         lines = file(t1.filepath).read().split("\n")
         result = sorted([json.loads(line1) for line1 in lines if line1])
@@ -205,7 +206,7 @@ class TestLuiti(unittest.TestCase):
         ImportPackagesDay = manager.load_a_task_by_name("ImportPackagesDay")
         self.assertTrue(
             "zip_package_by_luiti" in
-            ImportPackagesDay(day_str).egg_library.__path__[0])
+            ImportPackagesDay(day_arrow).egg_library.__path__[0])
         import zip_package_by_luiti
         import zip_package_by_luiti.subfold
         zip_package_by_luiti.subfold
