@@ -9,8 +9,6 @@ os.environ['LUIGI_CONFIG_PATH'] = RootDir + '/tests/client.cfg'
 import unittest
 
 # add egg libarary
-# import pdb
-# pdb.set_trace()
 sys.path.insert(0, os.path.join(
     RootDir, "tests/zip_package_by_luiti"))
 
