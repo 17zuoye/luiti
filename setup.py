@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='luiti',
-    version='0.1.2',
+    version='0.1.3',
     url='http://github.com/17zuoye/luiti/',
     license='MIT',
     author='David Chen',
