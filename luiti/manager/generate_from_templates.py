@@ -72,9 +72,8 @@ setup(
     name="%s",
     version="0.0.1",
     packages=[
-                "%s",
-                "%s/luiti_tasks",
-             ],
+        "%s",
+        "%s/luiti_tasks", ],
     zip_safe=False,
 )
 """.strip() % (project_name, project_name, project_name, )
@@ -126,7 +125,7 @@ if __name__ == '__main__': unittest.main()
 
 """ 2. Task """
 a_task_template = lambda task_clsname: u"""
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 from .__init_luiti import *
 
