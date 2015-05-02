@@ -1,40 +1,35 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Luiti : luiti = luigi + time.">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Luiti</title>
+    <meta charset="UTF-8">
+    <title>Luiti by 17zuoye</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">Luiti</h1>
+      <h2 class="project-tagline">luiti = luigi + time.</h2>
+      <a href="https://github.com/17zuoye/luiti" class="btn">View on GitHub</a>
+      <a href="https://github.com/17zuoye/luiti/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/17zuoye/luiti/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/17zuoye/luiti">View on GitHub</a>
-
-          <h1 id="project_title">Luiti</h1>
-          <h2 id="project_tagline">luiti = luigi + time.</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/17zuoye/luiti/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/17zuoye/luiti/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
+    <section class="main-content">
+      <h1>
 <a id="luiti" class="anchor" href="#luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Luiti</h1>
 
-<p>Luigi是一套基于python语言构建的复杂流式批处理任务管理系统。它也仅仅是一个任务
+<p><a href="https://travis-ci.org/17zuoye/luiti"><img src="https://img.shields.io/travis/17zuoye/luiti/master.svg?style=flat" alt="Build Status"></a>
+<a href="https://coveralls.io/r/17zuoye/luiti"><img src="https://coveralls.io/repos/17zuoye/luiti/badge.svg" alt="Coverage Status"></a>
+<a href="https://landscape.io/github/17zuoye/luiti/master"><img src="https://landscape.io/github/17zuoye/luiti/master/landscape.svg?style=flat" alt="Health"></a>
+<a href="https://pypi.python.org/pypi/luiti"><img src="https://img.shields.io/pypi/dm/luiti.svg?style=flat" alt="Download"></a>
+<a href="https://pypi.python.org/pypi/luiti"><img src="https://img.shields.io/pypi/l/luiti.svg?style=flat" alt="License"></a>
+<a href="https://pypi.python.org/pypi/luiti"><img src="https://pypip.in/py_versions/luiti/badge.svg?style=flat" alt="Python Versions"></a></p>
+
+<p>Luigi 是一套基于 Python 语言构建的复杂流式批处理任务管理系统。它也仅仅是一个任务
 调度系统，具体逻辑全都由 Task 自己去实现，比如分布式计算交由 Hadoop 里的 YARN 实现处理。</p>
 
 <p>Luiti 是构建于 Luigi 之上的主要作用于时间管理相关的插件, 即
@@ -46,7 +41,7 @@
 <ol>
 <li>按时间和业务类型等属性去多目录划分基础表, 中间表, 统计表 等。<a href="#core-concepts-based-on-time-management">#</a>
 </li>
-<li>支持无缝多项目任务管理依赖, 兼容常规 Python 库引用机制。<a href="#manage-multiple-projects-in-luiti">#</a>
+<li>支持无缝 多项目 多版本 管理, 兼容常规 Python 库引用机制。<a href="#manage-multiple-projects-in-luiti">#</a>
 </li>
 <li>任务的运行时间和业务时间的满足条件检查。<a href="#task-decorators">#</a>
 </li>
@@ -56,7 +51,11 @@
 </li>
 <li>内置支持 Task 基类扩展。<a href="#extend-luiti">#</a>
 </li>
+<li>luiti 命令行管理 Task。分析 Task 之间的依赖关系，包括依赖的和被依赖的。<a href="#luiti-command-line">#</a>
+</li>
 </ol>
+
+<p>如果有相关问题，请参照 <a href="#FAQ">FAQ</a> 里的说明。</p>
 
 <h2>
 <a id="luigi-预备知识" class="anchor" href="#luigi-%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>luigi 预备知识</h2>
@@ -65,7 +64,7 @@
 <li>英文文档   <a href="http://luigi.readthedocs.org/en/latest/index.html">http://luigi.readthedocs.org/en/latest/index.html</a>
 （推荐看这个，官方详细文档, 含最新)</li>
 <li>中文介绍   <a href="http://vincentzhwg.iteye.com/blog/2063388">http://vincentzhwg.iteye.com/blog/2063388</a>   (Luigi
-－－基于Python语言的流式任务调度框架教程, 国内的人写的，不保
+－－基于 Python 语言的流式任务调度框架教程, 国内的人写的，不保
 证正确性。)</li>
 </ol>
 
@@ -92,31 +91,31 @@
 <a id="luiti-简单示例" class="anchor" href="#luiti-%E7%AE%80%E5%8D%95%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti 简单示例</h2>
 
 <h4>
-<a id="luigi-的写法示例以上代码-copy-自-luigi官方示例" class="anchor" href="#luigi-%E7%9A%84%E5%86%99%E6%B3%95%E7%A4%BA%E4%BE%8B%E4%BB%A5%E4%B8%8A%E4%BB%A3%E7%A0%81-copy-%E8%87%AA-luigi%E5%AE%98%E6%96%B9%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>luigi 的写法示例。以上代码 Copy 自 <a href="http://luigi.readthedocs.org/en/latest/example_top_artists.html">luigi官方示例</a>
+<a id="luigi-的写法示例以下代码-copy-自-luigi官方示例" class="anchor" href="#luigi-%E7%9A%84%E5%86%99%E6%B3%95%E7%A4%BA%E4%BE%8B%E4%BB%A5%E4%B8%8B%E4%BB%A3%E7%A0%81-copy-%E8%87%AA-luigi%E5%AE%98%E6%96%B9%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>luigi 的写法示例。以下代码 Copy 自 <a href="http://luigi.readthedocs.org/en/latest/example_top_artists.html">luigi官方示例</a>
 </h4>
 
 <div class="highlight highlight-python"><pre><span class="pl-k">import</span> luigi
 <span class="pl-k">from</span> collections <span class="pl-k">import</span> defaultdict
 
-<span class="pl-st">class</span> <span class="pl-en">AggregateArtists</span>(<span class="pl-e">luigi.Task</span>):
+<span class="pl-k">class</span> <span class="pl-en">AggregateArtists</span>(<span class="pl-e">luigi.Task</span>):
     date_interval <span class="pl-k">=</span> luigi.DateIntervalParameter()
 
-    <span class="pl-st">def</span> <span class="pl-en">output</span>(<span class="pl-vpf">self</span>):
-        <span class="pl-k">return</span> luigi.LocalTarget(<span class="pl-s1"><span class="pl-pds">"</span>/data/artist_streams_<span class="pl-c1">%s</span>.tsv<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-v">self</span>.date_interval)
+    <span class="pl-k">def</span> <span class="pl-en">output</span>(<span class="pl-smi">self</span>):
+        <span class="pl-k">return</span> luigi.LocalTarget(<span class="pl-s"><span class="pl-pds">"</span>/data/artist_streams_<span class="pl-c1">%s</span>.tsv<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-v">self</span>.date_interval)
 
-    <span class="pl-st">def</span> <span class="pl-en">requires</span>(<span class="pl-vpf">self</span>):
+    <span class="pl-k">def</span> <span class="pl-en">requires</span>(<span class="pl-smi">self</span>):
         <span class="pl-k">return</span> [Streams(date) <span class="pl-k">for</span> date <span class="pl-k">in</span> <span class="pl-v">self</span>.date_interval]
 
-    <span class="pl-st">def</span> <span class="pl-en">run</span>(<span class="pl-vpf">self</span>):
-        artist_count <span class="pl-k">=</span> defaultdict(<span class="pl-s3">int</span>)
+    <span class="pl-k">def</span> <span class="pl-en">run</span>(<span class="pl-smi">self</span>):
+        artist_count <span class="pl-k">=</span> defaultdict(<span class="pl-c1">int</span>)
 
-        <span class="pl-k">for</span> <span class="pl-s3">input</span> <span class="pl-k">in</span> <span class="pl-v">self</span>.input():
-            <span class="pl-k">with</span> <span class="pl-s3">input</span>.open(<span class="pl-s1"><span class="pl-pds">'</span>r<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> in_file:
+        <span class="pl-k">for</span> <span class="pl-c1">input</span> <span class="pl-k">in</span> <span class="pl-v">self</span>.input():
+            <span class="pl-k">with</span> <span class="pl-c1">input</span>.open(<span class="pl-s"><span class="pl-pds">'</span>r<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> in_file:
                 <span class="pl-k">for</span> line <span class="pl-k">in</span> in_file:
                     timestamp, artist, track <span class="pl-k">=</span> line.strip().split()
                     artist_count[artist] <span class="pl-k">+=</span> <span class="pl-c1">1</span>
 
-        <span class="pl-k">with</span> <span class="pl-v">self</span>.output().open(<span class="pl-s1"><span class="pl-pds">'</span>w<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> out_file:
+        <span class="pl-k">with</span> <span class="pl-v">self</span>.output().open(<span class="pl-s"><span class="pl-pds">'</span>w<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> out_file:
             <span class="pl-k">for</span> artist, count <span class="pl-k">in</span> artist_count.iteritems():
                 <span class="pl-k">print</span> <span class="pl-k">&gt;&gt;</span> out_file, artist, count</pre></div>
 
@@ -130,11 +129,11 @@
 
 <div class="highlight highlight-python"><pre><span class="pl-k">from</span> luiti <span class="pl-k">import</span> <span class="pl-k">*</span>
 
-<span class="pl-st">class</span> <span class="pl-en">ArtistStreamDay</span>(<span class="pl-e">StaticFile</span>):
+<span class="pl-k">class</span> <span class="pl-en">ArtistStreamDay</span>(<span class="pl-e">StaticFile</span>):
 
     <span class="pl-en">@cached_property</span>
-    <span class="pl-st">def</span> <span class="pl-en">filepath</span>(<span class="pl-vpf">self</span>):
-        <span class="pl-k">return</span> <span class="pl-s1"><span class="pl-pds">"</span>/data/artist_streams_<span class="pl-c1">%s</span>.tsv<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-v">self</span>.date_str</pre></div>
+    <span class="pl-k">def</span> <span class="pl-en">filepath</span>(<span class="pl-smi">self</span>):
+        <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>/data/artist_streams_<span class="pl-c1">%s</span>.tsv<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-v">self</span>.date_str</pre></div>
 
 <ul>
 <li>第二个文件: <code>artist_project/luiti_tasks/aggregate_artists_week.py</code>
@@ -143,21 +142,21 @@
 
 <div class="highlight highlight-python"><pre><span class="pl-k">from</span> luiti <span class="pl-k">import</span> <span class="pl-k">*</span>
 
-<span class="pl-en">@</span><span class="pl-en">luigi.ref_tasks</span>(<span class="pl-s1"><span class="pl-pds">"</span>ArtistStreamDay')<span class="pl-ii"></span></span>
-<span class="pl-st">class</span> <span class="pl-en">AggregateArtistsWeek</span>(<span class="pl-e">TaskWeek</span>):
+<span class="pl-en">@</span><span class="pl-en">luigi.ref_tasks</span>(<span class="pl-s"><span class="pl-pds">"</span>ArtistStreamDay')<span class="pl-ii"></span></span>
+<span class="pl-k">class</span> <span class="pl-en">AggregateArtistsWeek</span>(<span class="pl-e">TaskWeek</span>):
 
-    <span class="pl-st">def</span> <span class="pl-en">requires</span>(<span class="pl-vpf">self</span>):
+    <span class="pl-k">def</span> <span class="pl-en">requires</span>(<span class="pl-smi">self</span>):
         <span class="pl-k">return</span> [<span class="pl-v">self</span>.ArtistStreamDay(d1) <span class="pl-k">for</span> d1 <span class="pl-k">in</span> <span class="pl-v">self</span>.days_in_week]
 
-    <span class="pl-st">def</span> <span class="pl-en">run</span>(<span class="pl-vpf">self</span>):
-        <span class="pl-vpf">artist_count</span> <span class="pl-k">=</span> defaultdict(<span class="pl-s3">int</span>)
+    <span class="pl-k">def</span> <span class="pl-en">run</span>(<span class="pl-smi">self</span>):
+        <span class="pl-smi">artist_count</span> <span class="pl-k">=</span> defaultdict(<span class="pl-c1">int</span>)
 
         <span class="pl-k">for</span> file1 <span class="pl-k">in</span> <span class="pl-v">self</span>.input():
             <span class="pl-k">for</span> line2 <span class="pl-k">in</span> TargetUtils.line_read(file1):
-                timestamp, artist, <span class="pl-vpf">track</span> <span class="pl-k">=</span> line.strip().split()
+                timestamp, artist, <span class="pl-smi">track</span> <span class="pl-k">=</span> line.strip().split()
                 artist_count[artist] <span class="pl-k">+=</span> <span class="pl-c1">1</span>
 
-        <span class="pl-k">with</span> <span class="pl-v">self</span>.output().open(<span class="pl-s1"><span class="pl-pds">'</span>w<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> out_file:
+        <span class="pl-k">with</span> <span class="pl-v">self</span>.output().open(<span class="pl-s"><span class="pl-pds">'</span>w<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> out_file:
             <span class="pl-k">for</span> artist, count <span class="pl-k">in</span> artist_count.iteritems():
                 <span class="pl-k">print</span> <span class="pl-k">&gt;&gt;</span> out_file, artist, count</pre></div>
 
@@ -184,11 +183,11 @@
 
 <div class="highlight highlight-python"><pre><span class="pl-k">from</span> luiti <span class="pl-k">import</span> <span class="pl-k">*</span>
 
-<span class="pl-st">class</span> <span class="pl-en">ArtistStreamDay</span>(<span class="pl-e">StaticFile</span>):
+<span class="pl-k">class</span> <span class="pl-en">ArtistStreamDay</span>(<span class="pl-e">StaticFile</span>):
 
     <span class="pl-en">@cached_property</span>
-    <span class="pl-st">def</span> <span class="pl-en">filepath</span>(<span class="pl-vpf">self</span>):
-        <span class="pl-k">return</span> TargetUtils.hdfs(<span class="pl-s1"><span class="pl-pds">"</span>/data/artist_streams_<span class="pl-c1">%s</span>.tsv<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-v">self</span>.date_str</pre></div>
+    <span class="pl-k">def</span> <span class="pl-en">filepath</span>(<span class="pl-smi">self</span>):
+        <span class="pl-k">return</span> TargetUtils.hdfs(<span class="pl-s"><span class="pl-pds">"</span>/data/artist_streams_<span class="pl-c1">%s</span>.tsv<span class="pl-pds">"</span></span> <span class="pl-k">%</span> <span class="pl-v">self</span>.date_str</pre></div>
 
 <ul>
 <li>第二个文件: <code>artist_project/luiti_tasks/aggregate_artists_week.py</code>
@@ -197,18 +196,18 @@
 
 <div class="highlight highlight-python"><pre><span class="pl-k">from</span> luiti <span class="pl-k">import</span> <span class="pl-k">*</span>
 
-<span class="pl-en">@</span><span class="pl-en">luigi.ref_tasks</span>(<span class="pl-s1"><span class="pl-pds">"</span>ArtistStreamDay')<span class="pl-ii"></span></span>
-<span class="pl-st">class</span> <span class="pl-en">AggregateArtistsWeek</span>(<span class="pl-e">TaskWeekHadoop</span>):
+<span class="pl-en">@</span><span class="pl-en">luigi.ref_tasks</span>(<span class="pl-s"><span class="pl-pds">"</span>ArtistStreamDay')<span class="pl-ii"></span></span>
+<span class="pl-k">class</span> <span class="pl-en">AggregateArtistsWeek</span>(<span class="pl-e">TaskWeekHadoop</span>):
 
-    <span class="pl-st">def</span> <span class="pl-en">requires</span>(<span class="pl-vpf">self</span>):
+    <span class="pl-k">def</span> <span class="pl-en">requires</span>(<span class="pl-smi">self</span>):
         <span class="pl-k">return</span> [<span class="pl-v">self</span>.ArtistStreamDay(d1) <span class="pl-k">for</span> d1 <span class="pl-k">in</span> <span class="pl-v">self</span>.days_in_week]
 
-    <span class="pl-st">def</span> <span class="pl-en">mapper</span>(<span class="pl-vpf">self</span>, <span class="pl-vpf">line1</span>):
-        timestamp, artist, <span class="pl-vpf">track</span> <span class="pl-k">=</span> line.strip().split()
+    <span class="pl-k">def</span> <span class="pl-en">mapper</span>(<span class="pl-smi">self</span>, <span class="pl-smi">line1</span>):
+        timestamp, artist, <span class="pl-smi">track</span> <span class="pl-k">=</span> line.strip().split()
         <span class="pl-k">yield</span> artist, <span class="pl-c1">1</span>
 
-    <span class="pl-st">def</span> <span class="pl-en">reducer</span>(<span class="pl-vpf">self</span>, <span class="pl-vpf">artist</span>, <span class="pl-vpf">counts</span>):
-        <span class="pl-k">yield</span> artist, <span class="pl-s3">len</span>(counts)</pre></div>
+    <span class="pl-k">def</span> <span class="pl-en">reducer</span>(<span class="pl-smi">self</span>, <span class="pl-smi">artist</span>, <span class="pl-smi">counts</span>):
+        <span class="pl-k">yield</span> artist, <span class="pl-c1">len</span>(counts)</pre></div>
 
 <p>优化说明: 在 MapReduce 计算模式下，这种简单业务实际上比原来代码还精简。其他和原生 luigi 没多大区别。</p>
 
@@ -220,30 +219,32 @@
 <p>或者最新源码</p>
 
 <div class="highlight highlight-bash"><pre>git clone https://github.com/17zuoye/luiti.git
-<span class="pl-s3">cd</span> luiti
+<span class="pl-c1">cd</span> luiti
 python setup.py install</pre></div>
 
 <h2>
-<a id="luiti-命令行" class="anchor" href="#luiti-%E5%91%BD%E4%BB%A4%E8%A1%8C" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti 命令行</h2>
+<a id="luiti-command-line" class="anchor" href="#luiti-command-line" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti command line</h2>
 
 <p>安装后就可以直接在当前 Shell 里使用 luiti 命令了, 比如:</p>
 
 <pre lang="text"><code>$ luiti
-usage: luiti [-h] {ls,info,clean,run} ...
+usage: luiti [-h] {ls,new,generate,info,clean,run} ...
 
 Luiti tasks manager.
 
 optional arguments:
-  -h, --help           show this help message and exit
+  -h, --help            show this help message and exit
 
 subcommands:
   valid subcommands
 
-  {ls,info,clean,run}
-    ls                 list all current luiti tasks.
-    info               show a detailed task.
-    clean              manage files that outputed by luiti tasks.
-    run                run a luiti task.
+  {ls,new,generate,info,clean,run}
+    ls                  list all current luiti tasks.
+    new                 create a new luiti project.
+    generate            generate a new luiti task python file.
+    info                show a detailed task.
+    clean               manage files that outputed by luiti tasks.
+    run                 run a luiti task.
 </code></pre>
 
 <h2>
@@ -359,22 +360,22 @@ arrow.Arrow 。</li>
 <p>强烈推荐使用 <a href="http://werkzeug.pocoo.org/">Werkzeug. The Python WSGI Utility Library</a> 实现的 <code>cached_property</code> , 是 Python 内置的 property 的缓存版本，惰性载入耗CPU和IO
 资源的字典数据。示例:</p>
 
-<div class="highlight highlight-python"><pre><span class="pl-st">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
+<div class="highlight highlight-python"><pre><span class="pl-k">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
 
-    <span class="pl-st">def</span> <span class="pl-en">requires</span>(<span class="pl-vpf">self</span>):
+    <span class="pl-k">def</span> <span class="pl-en">requires</span>(<span class="pl-smi">self</span>):
         <span class="pl-k">return</span> [task1, task2, ...]
 
-    <span class="pl-st">def</span> <span class="pl-en">mapper</span>(<span class="pl-vpf">self</span>, <span class="pl-vpf">line1</span>):
+    <span class="pl-k">def</span> <span class="pl-en">mapper</span>(<span class="pl-smi">self</span>, <span class="pl-smi">line1</span>):
         k1, v1 <span class="pl-k">=</span> process(line1)
         <span class="pl-k">yield</span> k1, v1
 
-    <span class="pl-st">def</span> <span class="pl-en">reducer</span>(<span class="pl-vpf">self</span>, <span class="pl-vpf">k1</span>, <span class="pl-vpf">vs1</span>):
+    <span class="pl-k">def</span> <span class="pl-en">reducer</span>(<span class="pl-smi">self</span>, <span class="pl-smi">k1</span>, <span class="pl-smi">vs1</span>):
         <span class="pl-k">for</span> v1 <span class="pl-k">in</span> vs1:
             v2 <span class="pl-k">=</span> func2(v1, <span class="pl-v">self</span>.another_dict)
             <span class="pl-k">yield</span> k1, v2
 
     <span class="pl-en">@cached_property</span>
-    <span class="pl-st">def</span> <span class="pl-en">another_dict</span>(<span class="pl-vpf">self</span>):
+    <span class="pl-k">def</span> <span class="pl-en">another_dict</span>(<span class="pl-smi">self</span>):
         <span class="pl-c"># lots of cpu/io</span>
         <span class="pl-k">return</span> big_dict</pre></div>
 
@@ -400,12 +401,12 @@ arrow.Arrow 。</li>
 <span class="pl-en">@</span><span class="pl-en">luigi.check_date_range</span>()
 
 <span class="pl-c"># 3. 检查 Task 可以运行的时间点。</span>
-<span class="pl-en">@</span><span class="pl-en">luigi.check_runtime_range</span>(<span class="pl-vpf">hour_num</span><span class="pl-k">=</span>[<span class="pl-c1">4</span>,<span class="pl-c1">5</span>,<span class="pl-c1">6</span>], <span class="pl-vpf">weekday_num</span><span class="pl-k">=</span>[<span class="pl-c1">1</span>])
+<span class="pl-en">@</span><span class="pl-en">luigi.check_runtime_range</span>(<span class="pl-smi">hour_num</span><span class="pl-k">=</span>[<span class="pl-c1">4</span>,<span class="pl-c1">5</span>,<span class="pl-c1">6</span>], <span class="pl-smi">weekday_num</span><span class="pl-k">=</span>[<span class="pl-c1">1</span>])
 
 <span class="pl-c"># 4. 绑定除了默认的 `date_file` 之外的输出文件名。同时兼容了任务失败时的删除处理。</span>
 <span class="pl-en">@</span><span class="pl-en">luigi.persist_files</span>(<span class="pl-k">*</span>files)
 
-<span class="pl-st">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
+<span class="pl-k">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
     <span class="pl-k">pass</span></pre></div>
 
 <h2>
@@ -450,8 +451,8 @@ arrow.Arrow 。</li>
 <p>示例:</p>
 
 <div class="highlight highlight-python"><pre><span class="pl-k">for</span> k1, v1 <span class="pl-k">in</span> MRUtils.mr_read(hdfs1):
-    <span class="pl-s3">isinstance</span>(k1, <span class="pl-s3">unicode</span>)
-    <span class="pl-s3">isinstance</span>(v1, <span class="pl-s3">dict</span>)</pre></div>
+    <span class="pl-c1">isinstance</span>(k1, <span class="pl-c1">unicode</span>)
+    <span class="pl-c1">isinstance</span>(v1, <span class="pl-c1">dict</span>)</pre></div>
 
 <h4>
 <a id="hdfs-文件对象" class="anchor" href="#hdfs-%E6%96%87%E4%BB%B6%E5%AF%B9%E8%B1%A1" aria-hidden="true"><span class="octicon octicon-link"></span></a>HDFS 文件对象</h4>
@@ -473,13 +474,13 @@ arrow.Arrow 。</li>
 <div class="highlight highlight-python"><pre><span class="pl-k">from</span> luiti <span class="pl-k">import</span> MrTestCase
 
 <span class="pl-en">@MrTestCase</span>
-<span class="pl-st">class</span> <span class="pl-en">TestMapReduce</span>(<span class="pl-e">unittest.TestCase</span>):
+<span class="pl-k">class</span> <span class="pl-en">TestMapReduce</span>(<span class="pl-e">unittest.TestCase</span>):
     mr_task_names <span class="pl-k">=</span> [
-            <span class="pl-s1"><span class="pl-pds">'</span>ClassEnglishAllExamWeek<span class="pl-pds">'</span></span>,
+            <span class="pl-s"><span class="pl-pds">'</span>ClassEnglishAllExamWeek<span class="pl-pds">'</span></span>,
             ...
            ]
 
-<span class="pl-k">if</span> <span class="pl-sv">__name__</span> <span class="pl-k">==</span> <span class="pl-s1"><span class="pl-pds">'</span>__main__<span class="pl-pds">'</span></span>: unittest.main()</pre></div>
+<span class="pl-k">if</span> <span class="pl-c1">__name__</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>__main__<span class="pl-pds">'</span></span>: unittest.main()</pre></div>
 
 <h2>
 <a id="manage-multiple-projects-in-luiti" class="anchor" href="#manage-multiple-projects-in-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manage multiple projects in luiti</h2>
@@ -525,13 +526,30 @@ arrow.Arrow 。</li>
 <p>使用 TaskBase 里自带 extend 类方法扩展或者覆写默认属性或方法，比如:</p>
 
 <div class="highlight highlight-python"><pre>TaskWeek.extend({
-    <span class="pl-s1"><span class="pl-pds">'</span>property_1<span class="pl-pds">'</span></span> : <span class="pl-st">lambda</span> <span class="pl-vpf">self</span>: <span class="pl-s1"><span class="pl-pds">"</span>property_2<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">'</span>property_1<span class="pl-pds">'</span></span> : <span class="pl-k">lambda</span> <span class="pl-smi">self</span>: <span class="pl-s"><span class="pl-pds">"</span>property_2<span class="pl-pds">"</span></span>,
 })</pre></div>
 
 <p><code>extend</code> 类方法同时兼容了 <code>function</code>, <code>property</code>, <code>cached_property</code>,
 或者其他任意类属性。在覆写 <code>property</code> 和 <code>cached_property</code>
 传一个函数值即可，<code>extend</code> 会自动转化为本来的 <code>property</code> 和
 <code>cached_property</code> 类型。</p>
+
+<h2>
+<a id="faq" class="anchor" href="#faq" aria-hidden="true"><span class="octicon octicon-link"></span></a>FAQ</h2>
+
+<p>Q: How atomic file is supported?</p>
+
+<p>A: As luigi's document mentioned that "Simple class that writes to a temp file and moves it on close()
+    Also cleans up the temp file if close is not invoked", so use the <code>self.input().open("r")</code> or
+    <code>self.output().open("w")</code> instead of <code>open("some_file", "w")</code>.</p>
+
+<p>Q: Can luigi detect the interdependent tasks?</p>
+
+<p>A: It's not question inside of luigi, but it's a question about <a href="https://en.wikipedia.org/wiki/Topological_sorting">topological sorting</a>
+   as a general computer science topic. The task scheduler is implemented at <code>luigi/scheduler.py</code> .</p>
+
+<p>If you have other unresolved questions, please feel free to ask
+questions at <a href="https://github.com/17zuoye/luiti/issues">issues</a>.</p>
 
 <h2>
 <a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run tests</h2>
@@ -542,18 +560,16 @@ arrow.Arrow 。</li>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>MIT. David Chen @ 17zuoye.</p>
-      </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Luiti maintained by <a href="https://github.com/17zuoye">17zuoye</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/17zuoye/luiti">Luiti</a> is maintained by <a href="https://github.com/17zuoye">17zuoye</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
 
-              <script type="text/javascript">
+    </section>
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -564,6 +580,6 @@ arrow.Arrow 。</li>
             } catch(err) {}
           </script>
 
-
   </body>
 </html>
+
