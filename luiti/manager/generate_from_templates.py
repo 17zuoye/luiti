@@ -129,6 +129,7 @@ a_task_template = lambda task_clsname: u"""
 
 from .__init_luiti import *
 
+
 @luigi.ref_tasks()
 class %s(%s):
 
