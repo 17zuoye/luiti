@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='luiti',
-    version='0.1.3',
+    version='0.1.4',
     url='http://github.com/17zuoye/luiti/',
     license='MIT',
     author='David Chen',
@@ -24,7 +24,7 @@ setup(
         'bin/luiti',
     ],
 
-    package_data={'luiti': ["luiti/java/*.java"]},
+    package_data={'luiti': ["luiti/java/*.java", ]},
     include_package_data=True,
 
     zip_safe=False,

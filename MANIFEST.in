@@ -1,1 +1,3 @@
 include luiti/java/*.java
+include changelog.markdown
+include README.markdown
