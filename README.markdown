@@ -319,13 +319,19 @@ Task decorators
 # 1. Bind related tasks lazily, and can be used as instance property directly.
 @luigi.ref_tasks(*tasks)
 
-# 2. Check current task' data source's date range is satisfied.
+# 2. Support multiple file output in MapReduce
+@luigi.multiple_text_files
+
+# 3. Run MapReduce in local mode by only add one decorator.
+@luigi.mr_local()
+
+# 4. Check current task' data source's date range is satisfied.
 @luigi.check_date_range()
 
-# 3. Check current task can be runned in current date range.
+# 5. Check current task can be runned in current date range.
 @luigi.check_runtime_range(hour_num=[4,5,6], weekday_num=[1])
 
-# 4. Bind other output file names except for the default `date_file`, and compacts with cleaning temporary files is the task is failed.
+# 6. Bind other output file names except for the default `date_file`, and compacts with cleaning temporary files is the task is failed.
 @luigi.persist_files(*files)
 
 class AnotherBussinessDay(TaskDayHadoop):

@@ -14,7 +14,7 @@ def multiple_text_files(task_cls):
      使用说明:
 
     ```python
-    @luigi.MultipleTextOutputFormat
+    @luigi.multiple_text_files
     class ManAndWomanDay(TaskDayHadoop):
         def mapper(self, line1):
             item1 = MRUtils.json_parse(line1)
