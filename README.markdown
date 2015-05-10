@@ -29,13 +29,13 @@ and more. Task classes also have a Hadoop version, such as TaskDayHadoop,
 TaskWeekHadoop, and so on.
 
 You can pass any parameters into Luigi's tasks, but Luiti recommend you
-to pass only `date_value` parameter into. So you can run Luiti tasks
+to pass only `date_value` parameter. So you can run Luiti tasks
 periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.
 
 
 A simple guide to Luigi
 ------------------------
-Luigi's core concept is forcing you saparting a big task into many small
+Luigi's core concept is forcing you separting a big task into many small
 tasks, and they're linked by atomic Input and Ouput. Luigi contains four
 parts mainly:
 
@@ -45,7 +45,7 @@ parts mainly:
 3. Parameters. Parameters should be inherited from `luigi.Parameter`,
   e.g. `DateParameter`, etc.
 4. Execute Logic. Use `run` function if running at local, or `mapper` and `reducer`
-  if running on distributed MapReduce YARN.
+  if running on a distributed MapReduce YARN.
 
 After finish the business logic implementation and test cases, You can
 submit your task to the `luigid` background daemon. `luigid` will
@@ -54,7 +54,7 @@ process task dependencies automatically, this is done by checking
 luigi will guarantee that task instances are uniq in current
 `luigid` background process by the task class name and parameters.
 
-Simple example in luiti
+A simple example in luiti
 ------------------------
 #### An official example from luigi.
 Below code is copied from http://luigi.readthedocs.org/en/latest/example_top_artists.html
@@ -185,7 +185,8 @@ python setup.py install
 
 luiti command tool
 ------------------------
-After installed package, you can use `luiti` command tool that contained in package.
+After installed package, you can use `luiti` command tool that contained
+in the package.
 
 ```text
 $ luiti
