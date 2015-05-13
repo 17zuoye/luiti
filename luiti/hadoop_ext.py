@@ -14,7 +14,7 @@ from .parameter import ArrowParameter
 from etl_utils import cached_property
 
 # See benchmark at https://gist.github.com/mvj3/02dca2bcc8b0ef1bbfb5
-# force to use faster ujson, or it's meaningless to use JSON format.
+# force to use faster ujson, or it's meaningless to use JSON format with no performance gained.
 import ujson as json
 import jsonpickle
 
