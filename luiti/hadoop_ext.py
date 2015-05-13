@@ -13,11 +13,10 @@ from .utils import ExtUtils, TargetUtils
 from .parameter import ArrowParameter
 from etl_utils import cached_property
 
-try:
-    # See benchmark at https://gist.github.com/mvj3/02dca2bcc8b0ef1bbfb5
-    import ujson as json
-except:
-    import json
+# See benchmark at https://gist.github.com/mvj3/02dca2bcc8b0ef1bbfb5
+# force to use faster ujson, or it's meaningless to use JSON format.
+import ujson as json
+import jsonpickle
 
 
 class LuitiHadoopJobRunner(luigi.hadoop.HadoopJobRunner):
@@ -41,7 +40,10 @@ DataInterchange = {
                "deserialize": eval},
     "json": {"serialize": json.dumps,
              "internal_serialize": json.dumps,
-             "deserialize": json.loads}
+             "deserialize": json.loads},
+    "jsonpickle": {"serialize": jsonpickle.dumps,
+                   "internal_serialize": jsonpickle.dumps,
+                   "deserialize": jsonpickle.loads}
 }
 
 

@@ -47,6 +47,9 @@ setup(
         "tabulate      == 0.7.3",
         "pipetools     == 0.2.7",
 
+        "ujson",
+        "jsonpickle",
+
         "six",
     ],
     classifiers=[
