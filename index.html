@@ -55,6 +55,161 @@ to pass only <code>date_value</code> parameter. So you can run Luiti tasks
 periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.</p>
 
 <h2>
+<a id="luiti-command-tool" class="anchor" href="#luiti-command-tool" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti command tool</h2>
+
+<p>After installed package, you can use <code>luiti</code> command tool that contained
+in the package.</p>
+
+<pre lang="text"><code>$ luiti
+usage: luiti [-h] {ls,new,generate,info,clean,run} ...
+
+Luiti tasks manager.
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+subcommands:
+  valid subcommands
+
+  {ls,new,generate,info,clean,run}
+    ls                  list all current luiti tasks.
+    new                 create a new luiti project.
+    generate            generate a new luiti task python file.
+    info                show a detailed task.
+    clean               manage files that outputed by luiti tasks.
+    run                 run a luiti task.
+</code></pre>
+
+<h2>
+<a id="core-concepts-based-on-time-management" class="anchor" href="#core-concepts-based-on-time-management" aria-hidden="true"><span class="octicon octicon-link"></span></a>Core concepts based on time management</h2>
+
+<h3>
+<a id="date-type" class="anchor" href="#date-type" aria-hidden="true"><span class="octicon octicon-link"></span></a>date type</h3>
+
+<h4>
+<a id="basic-inheriting-task-classes" class="anchor" href="#basic-inheriting-task-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic inheriting task classes:</h4>
+
+<ol>
+<li>TaskBase           (luigi.Task)</li>
+<li>TaskHour           (TaskBase)</li>
+<li>TaskDay            (TaskBase)</li>
+<li>TaskWeek           (TaskBase)</li>
+<li>TaskMonth          (TaskBase)</li>
+<li>TaskRange          (TaskBase)</li>
+</ol>
+
+<p>You can extend more date type by subclass <code>TaskBase</code>, and make sure the
+date types are added in <code>TaskBase.DateTypes</code> too.</p>
+
+<h4>
+<a id="hadoop-ineriting-task-classes" class="anchor" href="#hadoop-ineriting-task-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hadoop ineriting task classes:</h4>
+
+<ol>
+<li>TaskDayHadoop      (luigi.hadoop.HadoopExt, TaskDay)</li>
+<li>TaskWeekHadoop     (luigi.hadoop.HadoopExt, TaskWeek)</li>
+<li>TaskRangeHadoop    (luigi.hadoop.HadoopExt, TaskRange)</li>
+</ol>
+
+<h4>
+<a id="other-task-classes" class="anchor" href="#other-task-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other task classes:</h4>
+
+<ol>
+<li>RootTask           (luiti.Task)</li>
+<li>StaticFile         (luiti.Task)</li>
+<li>MongoImportTask    (TaskBase)  # export json file from hdfs to mongodb.</li>
+</ol>
+
+<h2>
+<a id="task-specification-and-built-in-properties-and-recommendation" class="anchor" href="#task-specification-and-built-in-properties-and-recommendation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task specification and built-in properties and recommendation</h2>
+
+<h3>
+<a id="task-naming-conventions" class="anchor" href="#task-naming-conventions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task Naming conventions</h3>
+
+<ol>
+<li>One Task class per file.</li>
+<li>Task class should be camel case ( e.g. <code>EnglishStudentAllExamWeek</code>), file name should be low case with underscore ( e.g.  <code>english_student_all_exam_week.py</code> ).</li>
+<li>Task files should be under the directory of <code>luiti_tasks</code>. luiti use this convertion to linking tasks inner and outer of pacakges.</li>
+<li>Task class name should be ended with date type, e.g. Day, Week, etc.  Please refer to <code>TaskBase.DateTypes</code>.</li>
+</ol>
+
+<h3>
+<a id="task-builtin-properties" class="anchor" href="#task-builtin-properties" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task builtin properties.</h3>
+
+<ol>
+<li>
+<code>date_value</code>. Required, even it's a Range type Task. This ensure that <code>output</code> will be written to a day directory.</li>
+<li>
+<code>data_file</code>. The absolute output file path, it's a string format.</li>
+<li>
+<code>data_dir</code>. The directory of the absolute output file path, it's a string format.</li>
+<li>
+<code>root_dir</code>. The root path of this package. <code>data_file</code> and <code>data_dir</code> are all under it.</li>
+<li>
+<code>output</code>. Basic Task's output class is LocalTarget, and Hadoop Task's output class is hdfs.HdfsTarget.</li>
+<li>
+<code>date_str</code>. A datetime string, such as "20140901".</li>
+<li>
+<code>date_type</code>. A string that generated from task class name, e.g. Day, Week, etc.</li>
+<li>
+<code>date_value_by_type_in_last</code>. If current date type is Week, and it'll return the previous week's <code>date_value</code>.</li>
+<li>
+<code>date_value_by_type_in_begin</code>. If current date type is Week, and it'll return Monday zero clock in the current week.</li>
+<li>
+<code>date_value_by_type_in_end</code>. If current date type is Week, and it'll return Sunday 11:59:59 clock in the current week.</li>
+<li>
+<code>pre_task_by_self</code>. Usually it returns previous task in the current date type. If reaches the time boundary of current date type, it returns RootTask.</li>
+<li>
+<code>is_reach_the_edge</code>. It's semester at 17zuoye business.</li>
+<li>
+<code>instances_by_date_range</code>. Class function, return all task intances list that belongs to current date range.</li>
+<li>
+<code>task_class</code>. Return current task class.</li>
+</ol>
+
+<h2>
+<a id="manage-multiple-projects-in-luiti" class="anchor" href="#manage-multiple-projects-in-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manage multiple projects in luiti</h2>
+
+<h4>
+<a id="the-directory-structure-of-a-specific-project" class="anchor" href="#the-directory-structure-of-a-specific-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>The directory structure of a specific project.</h4>
+
+<p>We recommend you to organize every project's directory structure as the
+below form, and it means it's also a normal Python package, for example:</p>
+
+<pre lang="text"><code>project_A                                            --- project directory
+  setup.py                                           --- Python package install script
+  README.markdown                                    --- project README
+  project_A/                                         --- Python package install directory
+  ├── __init__.py                                    --- mark current directories on disk as a Python package directories
+  └── luiti_tasks                                    --- a directory name which indicates it contains several luiti tasks
+      ├── __init__.py                                --- mark current directories on disk as a Python package directories
+      ├── __init_luiti.py                            --- initialize luiti environment variables
+      ├── exam_logs_english_app_day.py               --- an example luiti task
+      ├── ..._day.py                                 --- another example luiti task
+      └── templates                                  --- some libraries
+            ├── __init__.py
+            └── ..._template.py
+</code></pre>
+
+<p>After installing <code>luiti</code>, you can run following command line to generate
+a project like above.</p>
+
+<div class="highlight highlight-bash"><pre>luiti new project_A</pre></div>
+
+<p>If other luiti projects needs to using this package, and you need to
+install this package, to make sure luiti could find them in the
+search path (<code>sys.path</code>) of Python modules.</p>
+
+<h4>
+<a id="how-to-link-current-task-to-another-task-that-belongs-to-another-pacakge" class="anchor" href="#how-to-link-current-task-to-another-task-that-belongs-to-another-pacakge" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to link current Task to another Task that belongs to another pacakge?</h4>
+
+<p>Every luiti projects share the same structure, e.g.
+<code>project_A/luiti_tasks/another_feature_day.py</code>. After config
+<code>luigi.plug_packages("project_B", "project_C==0.0.2"])</code> in
+<code>__init_luiti.py</code>, you can use <code>@luigi.ref_tasks("ArtistStreamDay')</code> to
+indicate current Task to find <code>ArtistStreamDay</code> Task in current package
+<code>project_A</code>, or related <code>project_B</code>, <code>project_C</code> packages.</p>
+
+<h2>
 <a id="a-simple-guide-to-luigi" class="anchor" href="#a-simple-guide-to-luigi" aria-hidden="true"><span class="octicon octicon-link"></span></a>A simple guide to Luigi</h2>
 
 <p>Luigi's core concept is forcing you separting a big task into many small
@@ -213,71 +368,6 @@ property and <code>@luigi.ref_tasks</code> decorator.</p>
 <span class="pl-c1">cd</span> luiti
 python setup.py install</pre></div>
 
-<h2>
-<a id="luiti-command-tool" class="anchor" href="#luiti-command-tool" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti command tool</h2>
-
-<p>After installed package, you can use <code>luiti</code> command tool that contained
-in the package.</p>
-
-<pre lang="text"><code>$ luiti
-usage: luiti [-h] {ls,new,generate,info,clean,run} ...
-
-Luiti tasks manager.
-
-optional arguments:
-  -h, --help            show this help message and exit
-
-subcommands:
-  valid subcommands
-
-  {ls,new,generate,info,clean,run}
-    ls                  list all current luiti tasks.
-    new                 create a new luiti project.
-    generate            generate a new luiti task python file.
-    info                show a detailed task.
-    clean               manage files that outputed by luiti tasks.
-    run                 run a luiti task.
-</code></pre>
-
-<h2>
-<a id="core-concepts-based-on-time-management" class="anchor" href="#core-concepts-based-on-time-management" aria-hidden="true"><span class="octicon octicon-link"></span></a>Core concepts based on time management</h2>
-
-<h3>
-<a id="date-type" class="anchor" href="#date-type" aria-hidden="true"><span class="octicon octicon-link"></span></a>date type</h3>
-
-<h4>
-<a id="basic-inheriting-task-classes" class="anchor" href="#basic-inheriting-task-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic inheriting task classes:</h4>
-
-<ol>
-<li>TaskBase           (luigi.Task)</li>
-<li>TaskHour           (TaskBase)</li>
-<li>TaskDay            (TaskBase)</li>
-<li>TaskWeek           (TaskBase)</li>
-<li>TaskMonth          (TaskBase)</li>
-<li>TaskRange          (TaskBase)</li>
-</ol>
-
-<p>You can extend more date type by subclass <code>TaskBase</code>, and make sure the
-date types are added in <code>TaskBase.DateTypes</code> too.</p>
-
-<h4>
-<a id="hadoop-ineriting-task-classes" class="anchor" href="#hadoop-ineriting-task-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hadoop ineriting task classes:</h4>
-
-<ol>
-<li>TaskDayHadoop      (luigi.hadoop.HadoopExt, TaskDay)</li>
-<li>TaskWeekHadoop     (luigi.hadoop.HadoopExt, TaskWeek)</li>
-<li>TaskRangeHadoop    (luigi.hadoop.HadoopExt, TaskRange)</li>
-</ol>
-
-<h4>
-<a id="other-task-classes" class="anchor" href="#other-task-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other task classes:</h4>
-
-<ol>
-<li>RootTask           (luiti.Task)</li>
-<li>StaticFile         (luiti.Task)</li>
-<li>MongoImportTask    (TaskBase)  # export json file from hdfs to mongodb.</li>
-</ol>
-
 <h3>
 <a id="time-library" class="anchor" href="#time-library" aria-hidden="true"><span class="octicon octicon-link"></span></a>Time library</h3>
 
@@ -288,53 +378,6 @@ instance's <code>date_value</code> property is a arrow.Arrow type.</p>
 you want to customize time, please prefer to use
  <code>ArrowParameter.get(*strs)</code> and <code>ArrowParameter.now()</code> to make sure you
  use the local time zone.</p>
-
-<h2>
-<a id="task-specification-and-built-in-properties-and-recommendation" class="anchor" href="#task-specification-and-built-in-properties-and-recommendation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task specification and built-in properties and recommendation</h2>
-
-<h3>
-<a id="task-naming-conventions" class="anchor" href="#task-naming-conventions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task Naming conventions</h3>
-
-<ol>
-<li>One Task class per file.</li>
-<li>Task class should be camel case ( e.g. <code>EnglishStudentAllExamWeek</code>), file name should be low case with underscore ( e.g.  <code>english_student_all_exam_week.py</code> ).</li>
-<li>Task files should be under the directory of <code>luiti_tasks</code>. luiti use this convertion to linking tasks inner and outer of pacakges.</li>
-<li>Task class name should be ended with date type, e.g. Day, Week, etc.  Please refer to <code>TaskBase.DateTypes</code>.</li>
-</ol>
-
-<h3>
-<a id="task-builtin-properties" class="anchor" href="#task-builtin-properties" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task builtin properties.</h3>
-
-<ol>
-<li>
-<code>date_value</code>. Required, even it's a Range type Task. This ensure that <code>output</code> will be written to a day directory.</li>
-<li>
-<code>data_file</code>. The absolute output file path, it's a string format.</li>
-<li>
-<code>data_dir</code>. The directory of the absolute output file path, it's a string format.</li>
-<li>
-<code>root_dir</code>. The root path of this package. <code>data_file</code> and <code>data_dir</code> are all under it.</li>
-<li>
-<code>output</code>. Basic Task's output class is LocalTarget, and Hadoop Task's output class is hdfs.HdfsTarget.</li>
-<li>
-<code>date_str</code>. A datetime string, such as "20140901".</li>
-<li>
-<code>date_type</code>. A string that generated from task class name, e.g. Day, Week, etc.</li>
-<li>
-<code>date_value_by_type_in_last</code>. If current date type is Week, and it'll return the previous week's <code>date_value</code>.</li>
-<li>
-<code>date_value_by_type_in_begin</code>. If current date type is Week, and it'll return Monday zero clock in the current week.</li>
-<li>
-<code>date_value_by_type_in_end</code>. If current date type is Week, and it'll return Sunday 11:59:59 clock in the current week.</li>
-<li>
-<code>pre_task_by_self</code>. Usually it returns previous task in the current date type. If reaches the time boundary of current date type, it returns RootTask.</li>
-<li>
-<code>is_reach_the_edge</code>. It's semester at 17zuoye business.</li>
-<li>
-<code>instances_by_date_range</code>. Class function, return all task intances list that belongs to current date range.</li>
-<li>
-<code>task_class</code>. Return current task class.</li>
-</ol>
 
 <h3>
 <a id="task-recommendation" class="anchor" href="#task-recommendation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task recommendation</h3>
@@ -387,13 +430,19 @@ lots of things, such as a big data dict.</p>
 <div class="highlight highlight-python"><pre><span class="pl-c"># 1. Bind related tasks lazily, and can be used as instance property directly.</span>
 <span class="pl-en">@</span><span class="pl-en">luigi.ref_tasks</span>(<span class="pl-k">*</span>tasks)
 
-<span class="pl-c"># 2. Check current task' data source's date range is satisfied.</span>
+<span class="pl-c"># 2. Support multiple file output in MapReduce</span>
+<span class="pl-en">@luigi.multiple_text_files</span>
+
+<span class="pl-c"># 3. Run MapReduce in local mode by only add one decorator.</span>
+<span class="pl-en">@</span><span class="pl-en">luigi.mr_local</span>()
+
+<span class="pl-c"># 4. Check current task' data source's date range is satisfied.</span>
 <span class="pl-en">@</span><span class="pl-en">luigi.check_date_range</span>()
 
-<span class="pl-c"># 3. Check current task can be runned in current date range.</span>
+<span class="pl-c"># 5. Check current task can be runned in current date range.</span>
 <span class="pl-en">@</span><span class="pl-en">luigi.check_runtime_range</span>(<span class="pl-smi">hour_num</span><span class="pl-k">=</span>[<span class="pl-c1">4</span>,<span class="pl-c1">5</span>,<span class="pl-c1">6</span>], <span class="pl-smi">weekday_num</span><span class="pl-k">=</span>[<span class="pl-c1">1</span>])
 
-<span class="pl-c"># 4. Bind other output file names except for the default `date_file`, and compacts with cleaning temporary files is the task is failed.</span>
+<span class="pl-c"># 6. Bind other output file names except for the default `date_file`, and compacts with cleaning temporary files is the task is failed.</span>
 <span class="pl-en">@</span><span class="pl-en">luigi.persist_files</span>(<span class="pl-k">*</span>files)
 
 <span class="pl-k">class</span> <span class="pl-en">AnotherBussinessDay</span>(<span class="pl-e">TaskDayHadoop</span>):
@@ -504,49 +553,6 @@ that generated in production mode.</li>
   unittest.main()</pre></div>
 
 <h2>
-<a id="manage-multiple-projects-in-luiti" class="anchor" href="#manage-multiple-projects-in-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manage multiple projects in luiti</h2>
-
-<h4>
-<a id="the-directory-structure-of-a-specific-project" class="anchor" href="#the-directory-structure-of-a-specific-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>The directory structure of a specific project.</h4>
-
-<p>We recommend you to organize every project's directory structure as the
-below form, and it means it's also a normal Python package, for example:</p>
-
-<pre lang="text"><code>project_A                                            --- project directory
-  setup.py                                           --- Python package install script
-  README.markdown                                    --- project README
-  project_A/                                         --- Python package install directory
-  ├── __init__.py                                    --- mark current directories on disk as a Python package directories
-  └── luiti_tasks                                    --- a directory name which indicates it contains several luiti tasks
-      ├── __init__.py                                --- mark current directories on disk as a Python package directories
-      ├── __init_luiti.py                            --- initialize luiti environment variables
-      ├── exam_logs_english_app_day.py               --- an example luiti task
-      ├── ..._day.py                                 --- another example luiti task
-      └── templates                                  --- some libraries
-            ├── __init__.py
-            └── ..._template.py
-</code></pre>
-
-<p>After installing <code>luiti</code>, you can run following command line to generate
-a project like above.</p>
-
-<div class="highlight highlight-bash"><pre>luiti new project_A</pre></div>
-
-<p>If other luiti projects needs to using this package, and you need to
-install this package, to make sure luiti could find them in the
-search path (<code>sys.path</code>) of Python modules.</p>
-
-<h4>
-<a id="how-to-link-current-task-to-another-task-that-belongs-to-another-pacakge" class="anchor" href="#how-to-link-current-task-to-another-task-that-belongs-to-another-pacakge" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to link current Task to another Task that belongs to another pacakge?</h4>
-
-<p>Every luiti projects share the same structure, e.g.
-<code>project_A/luiti_tasks/another_feature_day.py</code>. After config
-<code>luigi.plug_packages("project_B", "project_C==0.0.2"])</code> in
-<code>__init_luiti.py</code>, you can use <code>@luigi.ref_tasks("ArtistStreamDay')</code> to
-indicate current Task to find <code>ArtistStreamDay</code> Task in current package
-<code>project_A</code>, or related <code>project_B</code>, <code>project_C</code> packages.</p>
-
-<h2>
 <a id="extend-luiti" class="anchor" href="#extend-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extend luiti</h2>
 
 <p>Using <code>TaskBase</code>'s builtin <code>extend</code> class function to extend or overwrite
@@ -587,7 +593,7 @@ questions at <a href="https://github.com/17zuoye/luiti/issues">issues</a>.</p>
 <h2>
 <a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run tests</h2>
 
-<div class="highlight highlight-bash"><pre>./tests/run.sh</pre></div>
+<div class="highlight highlight-bash"><pre>nosetests</pre></div>
 
 <h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
