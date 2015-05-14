@@ -33,6 +33,131 @@ to pass only `date_value` parameter. So you can run Luiti tasks
 periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.
 
 
+luiti command tool
+------------------------
+After installed package, you can use `luiti` command tool that contained
+in the package.
+
+```text
+$ luiti
+usage: luiti [-h] {ls,new,generate,info,clean,run} ...
+
+Luiti tasks manager.
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+subcommands:
+  valid subcommands
+
+  {ls,new,generate,info,clean,run}
+    ls                  list all current luiti tasks.
+    new                 create a new luiti project.
+    generate            generate a new luiti task python file.
+    info                show a detailed task.
+    clean               manage files that outputed by luiti tasks.
+    run                 run a luiti task.
+```
+
+
+Core concepts based on time management
+------------------------
+### date type
+
+#### Basic inheriting task classes:
+0. TaskBase           (luigi.Task)
+1. TaskHour           (TaskBase)
+2. TaskDay            (TaskBase)
+3. TaskWeek           (TaskBase)
+4. TaskMonth          (TaskBase)
+5. TaskRange          (TaskBase)
+
+You can extend more date type by subclass `TaskBase`, and make sure the
+date types are added in `TaskBase.DateTypes` too.
+
+#### Hadoop ineriting task classes:
+1. TaskDayHadoop      (luigi.hadoop.HadoopExt, TaskDay)
+2. TaskWeekHadoop     (luigi.hadoop.HadoopExt, TaskWeek)
+3. TaskRangeHadoop    (luigi.hadoop.HadoopExt, TaskRange)
+
+#### Other task classes:
+1. RootTask           (luiti.Task)
+2. StaticFile         (luiti.Task)
+3. MongoImportTask    (TaskBase)  # export json file from hdfs to mongodb.
+
+
+
+Task specification and built-in properties and recommendation
+------------------------
+### Task Naming conventions
+1. One Task class per file.
+2. Task class should be camel case ( e.g. `EnglishStudentAllExamWeek`), file name should be low case with underscore ( e.g.  `english_student_all_exam_week.py` ).
+3. Task files should be under the directory of `luiti_tasks`. luiti use this convertion to linking tasks inner and outer of pacakges.
+4. Task class name should be ended with date type, e.g. Day, Week, etc.  Please refer to `TaskBase.DateTypes`.
+
+
+### Task builtin properties.
+1. `date_value`. Required, even it's a Range type Task. This ensure that `output` will be written to a day directory.
+2. `data_file`. The absolute output file path, it's a string format.
+3. `data_dir`. The directory of the absolute output file path, it's a string format.
+4. `root_dir`. The root path of this package. `data_file` and `data_dir` are all under it.
+5. `output`. Basic Task's output class is LocalTarget, and Hadoop Task's output class is hdfs.HdfsTarget.
+6. `date_str`. A datetime string, such as "20140901".
+7. `date_type`. A string that generated from task class name, e.g. Day, Week, etc.
+8. `date_value_by_type_in_last`. If current date type is Week, and it'll return the previous week's `date_value`.
+8. `date_value_by_type_in_begin`. If current date type is Week, and it'll return Monday zero clock in the current week.
+9. `date_value_by_type_in_end`. If current date type is Week, and it'll return Sunday 11:59:59 clock in the current week.
+10. `pre_task_by_self`. Usually it returns previous task in the current date type. If reaches the time boundary of current date type, it returns RootTask.
+11. `is_reach_the_edge`. It's semester at 17zuoye business.
+12. `instances_by_date_range`. Class function, return all task intances list that belongs to current date range.
+13. `task_class`. Return current task class.
+
+
+
+Manage multiple projects in luiti
+------------------------
+#### The directory structure of a specific project.
+
+We recommend you to organize every project's directory structure as the
+below form, and it means it's also a normal Python package, for example:
+
+```text
+project_A                                            --- project directory
+  setup.py                                           --- Python package install script
+  README.markdown                                    --- project README
+  project_A/                                         --- Python package install directory
+  ├── __init__.py                                    --- mark current directories on disk as a Python package directories
+  └── luiti_tasks                                    --- a directory name which indicates it contains several luiti tasks
+      ├── __init__.py                                --- mark current directories on disk as a Python package directories
+      ├── __init_luiti.py                            --- initialize luiti environment variables
+      ├── exam_logs_english_app_day.py               --- an example luiti task
+      ├── ..._day.py                                 --- another example luiti task
+      └── templates                                  --- some libraries
+            ├── __init__.py
+            └── ..._template.py
+```
+
+After installing `luiti`, you can run following command line to generate
+a project like above.
+```bash
+luiti new project_A
+```
+
+If other luiti projects needs to using this package, and you need to
+install this package, to make sure luiti could find them in the
+search path (`sys.path`) of Python modules.
+
+
+#### How to link current Task to another Task that belongs to another pacakge?
+Every luiti projects share the same structure, e.g.
+`project_A/luiti_tasks/another_feature_day.py`. After config
+`luigi.plug_packages("project_B", "project_C==0.0.2"])` in
+`__init_luiti.py`, you can use `@luigi.ref_tasks("ArtistStreamDay')` to
+indicate current Task to find `ArtistStreamDay` Task in current package
+`project_A`, or related `project_B`, `project_C` packages.
+
+
+
 A simple guide to Luigi
 ------------------------
 Luigi's core concept is forcing you separting a big task into many small
@@ -183,57 +308,6 @@ python setup.py install
 ```
 
 
-luiti command tool
-------------------------
-After installed package, you can use `luiti` command tool that contained
-in the package.
-
-```text
-$ luiti
-usage: luiti [-h] {ls,new,generate,info,clean,run} ...
-
-Luiti tasks manager.
-
-optional arguments:
-  -h, --help            show this help message and exit
-
-subcommands:
-  valid subcommands
-
-  {ls,new,generate,info,clean,run}
-    ls                  list all current luiti tasks.
-    new                 create a new luiti project.
-    generate            generate a new luiti task python file.
-    info                show a detailed task.
-    clean               manage files that outputed by luiti tasks.
-    run                 run a luiti task.
-```
-
-Core concepts based on time management
-------------------------
-### date type
-
-#### Basic inheriting task classes:
-0. TaskBase           (luigi.Task)
-1. TaskHour           (TaskBase)
-2. TaskDay            (TaskBase)
-3. TaskWeek           (TaskBase)
-4. TaskMonth          (TaskBase)
-5. TaskRange          (TaskBase)
-
-You can extend more date type by subclass `TaskBase`, and make sure the
-date types are added in `TaskBase.DateTypes` too.
-
-#### Hadoop ineriting task classes:
-1. TaskDayHadoop      (luigi.hadoop.HadoopExt, TaskDay)
-2. TaskWeekHadoop     (luigi.hadoop.HadoopExt, TaskWeek)
-3. TaskRangeHadoop    (luigi.hadoop.HadoopExt, TaskRange)
-
-#### Other task classes:
-1. RootTask           (luiti.Task)
-2. StaticFile         (luiti.Task)
-3. MongoImportTask    (TaskBase)  # export json file from hdfs to mongodb.
-
 
 ### Time library
 
@@ -245,31 +319,6 @@ you want to customize time, please prefer to use
  `ArrowParameter.get(*strs)` and `ArrowParameter.now()` to make sure you
  use the local time zone.
 
-
-Task specification and built-in properties and recommendation
-------------------------
-### Task Naming conventions
-1. One Task class per file.
-2. Task class should be camel case ( e.g. `EnglishStudentAllExamWeek`), file name should be low case with underscore ( e.g.  `english_student_all_exam_week.py` ).
-3. Task files should be under the directory of `luiti_tasks`. luiti use this convertion to linking tasks inner and outer of pacakges.
-4. Task class name should be ended with date type, e.g. Day, Week, etc.  Please refer to `TaskBase.DateTypes`.
-
-
-### Task builtin properties.
-1. `date_value`. Required, even it's a Range type Task. This ensure that `output` will be written to a day directory.
-2. `data_file`. The absolute output file path, it's a string format.
-3. `data_dir`. The directory of the absolute output file path, it's a string format.
-4. `root_dir`. The root path of this package. `data_file` and `data_dir` are all under it.
-5. `output`. Basic Task's output class is LocalTarget, and Hadoop Task's output class is hdfs.HdfsTarget.
-6. `date_str`. A datetime string, such as "20140901".
-7. `date_type`. A string that generated from task class name, e.g. Day, Week, etc.
-8. `date_value_by_type_in_last`. If current date type is Week, and it'll return the previous week's `date_value`.
-8. `date_value_by_type_in_begin`. If current date type is Week, and it'll return Monday zero clock in the current week.
-9. `date_value_by_type_in_end`. If current date type is Week, and it'll return Sunday 11:59:59 clock in the current week.
-10. `pre_task_by_self`. Usually it returns previous task in the current date type. If reaches the time boundary of current date type, it returns RootTask.
-11. `is_reach_the_edge`. It's semester at 17zuoye business.
-12. `instances_by_date_range`. Class function, return all task intances list that belongs to current date range.
-13. `task_class`. Return current task class.
 
 
 ### Task recommendation
@@ -437,49 +486,6 @@ if __name__ == '__main__':
 ```
 
 
-Manage multiple projects in luiti
-------------------------
-#### The directory structure of a specific project.
-
-We recommend you to organize every project's directory structure as the
-below form, and it means it's also a normal Python package, for example:
-
-```text
-project_A                                            --- project directory
-  setup.py                                           --- Python package install script
-  README.markdown                                    --- project README
-  project_A/                                         --- Python package install directory
-  ├── __init__.py                                    --- mark current directories on disk as a Python package directories
-  └── luiti_tasks                                    --- a directory name which indicates it contains several luiti tasks
-      ├── __init__.py                                --- mark current directories on disk as a Python package directories
-      ├── __init_luiti.py                            --- initialize luiti environment variables
-      ├── exam_logs_english_app_day.py               --- an example luiti task
-      ├── ..._day.py                                 --- another example luiti task
-      └── templates                                  --- some libraries
-            ├── __init__.py
-            └── ..._template.py
-```
-
-After installing `luiti`, you can run following command line to generate
-a project like above.
-```bash
-luiti new project_A
-```
-
-If other luiti projects needs to using this package, and you need to
-install this package, to make sure luiti could find them in the
-search path (`sys.path`) of Python modules.
-
-
-#### How to link current Task to another Task that belongs to another pacakge?
-Every luiti projects share the same structure, e.g.
-`project_A/luiti_tasks/another_feature_day.py`. After config
-`luigi.plug_packages("project_B", "project_C==0.0.2"])` in
-`__init_luiti.py`, you can use `@luigi.ref_tasks("ArtistStreamDay')` to
-indicate current Task to find `ArtistStreamDay` Task in current package
-`project_A`, or related `project_B`, `project_C` packages.
-
-
 Extend luiti
 ------------------------
 Using `TaskBase`'s builtin `extend` class function to extend or overwrite
@@ -525,7 +531,7 @@ questions at [issues](https://github.com/17zuoye/luiti/issues).
 Run tests
 ------------------------
 ```bash
-./tests/run.sh
+nosetests
 ```
 
 License
