@@ -76,7 +76,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
                 output = flatten(output)
                 if self.data_interchange_format == "json":
                     # Only dump one json string, and skip another one, maybe key or value.
-                    output = filter(lambda x: x, output)
+                    output = filter(lambda x: x not in ["", None], output)
                 else:
                     # JSON is already serialized, so we put `self.serialize` in a else statement.
                     output = map(self.serialize, output)
