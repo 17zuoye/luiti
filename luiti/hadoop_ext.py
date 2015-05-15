@@ -80,7 +80,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
                 else:
                     # JSON is already serialized, so we put `self.serialize` in a else statement.
                     output = map(self.serialize, output)
-                print("\t".join(output), file=stdout)
+                print("\t".join(map(str, output)), file=stdout)
             except:
                 print(output, file=stderr)
                 raise
