@@ -81,8 +81,8 @@ date types are added in `TaskBase.DateTypes` too.
 3. TaskRangeHadoop    (luigi.hadoop.HadoopExt, TaskRange)
 
 #### Other task classes:
-1. RootTask           (luiti.Task)
-2. StaticFile         (luiti.Task)
+1. RootTask           (luigi.Task)
+2. StaticFile         (luigi.Task)
 3. MongoImportTask    (TaskBase)  # export json file from hdfs to mongodb.
 
 
@@ -140,7 +140,7 @@ project_A                                            --- project directory
 After installing `luiti`, you can run following command line to generate
 a project like above.
 ```bash
-luiti new project_A
+luiti new --project-name project_A
 ```
 
 If other luiti projects needs to using this package, and you need to
@@ -164,12 +164,12 @@ Luigi's core concept is forcing you separting a big task into many small
 tasks, and they're linked by atomic Input and Ouput. Luigi contains four
 parts mainly:
 
-1. Output. It must be implemented in `output` function, such as `LocalTarget` and `hdfs.HdfsTarget`.
-2. Input. It must be implemented in `requires` function, and the
+1. **Output**. It must be implemented in `output` function, such as `LocalTarget` and `hdfs.HdfsTarget`.
+2. **Input**. It must be implemented in `requires` function, and the
   function supposed to return some or None task instances.
-3. Parameters. Parameters should be inherited from `luigi.Parameter`,
+3. **Parameters**. Parameters should be inherited from `luigi.Parameter`,
   e.g. `DateParameter`, etc.
-4. Execute Logic. Use `run` function if running at local, or `mapper` and `reducer`
+4. **Execute Logic**. Use `run` function if running at local, or `mapper` and `reducer`
   if running on a distributed MapReduce YARN.
 
 After finish the business logic implementation and test cases, You can
