@@ -89,7 +89,7 @@ date types are added in `TaskBase.DateTypes` too.
 
 Task specification and built-in properties and recommendation
 ------------------------
-### Task Naming conventions
+### Task naming conventions
 1. One Task class per file.
 2. Task class should be camel case ( e.g. `EnglishStudentAllExamWeek`), file name should be low case with underscore ( e.g.  `english_student_all_exam_week.py` ).
 3. Task files should be under the directory of `luiti_tasks`. luiti use this convertion to linking tasks inner and outer of pacakges.
