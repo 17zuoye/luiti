@@ -24,7 +24,6 @@ class GenerateFromTemplates(object):
         package_luiti_tasks_luiti = join(
             package_dir, "luiti_tasks/__init_luiti.py")
         tests_dir = join(project_name, "tests")
-        tests_run_sh = join(tests_dir, "run.sh")
         tests_test_main = join(tests_dir, "test_main.py")
 
         write_content_to_file(a_project_readme(project_name), readme_path)
@@ -33,11 +32,8 @@ class GenerateFromTemplates(object):
         write_content_to_file(u"", package_luiti_tasks_init)
         write_content_to_file(
             a_project_init_luiti(), package_luiti_tasks_luiti)
-        write_content_to_file(a_project_run_sh(), tests_run_sh)
         write_content_to_file(
             a_project_test_main(project_name), tests_test_main)
-
-        os.chmod(tests_run_sh, 0o700)
 
         # important files
         return [readme_path, setup_path,
@@ -92,15 +88,6 @@ from luiti import *
 luigi.plug_packages("package_a", "package_b==4.2")
 """.strip()
 
-a_project_run_sh = lambda: u"""
-#!/usr/bin/env bash
-
-for file1 in test_main.py
-do
-  echo "[test] $file1"
-  python tests/$file1
-done
-"""
 
 a_project_test_main = lambda project_name: u"""
 # -*- coding: utf-8 -*-

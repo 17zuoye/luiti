@@ -60,7 +60,7 @@ class TestManager(unittest.TestCase):
         self.assertTrue("@MrTestCase" in file(files[3]).read())
 
         os.chdir("project_c")
-        os.system("./tests/run.sh")
+        os.system("python tests/test_main.py")
         os.chdir("..")
 
         os.system("rm -rf %s" % dir1)
