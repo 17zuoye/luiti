@@ -92,22 +92,23 @@ luigi.plug_packages("package_a", "package_b==4.2")
 a_project_test_main = lambda project_name: u"""
 # -*- coding: utf-8 -*-
 
-import os, sys
+import os
+import sys
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, root_dir)
 
 import unittest
 from luiti import MrTestCase
 
-os.chdir(root_dir + "/%s")
 
 @MrTestCase
 class TestMapReduce(unittest.TestCase):
     mr_task_names = [
             ]
 
-if __name__ == '__main__': unittest.main()
-""" % (project_name, )
+if __name__ == '__main__':
+    unittest.main()
+""".strip()
 
 
 """ 2. Task """
