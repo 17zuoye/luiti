@@ -42,6 +42,12 @@ class TargetUtilsClass(object):
 
         return f1
 
+    def hdfs_dir(self, path1):
+        """
+        Compact with someone use 000000_0 file naming style, but not the default MR part-00000。
+        """
+        return luigi.hdfs.HdfsTarget(path1, format=luigi.hdfs.PlainDir)
+
     def mr_read(self, hdfs1):
         from .mr_utils import MRUtils
         for line1 in TargetUtils.line_read(hdfs1):
