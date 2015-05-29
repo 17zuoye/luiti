@@ -13,16 +13,27 @@ class IOUtils:
     SQL_RANGE_LIMIT = 1000
 
     @staticmethod
-    def write_json_to_output(json1, output1):
+    def json_dump(o1):
+        m1 = lambda item1: json.dumps(list(item1))
+        m2 = lambda item1: JsonUtils.unicode_dump(item1).encode("UTF-8")
+        if isinstance(o1, (list, set,)):
+            # 兼容 JsonUtils.unicode_dump 不支持list
+            method = m1
+        else:
+            method = m2
+        return method(o1)
+
+    @staticmethod
+    def write_json_to_output(result, output1):
+        """
+        Support multiple lines.
+        """
+        if isinstance(result, dict):
+            result = [result]
+
         with output1.open('w') as output_hdfs:
-            m1 = lambda item1: json.dumps(list(item1))
-            m2 = lambda item1: JsonUtils.unicode_dump(item1).encode("UTF-8")
-            if isinstance(json1, (list, set,)):
-                # 兼容 JsonUtils.unicode_dump 不支持list
-                method = m1
-            else:
-                method = m2
-            output_hdfs.write(method(json1) + "\n")
+            for o1 in result:
+                output_hdfs.write(IOUtils.json_dump(o1) + "\n")
 
     @staticmethod
     def read_json_from_output(output1):
