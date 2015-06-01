@@ -30,6 +30,11 @@ class IOUtils:
         """
         if isinstance(result, dict):
             result = [result]
+        if isinstance(result, set):
+            result = list(result)
+        assert isinstance(result, list), result
+        assert len(result) > 0, result
+        assert isinstance(result[0], dict), result
 
         with output1.open('w') as output_hdfs:
             for o1 in result:
