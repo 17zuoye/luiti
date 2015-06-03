@@ -22,7 +22,7 @@ day_str = "2014-09-01T00:00:00+08:00"  # ISO 8601 format
 day_arrow = ArrowParameter.get(day_str)  # Fix maybe tested in other time zone.
 
 
-class TestLuiti(unittest.TestCase):
+class TestLuitiExt(unittest.TestCase):
 
     def setUp(self):
         # let luiti find `luiti_tasks` dir

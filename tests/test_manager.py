@@ -26,8 +26,43 @@ class TestManager(unittest.TestCase):
 
         self.assertRaises(
             AssertionError,
-            lambda: manager.load_a_task_by_name("i_day"),
+            lambda: manager.load_a_task_by_name("not_exists_day"),
         )
+
+    def test_get_all_date_file_to_task_instances(self):
+        ADay = manager.load_a_task_by_name("ADay")
+        BDay = manager.load_a_task_by_name("BDay")
+        files = manager.get_all_date_file_to_task_instances("20140901-20140903", [ADay, BDay])
+        self.assertEqual(['/foobar/2014-09-01/a_day.json',
+                          '/foobar/2014-09-01/b_day.json',
+                          '/foobar/2014-09-02/a_day.json',
+                          '/foobar/2014-09-02/b_day.json',
+                          '/foobar/2014-09-03/a_day.json',
+                          '/foobar/2014-09-03/b_day.json'],
+                         sorted(files.keys()))
+
+    def test_load_all_tasks(self):
+        all_tasks = manager.load_all_tasks()
+        self.assertEqual(manager.ld.result, all_tasks)  # cause they'are linked.
+
+        HDay = manager.load_a_task_by_name("HDay")
+        self.assertTrue(HDay in manager.ld.all_task_classes, "project B is also loaded.")
+
+    def test_find_dep_on_tasks(self):
+        # simple case
+        # ADay is dep on BDay, ADay is inputed into BDay.
+        BDay = manager.load_a_task_by_name("BDay")
+        dep_tasks_by_BDay = manager.find_dep_on_tasks(BDay, manager.ld.all_task_classes)
+        self.assertEqual(len(dep_tasks_by_BDay), 1)
+        self.assertEqual(dep_tasks_by_BDay[0].__name__, "ADay")
+
+        # complex case
+        #   MultipleDependentDay => HDay => DDay
+        #   delete MultipleDependentDay, and delete HDay and DDay.
+        MultipleDependentDay = manager.load_a_task_by_name("MultipleDependentDay")
+        dep_tasks_by_MultipleDependentDay = manager.find_dep_on_tasks(MultipleDependentDay, manager.ld.all_task_classes)
+        self.assertEqual(len(dep_tasks_by_MultipleDependentDay), 2)
+        self.assertEqual(sorted(map(lambda i1: i1.__name__, dep_tasks_by_MultipleDependentDay)), ["DDay", "HDay"])
 
     def test_generate_a_task(self):
         dir1 = "/tmp/test_generate_a_task/"

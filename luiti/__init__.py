@@ -63,8 +63,6 @@ from .parameter import ArrowParameter, arrow
 from .mr_test_case import MrTestCase
 
 
-# TODO 整理
-
 config = manager.luiti_config
 
 luigi.tmp_dir = "/tmp"  # default one
