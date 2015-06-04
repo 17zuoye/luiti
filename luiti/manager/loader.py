@@ -47,7 +47,9 @@ class Loader(object):
         assert task_clsname_1 in PackageMap.task_clsname_to_package, u"""
         "%s" cannt be found. Auto converted class name is "%s", file name
         is "luiti_tasks/%s.py", please check it carefully.
-        """ % (s1, task_clsname_1, task_filename_1)
+
+        Already loaded PackageMap.task_clsname_to_package is %s.
+        """ % (s1, task_clsname_1, task_filename_1, PackageMap.task_clsname_to_package)
 
         package_path = PackageMap.task_clsname_to_package[task_clsname_1].__name__ + \
             ".luiti_tasks." + task_filename_1
