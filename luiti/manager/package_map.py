@@ -4,6 +4,7 @@ import os
 import glob
 from inflector import Inflector
 from etl_utils import singleton, cached_property
+from collections import defaultdict
 
 from .config import luiti_config as lc
 from .active_packages import active_packages
@@ -39,4 +40,12 @@ class PackageMapClass(object):
                 task_clsname4 = Inflector().classify(task_filename3)
                 result[task_clsname4] = project1
         return result
+
+    @cached_property
+    def package_to_task_clsnames(self):
+        result = defaultdict(set)
+        for task_clsname, package in self.task_clsname_to_package.iteritems():
+            result[package].add(task_clsname)
+        return result
+
 PackageMap = PackageMapClass()
