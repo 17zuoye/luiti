@@ -111,8 +111,9 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         if self.date_type != 'range':
             new_date = orig_date.floor(self.date_type)
             if orig_date != new_date:
-                print "[reset date by %s] from %s to %s" % \
-                    (self.date_type, orig_date, new_date)
+                if luigi.debug:
+                    print "[reset date by %s] from %s to %s" % \
+                        (self.date_type, orig_date, new_date)
                 self.date_value = new_date
 
     @classmethod

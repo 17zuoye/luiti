@@ -104,3 +104,5 @@ from ..manager import luiti_config, active_packages
 luigi.ensure_active_packages = lambda: active_packages  # make a wrap
 luigi.luiti_config = luiti_config
 luiti_config.linked_luigi = luigi
+
+luigi.debug = False
