@@ -20,7 +20,6 @@ import jsonpickle
 
 
 class LuitiHadoopJobRunner(luigi.hadoop.HadoopJobRunner):
-
     """ overwrite DefaultHadoopJobRunner.class """
 
     # params are copied from HadoopJobRunner
