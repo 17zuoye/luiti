@@ -55,3 +55,6 @@ docs/_build/
 *.yml
 *.jar
 *.coverage.*
+
+bower_components
+node_modules

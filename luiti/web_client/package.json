@@ -1,0 +1,26 @@
+{
+  "name": "web_client",
+  "version": "0.1.4",
+  "description": "luiti server's web client.",
+  "main": "index.js",
+  "dependencies": {
+    "browserify": "~= 10.2",
+    "bootstrap": "~= 3.3",
+    "vis": "~= 4.2",
+    "uri.js": "~= 0.1",
+    "react": "~= 0.13"
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "luiti",
+    "luigi",
+    "DAG",
+    "visualiser"
+  ],
+  "author": "David Chen",
+  "license": "MIT"
+}
