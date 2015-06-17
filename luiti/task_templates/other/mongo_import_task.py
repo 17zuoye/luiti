@@ -22,6 +22,20 @@ class MongoImportTask(TaskBase):
         return self.mongodb_connection[self.database_name]
 
     @cached_property
+    def mongodb_connection_address(self):
+        """ e.g. ('192.168.20.111', 37001) """
+        assert isinstance(self.mongodb_connection.address, tuple)  # new pymongo API
+        return self.mongodb_connection.address
+
+    @cached_property
+    def mongodb_connection_host(self):
+        return self.mongodb_connection_address[0]
+
+    @cached_property
+    def mongodb_connection_port(self):
+        return self.mongodb_connection_address[1]
+
+    @cached_property
     def report_status_collection_model(self):
         return self.mongodb_db[self.report_status_collection_name]
 
@@ -131,15 +145,15 @@ class MongoImportTask(TaskBase):
     @cached_property
     def mongoimport_command(self):
         return "/usr/bin/mongoimport " + \
-            ("--host %s " % self.mongodb_connection.host) + \
-            ("--port %s " % self.mongodb_connection.port) + \
+            ("--host %s " % self.mongodb_connection_host) + \
+            ("--port %s " % self.mongodb_connection_port) + \
             ("--db %s " % self.database_name) + \
             ("--collection %s " % self.collection_name) + \
             ("--file %s " % self.tmp_filepath)
 
     @cached_property
     def mongo_ensure_index(self):
-        if not isinstance(self.index_schema, (str, unicode)):
+        if not isinstance(self.index_schema, basestring):
             self.index_schema = json.dumps(self.index_schema)
         js_str = "db.%s.ensureIndex(%s)" % \
             (self.collection_name, self.index_schema)
@@ -147,7 +161,7 @@ class MongoImportTask(TaskBase):
 
     def mongo_eval(self, js_str):
         return "/usr/bin/mongo " + \
-            ("%s:%s/%s " % (self.mongodb_connection.host, self.mongodb_connection.port, self.database_name)) + \
+            ("%s:%s/%s " % (self.mongodb_connection_host, self.mongodb_connection_port, self.database_name)) + \
             ("--eval \"%s\" " % js_str)
 
     @cached_property

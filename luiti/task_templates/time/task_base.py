@@ -55,7 +55,7 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
 
     @cached_property
     def data_dir(self):
-        assert self.root_dir
+        assert self.root_dir, "self.root_dir should not be None!"
         return os.path.join(self.root_dir, self.date_str)
 
     @cached_property
