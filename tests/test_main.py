@@ -12,20 +12,20 @@ import unittest
 class TestLuiti(unittest.TestCase):
 
     def test_check_date_range(self):
-        from luiti import luigi, TaskWeek, arrow
+        from luiti import luigi, TaskHour, arrow
 
         @luigi.check_date_range()
-        class CheckDateRangeExampleWeek(TaskWeek):
+        class CheckDateRangeExampleHour(TaskHour):
             root_dir = "/foobar"
 
             def run(self):
                 return "data"
 
-        next_week = arrow.now().replace(weeks=1)
+        prev_hour = arrow.now().replace(hours=-1)
 
         # 这周得数据得下周跑
-        self.assertEqual(CheckDateRangeExampleWeek(next_week).run(), 'data')
-        self.assertEqual(CheckDateRangeExampleWeek(arrow.now()).run(), False)
+        self.assertEqual(CheckDateRangeExampleHour(prev_hour).run(), 'data')
+        self.assertEqual(CheckDateRangeExampleHour(arrow.now()).run(), False)
 
     def test_check_runtime_range(self):
         from luiti import luigi, TaskWeek, arrow
