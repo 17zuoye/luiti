@@ -14,6 +14,8 @@ __all__ = [
     "print_files_by_task_cls_and_date_range",
     "soft_delete_files",
     "active_packages",
+
+    "luiti_config",
 ]
 
 from .loader import Loader

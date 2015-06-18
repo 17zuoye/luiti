@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title></title>
+
+        <!-- 1. asserts inherit from luigi -->
+        <script src="/luiti_visualiser/thirdparty/visualsearch/dependencies.js"></script> <!-- jQuery & jQuery UI & underscore & Backbone -->
+
+        <!-- luigi use the old version of bootstrap. -->
+        <link href="/static/visualiser/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <script src="/static/visualiser/lib/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/static/visualiser/lib/mustache.js"></script>
+        <script src="/static/visualiser/js/luigi.js"></script>
+        <script src="/static/visualiser/js/graph.js"></script>
+        <script src="/static/visualiser/js/visualiserApp.js"></script>
+
+        <!-- 2. visjs -->
+        <script src="/luiti_visualiser/thirdparty/vis/vis.min.js"></script>
+        <link rel="stylesheet" href="/luiti_visualiser/thirdparty/vis/vis.min.css">
+
+        <!-- 3. other -->
+        <link media="screen" type="text/css" rel="stylesheet" href="/luiti_visualiser/thirdparty/visualsearch/visualsearch.css">
+        <link media="screen" type="text/css" rel="stylesheet" href="/luiti_visualiser/thirdparty/visualsearch/visualsearch-datauri.css">
+        <script src="/luiti_visualiser/thirdparty/visualsearch/visualsearch.js"></script>
+        <script src="/luiti_visualiser/thirdparty/URI.js/URI.min.js"></script>
+
+        <script src="/luiti_visualiser/thirdparty/react-0.13.3/react.js"></script>
+        <script src="/luiti_visualiser/thirdparty/react-0.13.3/JSXTransformer.js"></script>
+
+        <link rel="stylesheet" href="/luiti_visualiser/thirdparty/font-awesome-4.3.0/css/font-awesome.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style type="text/css">
+            #header .current_params {
+              padding-top: 20px;
+              padding-right: 20px;
+              min-width: 400px;
+              max-width: 800px;
+            }
+            #network_left {
+              width: 70%;
+            }
+            #network {
+              width: 100%;
+              height: 800px;
+              border: 0px solid #444444;
+              background-color: white;
+            }
+            #task_groups {
+              width: 30%;
+            }
+            #nodes_groups .nodes_group ul li {
+              cursor: pointer;
+            }
+            #nodes_groups .nodes_group ul li:hover {
+              background-color: yellow;
+            }
+            #nodes_groups .nodes_group ul li.highlighted {
+              background-color: yellow;
+            }
+        </style>
+    </head>
+
+    <body>
+
+      <div id="header">
+        <h1 class="title pull-left"></h1>
+        <div class="visual_search current_params pull-right"></div>
+        <div class="clearfix"></div>
+      </div>
+
+      <div id="network_wrap">
+        <div id="network_left" class="pull-left">
+          <div id="task_detail" class=""></div>
+          <div id="network"></div>
+        </div>
+        <div id="task_groups" class="pull-right">
+          <div id="task_groups_summary"></div>
+          <div id="nodes_groups"></div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+
+      <!-- TECH NOTE: http://stackoverflow.com/questions/28657210/how-to-wait-for-in-browser-jsx-compiler-before-call-to-render-component -->
+      <script type="text/jsx">
+        // Tech NOTE: React expects a single element to be returned from a render method.
+        var TaskGroupsSummaryView = React.createClass({
+          render: function() {
+            var package_to_task_clsnames = this.props.package_to_task_clsnames;
+            return (
+              <div>
+                <h4>Total tasks count: {env.task_class_names.length}</h4>
+                <div>
+                  <h4>All packages</h4>
+                  <ul>
+                  {this.props.task_package_names.map(function(package_name) {
+                    return <li key={package_name}>{package_name}[{package_to_task_clsnames[package_name].length}]</li>
+                  })}
+                  </ul>
+                </div>
+              </div>
+            );
+          }
+        });
+
+        window.TaskGroupsSummaryView_render = function(task_package_names, package_to_task_clsnames) {
+          React.render(
+            <TaskGroupsSummaryView task_package_names={task_package_names} package_to_task_clsnames={package_to_task_clsnames} key={task_package_names}/>,
+            $("#task_groups_summary")[0]
+          );
+        }
+
+        var TaskGroupsView = React.createClass({
+          getInitialState: function() {
+            return {
+              "nodes_groups": this.props.nodes_groups,
+              "selected_task_id": null,
+            };
+          },
+          render: function() {
+            return (
+              <div>
+                {this.state.nodes_groups.map(function(groups, group_idx) {
+                    return <TaskGroupView groups={groups} key={group_idx} group_idx={group_idx} />;
+                })}
+              </div>
+            );
+          }
+        });
+
+        var TaskGroupView = React.createClass({
+          render: function() {
+            var group_idx = this.props.group_idx + 1;
+            return (
+              <div className="nodes_group" key={group_idx}>
+                <h5>
+                  { group_idx }#Group[{this.props.groups.length}]
+                </h5>
+                <ul>
+                  { this.props.groups.map(function(node_label, node_idx) {
+                      return <TaskInfoView group_idx={group_idx} key={node_idx} node_idx={node_idx} node_label={node_label} />;
+                  }) }
+                </ul>
+              </div>
+            );
+          }
+        });
+
+        var TaskInfoView = React.createClass({
+          handleClick: function(event) {
+            // TODO change to use react.js style.
+            // ref: http://stackoverflow.com/questions/30034265/trigger-child-re-rendering-in-react-js
+            var current_target = $(event.target);
+            current_target.parents("#nodes_groups").find("li").removeClass("highlighted");
+            current_target.addClass("highlighted");
+            return TaskDetailView_render(this.props.node_label);
+          },
+          task_attrs: {},
+          render: function() {
+              var node_label = this.props.node_label;
+              return (
+                <li onClick={this.handleClick} key={this.props.group_idx + ' ' + this.props.node_idx} data-task-id={node_label} >
+                  { node_label.slice(0, node_label.indexOf('(')) + "." + env.nodeid_to_node_dict[node_label].package_name }
+                </li>
+              );
+          }
+        });
+
+        window.TaskGroupsView_render = function(nodes_groups) {
+          React.render(
+            <TaskGroupsView nodes_groups={ nodes_groups } />,
+            $("#nodes_groups")[0]
+          );
+        };
+
+        var TaskDetailView = React.createClass({
+          // show task code
+          render: function() {
+            return (
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td>Task name</td>
+                    <td>{this.props.params.task_name}</td>
+                  </tr>
+                  <tr>
+                    <td>Output HDFS path</td>
+                    <td><a target="_blank" href={this.props.params.hdfs_path_in_hue}>{this.props.params.hdfs_path}</a></td>
+                  </tr>
+                  <tr>
+                    <td>task file path</td>
+                    <td>{this.props.params.task_file}</td>
+                  </tr>
+                  <tr>
+                    <td>task doc</td>
+                    <td><pre className="well">{this.props.params.task_doc}</pre></td>
+                  </tr>
+                </tbody>
+              </table>
+            );
+          }
+        });
+
+        var TaskDetailView_render = function(task_id) {
+          var params = {
+            task_name: env.nodeid_to_node_dict[task_id]["id"],
+            hdfs_path: env.nodeid_to_node_dict[task_id]["data_file"],
+            task_doc: env.nodeid_to_node_dict[task_id]["task_doc"],
+            hdfs_path_in_hue: env.luiti_visualiser_env["hue_url_prefix"] + env.nodeid_to_node_dict[task_id]["data_file"],
+            task_file: env.nodeid_to_node_dict[task_id]["task_file"],
+          }
+          React.render(
+            <TaskDetailView params={params} />,
+            $("#task_detail")[0]
+          );
+        };
+      </script>
+
+      <script src="/luiti_visualiser/javascripts/main.js" type="text/javascript"></script>
+
+      <script type="text/javascript">
+        // TODO 解决 getJSON 和 这里渲染模版得处理逻辑。
+
+        setTimeout(function() {  // Give JSX sometimes to compile and run.
+          TaskGroupsSummaryView_render(env.task_package_names, env.package_to_task_clsnames);
+          TaskGroupsView_render(env.nodes_groups);
+
+          // Select first task instance.
+          $("#nodes_groups").find(".nodes_group ul:first li:first").click();
+        }, 1000);
+
+      </script>
+
+    </body>
+</html>

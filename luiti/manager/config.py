@@ -50,20 +50,19 @@ class LuitiConfigClass(object):
         """
         called by `active_packages`
         """
-        lc = luiti_config
         is_in_luigi_distributed = False
 
         # 1. unmornal task class
-        if lc.curr_project_name == "__main__":
+        if luiti_config.curr_project_name == "__main__":
             return False
 
         # 2. setup current project as root
-        if lc.curr_project_dir is None:
-            lc.curr_project_dir = os.getcwd()  # auto from current class
-        lc.fix_project_dir()
+        if luiti_config.curr_project_dir is None:
+            luiti_config.curr_project_dir = os.getcwd()  # auto from current class
+        luiti_config.fix_project_dir()
 
         def exists(filename1):
-            return os.path.exists(os.path.join(lc.curr_project_dir, filename1))
+            return os.path.exists(os.path.join(luiti_config.curr_project_dir, filename1))
 
         # These files are created by luigi.
         if exists("job-instance.pickle") and exists("job.jar") and \
@@ -73,29 +72,41 @@ class LuitiConfigClass(object):
         # compact with no-luiti project
         is_a_luiti_project = exists("luiti_tasks")
 
-        if lc.curr_project_name is None:
+        if luiti_config.curr_project_name is None:
             if is_in_luigi_distributed:
-                for item1 in os.listdir(lc.curr_project_dir):
+                for item1 in os.listdir(luiti_config.curr_project_dir):
                     # is a valid python package
                     if exists(item1 + "/__init__.py") and \
                             exists(item1 + "/luiti_tasks"):
-                        lc.luiti_tasks_packages.add(lc.import2(item1))
+                        luiti_config.luiti_tasks_packages.add(luiti_config.import2(item1))
             else:
                 # "project_A"
-                curr_project_name = os.path.basename(lc.curr_project_dir)
-                lc.curr_project_name = curr_project_name
+                curr_project_name = luiti_config.get_curr_project_name()
+                luiti_config.curr_project_name = curr_project_name
 
                 # project_A/
-                curr_project_syspath = os.path.dirname(lc.curr_project_dir)
+                curr_project_syspath = os.path.dirname(luiti_config.curr_project_dir)
                 if curr_project_syspath not in sys.path:
                     sys.path.insert(0, curr_project_syspath)
 
-                lc.luiti_tasks_packages.add(lc.import2(lc.curr_project_name))
+                luiti_config.luiti_tasks_packages.add(luiti_config.import2(luiti_config.curr_project_name))
 
                 # 3. ensure other luiti tasks packages can be loaded.
                 if is_a_luiti_project:
-                    lc.import2(
-                        lc.curr_project_name + ".luiti_tasks.__init_luiti")
+                    luiti_config.import2(
+                        luiti_config.curr_project_name + ".luiti_tasks.__init_luiti")
+
+    def get_curr_project_path(self):
+        curr_package_name = self.get_curr_project_name()
+        curr_path = luiti_config.curr_project_dir
+        dir1 = curr_path.rstrip("/")
+        if dir1.split("/").count(curr_package_name) == 2:
+            dir1 = os.path.dirname(dir1)
+        return dir1
+
+    def get_curr_project_name(self):
+        """ a valid Python package path. """
+        return os.path.basename(luiti_config.curr_project_dir)
 
     def fix_project_dir(self):
         """ Fix project_A/project_A/luiti_tasks dir """

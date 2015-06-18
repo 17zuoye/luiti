@@ -19,12 +19,17 @@ setup(
                 'luiti/task_templates/',
                 'luiti/task_templates/time',
                 'luiti/task_templates/other',
+                'luiti/daemon',
+                'luiti/webui',
                 'luiti/utils', ],
     scripts=[
         'bin/luiti',
     ],
 
-    package_data={'luiti': ["luiti/java/*.java", ]},
+    package_data={'luiti': [
+        "luiti/java/*.java",
+        "luiti/webui/*.html",
+    ]},
     include_package_data=True,
 
     zip_safe=False,

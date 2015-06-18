@@ -11,6 +11,7 @@ curr_dir = os.getcwd()
 
 
 def bool_type(arg1):
+    """ a convertor. """
     str_to_val_map = {"false": False, "true": True}
     val1 = str_to_val_map.get(arg1.lower(), None)
     assert val1 is not None, ValueError("[err value] %s" % arg1)
@@ -37,16 +38,19 @@ parser_info = subparsers.add_parser('info', help=u"show a detailed task.")
 
 parser_clean = subparsers.add_parser(
     'clean', help=u"manage files that outputed by luiti tasks.")
+
 parser_run = subparsers.add_parser('run', help=u"run a luiti task.")
 
+parser_webui = subparsers.add_parser('webui', help=u"start a luiti DAG visualiser.")
+
 for parser_1 in [parser_ls, parser_gene, parser_info,
-                 parser_clean, parser_run]:
+                 parser_clean, parser_run, parser_webui]:
     parser_1.add_argument(
         "--project-dir",
         help=u"force use another project directory.",
         default=curr_dir)
 
-    if parser_1 not in [parser_ls, parser_new]:
+    if parser_1 not in [parser_ls, parser_new, parser_webui]:
         parser_1.add_argument(
             '--task-name',
             help=u"必须指定任务名称，比如 --task-name=Redmine5954ParentReportWeek",
@@ -85,6 +89,7 @@ else:
 
     if "project_dir" in args_main:
         lc.curr_project_dir = args_main.project_dir
+lc.curr_project_dir = lc.curr_project_dir or curr_dir
 
 
 # check valid project.
@@ -144,3 +149,7 @@ if subcommand == "run":
 
     # 2. run it!
     luigi.run(main_task_cls=curr_task)
+
+if subcommand == "webui":
+    from luiti.daemon.server import run
+    run()
