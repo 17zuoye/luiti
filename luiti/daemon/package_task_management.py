@@ -55,6 +55,16 @@ class PackageTaskManagementClass(object):
         return manager.PackageMap.task_clsname_to_package
 
     @cached_property
+    def task_clsname_to_source_file(self):
+        import inspect
+
+        def get_pyfile(task_cls):
+            f1 = inspect.getfile(task_cls)
+            return f1.replace(".pyc", ".py")
+
+        return {task_cls.__name__: get_pyfile(task_cls) for task_cls in self.task_classes}
+
+    @cached_property
     def task_clsname_to_package_name(self):
         return {t1: p1.__name__ for t1, p1 in self.task_clsname_to_package.iteritems()}
 

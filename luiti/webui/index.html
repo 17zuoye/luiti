@@ -174,24 +174,26 @@
         var TaskDetailView = React.createClass({
           // show task code
           render: function() {
+            var ref = this.props.params;
+
             return (
               <table className="table">
                 <tbody>
                   <tr>
                     <td>Task name</td>
-                    <td>{this.props.params.task_name}</td>
+                    <td>{ref.task_name}</td>
                   </tr>
                   <tr>
                     <td>Output HDFS path</td>
-                    <td><a target="_blank" href={this.props.params.hdfs_path_in_hue}>{this.props.params.hdfs_path}</a></td>
+                    <td><a target="_blank" href={ref.hdfs_path_in_hue}>{ref.hdfs_path}</a></td>
                   </tr>
                   <tr>
                     <td>task file path</td>
-                    <td>{this.props.params.task_file}</td>
+                    <td><a target="_blank" href={ref.task_file_url}>{ref.task_file}</a></td>
                   </tr>
                   <tr>
                     <td>task doc</td>
-                    <td><pre className="well">{this.props.params.task_doc}</pre></td>
+                    <td><pre className="well">{ref.task_doc}</pre></td>
                   </tr>
                 </tbody>
               </table>
@@ -200,12 +202,18 @@
         });
 
         var TaskDetailView_render = function(task_id) {
+          var ref = env.nodeid_to_node_dict[task_id];
+
+          var task_file = ref["task_file"];
+          var task_package = task_file.split("/")[0];
+
           var params = {
-            task_name: env.nodeid_to_node_dict[task_id]["id"],
-            hdfs_path: env.nodeid_to_node_dict[task_id]["data_file"],
-            task_doc: env.nodeid_to_node_dict[task_id]["task_doc"],
-            hdfs_path_in_hue: env.luiti_visualiser_env["hue_url_prefix"] + env.nodeid_to_node_dict[task_id]["data_file"],
-            task_file: env.nodeid_to_node_dict[task_id]["task_file"],
+            task_name: ref["id"],
+            hdfs_path: ref["data_file"],
+            task_doc: ref["task_doc"],
+            hdfs_path_in_hue: env.luiti_visualiser_env["hue_url_prefix"] + ref["data_file"],
+            task_file: task_file,
+            task_file_url: "/luiti/code/" + task_package + "/" + ref["label"],
           }
           React.render(
             <TaskDetailView params={params} />,

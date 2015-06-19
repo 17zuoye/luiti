@@ -27,6 +27,7 @@ setup(
 
     package_data={'luiti': [
         "luiti/java/*.java",
+
         "luiti/webui/*.html",
         "luiti/webui/assets/*/**",
         "luiti/webui/bower_components/*/*",
@@ -38,26 +39,23 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
+        # 1. luigi related
         "luigi         == 1.1.2",
-        "snakebite     == 2.5.2",
+        "snakebite     ~= 2.5",
+        "protobuf      ~= 2.6",
+        "tornado       ~= 4.0",
+        "mechanize     ~= 0.2",
+        "python-daemon ~= 1.6",
+        "MySQL-python  ~= 1.2",
+        "pymongo       ~= 2.7",
 
-        "arrow         == 0.4.4",
-        "inflector     == 2.0.11",
-        "protobuf      == 2.6.1",
-        "tornado       == 4.0.2",
-        "mechanize     == 0.2.5",
-
-        "python-daemon == 1.6.1",
-        "MySQL-python  >= 1.2.5",
-        "pymongo       >= 2.7.2",
-
-        "etl_utils     == 0.1.10",
-        "tabulate      == 0.7.3",
-        "pipetools     == 0.2.7",
-
+        # 2. luiti self
+        "etl_utils     ~= 0.1",
+        "arrow         ~= 0.4",
+        "inflector     ~= 2.0",
+        "pygments      ~=2.0",
         "ujson",
         "jsonpickle",
-
         "six",
     ],
     classifiers=[
