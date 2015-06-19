@@ -28,13 +28,14 @@ before_script:
   - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
   - ssh -o StrictHostKeyChecking=no localhost true
 
+  - ./install-dependencies.sh
+
 script:
-  - python setup.py install
   - nosetests
   - coverage run --source=luiti setup.py test
 
 after_failure:
-  - cat /home/travis/build/spotify/luigi/.tox/cdh/log/cdh-1.log
+  - cat /home/travis/build/17zuoye/luiti/.tox/cdh/log/cdh-1.log
 
 after_success:
   - coveralls
