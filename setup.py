@@ -29,9 +29,9 @@ setup(
         "luiti/java/*.java",
         "luiti/webui/*.html",
         "luiti/webui/assets/*/**",
-        "luiti/webui/bower_components/*/**",
-        "luiti/webui/bower_components/bootstrap/dist/js/bootstrap.min.js",
-        "luiti/webui/bower_components/bootstrap/dist/css/bootstrap.min.css",
+        "luiti/webui/bower_components/*/*",
+        "luiti/webui/bower_components/*/*/*",
+        "luiti/webui/bower_components/*/*/*/*",
     ]},
     include_package_data=True,
 

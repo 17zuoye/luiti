@@ -16,6 +16,9 @@ import tornado.ioloop
 import tornado.netutil
 import tornado.web
 import tornado.escape
+from tornado.log import enable_pretty_logging
+enable_pretty_logging()
+
 
 import logging
 logger = logging.getLogger("luiti.server")
@@ -23,7 +26,7 @@ logger = logging.getLogger("luiti.server")
 
 # 1. Setup business package env
 # list current package's related tasks, group by package name.
-from .web_handler import api_handlers
+from .web_handlers import web_handlers
 
 
 def app(scheduler):
@@ -32,7 +35,7 @@ def app(scheduler):
         # "autoreload": True
     }
 
-    api_app = tornado.web.Application(api_handlers, **settings)
+    api_app = tornado.web.Application(web_handlers, **settings)
     return api_app
 
 

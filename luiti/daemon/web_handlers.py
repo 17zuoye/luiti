@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 
-__all__ = ["api_handlers"]
+__all__ = ["web_handlers"]
 
 import pkg_resources
 import tornado.web
@@ -31,7 +31,7 @@ class InitDataHandler(tornado.web.RequestHandler):
         self.write(PTM.get_env())
 
 
-api_handlers = [
+web_handlers = [
     (r'/luiti/assets/thirdparty/(.*)', tornado.web.StaticFileHandler, {'path': assets_thirdparty_dir}),
     (r'/luiti/assets/main/(.*)', tornado.web.StaticFileHandler, {'path': assets_main_dir}),
     (r'/luiti/dag_visualiser', IndexHandler, {}),
