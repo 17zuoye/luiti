@@ -10,15 +10,10 @@ from __future__ import unicode_literals
 
 import os
 import sys
-curr_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, curr_dir)
-
 from copy import deepcopy
-
-import logging
-logger = logging.getLogger("luiti.server")
-
 import pkg_resources
+import logging
+
 import tornado.httpclient
 import tornado.httpserver
 import tornado.ioloop
@@ -26,23 +21,24 @@ import tornado.netutil
 import tornado.web
 import tornado.escape
 
+logger = logging.getLogger("luiti.server")
+luiti_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # 1. Setup business package env
-from luiti import manager, luigi, arrow, ArrowParameter
+from luiti import manager, arrow, ArrowParameter
 current_package_name = manager.luiti_config.get_curr_project_name()
 current_package_path = manager.luiti_config.get_curr_project_path()
 sys.path.insert(0, current_package_path)
 
 import importlib
 __init_luiti = importlib.import_module(current_package_name + ".luiti_tasks.__init_luiti")
+# TODO assert must setup `luiti_visualiser_env`
 luiti_visualiser_env = getattr(__init_luiti, "luiti_visualiser_env")
 
 
-result = manager.load_all_tasks()
-
 # list current package's related tasks, group by package name.
-
-
+result = manager.load_all_tasks()
 task_classes = [i1["task_cls"] for i1 in result["success"]]
 task_class_names = [i1.__name__ for i1 in task_classes]
 task_clsname_to_package = manager.PackageMap.task_clsname_to_package
@@ -222,9 +218,14 @@ def app(scheduler):
         "autoreload": True
     }
 
+    assets_main_dir = os.path.join(luiti_dir, "webui/assets")
+    assets_thirdparty_dir = os.path.join(luiti_dir, "webui/bower_components")
+    assert os.path.isdir(assets_main_dir), "%s is not exists!" % assets_main_dir
+    assert os.path.isdir(assets_thirdparty_dir), "%s is not exists!" % assets_thirdparty_dir
+
     handlers = [
-        (r'/luiti_visualiser/(.*)', tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(os.path.abspath(__file__)), "luiti_visualiser")}),
-        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': os.path.join(luigi.__path__[0], "static")}),
+        (r'/luiti/assets/thirdparty/(.*)', tornado.web.StaticFileHandler, {'path': assets_thirdparty_dir}),
+        (r'/luiti/assets/main/(.*)', tornado.web.StaticFileHandler, {'path': assets_main_dir}),
         (r'/luiti/dag_visualiser', IndexHandler, {}),
         (r'/luiti/dag_visualiser/init_data.json', InitDataHandler, {}),
         (r'/', tornado.web.RedirectHandler, {"url": "/luiti/dag_visualiser"})

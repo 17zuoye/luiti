@@ -1,0 +1,36 @@
+{
+  "name": "luiti",
+  "version": "0.1.4",
+  "homepage": "https://github.com/17zuoye/luiti",
+  "authors": [
+    "David Chen <mvjome@gmail.com>"
+  ],
+  "description": "luiti server's web ui.",
+  "main": "luiti.js",
+  "moduleType": [
+    "amd"
+  ],
+  "dependencies": {
+    "bootstrap": "~= 3.3",
+    "vis": "~= 4.2",
+    "uri.js": "~= 1.15",
+    "visualsearch": "~= 0.5",
+    "react": "~= 0.13"
+  },
+  "devDependencies": {
+  },
+  "keywords": [
+    "luiti",
+    "luigi",
+    "DAG",
+    "visualiser"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

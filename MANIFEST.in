@@ -1,5 +1,14 @@
-include luiti/java/*.java
 include changelog.markdown
 include README.markdown
 
+include luiti/java/*.java
+
+include luiti/webui/assets/*/**
+
 include luiti/webui/*.html
+include luiti/webui/bower_components/*/**
+include luiti/webui/bower_components/bootstrap/dist/**
+
+# unknown bug, need to be included in a explicit style.
+include luiti/webui/bower_components/bootstrap/dist/js/bootstrap.min.js
+include luiti/webui/bower_components/bootstrap/dist/css/bootstrap.min.css
