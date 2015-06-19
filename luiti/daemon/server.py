@@ -9,7 +9,6 @@ Draw DAG tasks under selected parameters.
 from __future__ import unicode_literals
 
 import os
-import sys
 from copy import deepcopy
 import pkg_resources
 import logging
@@ -26,25 +25,8 @@ luiti_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # 1. Setup business package env
-from luiti import manager, arrow, ArrowParameter
-current_package_name = manager.luiti_config.get_curr_project_name()
-current_package_path = manager.luiti_config.get_curr_project_path()
-sys.path.insert(0, current_package_path)
-
-import importlib
-__init_luiti = importlib.import_module(current_package_name + ".luiti_tasks.__init_luiti")
-# TODO assert must setup `luiti_visualiser_env`
-luiti_visualiser_env = getattr(__init_luiti, "luiti_visualiser_env")
-
-
 # list current package's related tasks, group by package name.
-result = manager.load_all_tasks()
-task_classes = [i1["task_cls"] for i1 in result["success"]]
-task_class_names = [i1.__name__ for i1 in task_classes]
-task_clsname_to_package = manager.PackageMap.task_clsname_to_package
-task_clsname_to_package_name = {t1: p1.__name__ for t1, p1 in task_clsname_to_package.iteritems()}
-task_package_names = sorted([p1.__name__ for p1 in set(task_clsname_to_package.values())])
-package_to_task_clsnames = {package.__name__: list(task_clsnames) for package, task_clsnames in manager.PackageMap.package_to_task_clsnames.iteritems()}
+from .package_task_management import PTM
 
 
 def generate_task_doc(ti):
@@ -136,18 +118,22 @@ def split_edges_into_groups(edges, nodes, task_instances):
     result = sorted(result, key=lambda i1: (-len(i1), i1))
     return result
 
+from luiti import arrow, ArrowParameter
+
 
 def generate_current_env():
     # yesterday
     sample_day = ArrowParameter.now().replace(days=-1).floor("day")
 
-    accepted_date_values = sorted(map(str, arrow.Arrow.range("day", ArrowParameter.get(luiti_visualiser_env["date_begin"]), ArrowParameter.get(luiti_visualiser_env["date_end"]))))
+    PTM.current_luiti_visualiser_env["date_end"] = PTM.current_luiti_visualiser_env.get("date_end", ArrowParameter.now().replace(days=-1).floor("day").format("YYYY-MM-DD"))
+
+    accepted_date_values = sorted(map(str, arrow.Arrow.range("day", ArrowParameter.get(PTM.current_luiti_visualiser_env["date_begin"]), ArrowParameter.get(PTM.current_luiti_visualiser_env["date_end"]))))
 
     config = {
         "accepted_params": {
             "date_value": accepted_date_values,
-            "task_cls": task_class_names,
-            "luiti_package": task_package_names,
+            "task_cls": PTM.task_class_names,
+            "luiti_package": PTM.task_package_names,
         }
     }
 
@@ -155,12 +141,12 @@ def generate_current_env():
         "date_value": str(sample_day),
     }
 
-    for task_param, task_param_opt in luiti_visualiser_env["task_params"].iteritems():
+    for task_param, task_param_opt in PTM.current_luiti_visualiser_env["task_params"].iteritems():
         config["accepted_params"][task_param] = task_param_opt["values"]
         current_params[task_param] = task_param_opt["default"]
 
-    task_instances = map(lambda i1: i1(date_value=sample_day), task_classes)
-    selected_task_instances = filter(lambda ti: ti.package_name in luiti_visualiser_env["package_config"]["defaults"], task_instances)
+    task_instances = map(lambda i1: i1(date_value=sample_day), PTM.task_classes)
+    selected_task_instances = filter(lambda ti: ti.package_name in PTM.current_luiti_visualiser_env["package_config"]["defaults"], task_instances)
 
     nodes = ([generate_a_node(ti) for ti in selected_task_instances])
     nodeid_to_node_dict = {node["id"]: node for node in nodes}
@@ -176,12 +162,12 @@ def generate_current_env():
         "title": __doc__.strip().split("\n")[0],
         "readme": __doc__,
         "current_params": current_params,
-        "luiti_visualiser_env": luiti_visualiser_env,
+        "luiti_visualiser_env": PTM.current_luiti_visualiser_env,
 
-        "task_class_names": task_class_names,
-        "task_package_names": task_package_names,
-        "task_clsname_to_package_name": task_clsname_to_package_name,
-        "package_to_task_clsnames": package_to_task_clsnames,
+        "task_class_names": PTM.task_class_names,
+        "task_package_names": PTM.task_package_names,
+        "task_clsname_to_package_name": PTM.task_clsname_to_package_name,
+        "package_to_task_clsnames": PTM.package_to_task_clsnames,
 
         "nodes": nodes,
         "edges": edges,

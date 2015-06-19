@@ -151,5 +151,5 @@ if subcommand == "run":
     luigi.run(main_task_cls=curr_task)
 
 if subcommand == "webui":
-    from luiti.daemon.server import run
+    from luiti.daemon import run
     run()
