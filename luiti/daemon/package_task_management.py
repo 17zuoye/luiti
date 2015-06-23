@@ -167,6 +167,10 @@ class PackageTaskManagementClass(object):
             "edges": edges,
             "nodes_groups": nodes_groups_in_view,
             "nodeid_to_node_dict": nodeid_to_node_dict,
+
+            "errors": {
+                "load_tasks": self.load_all_tasks_result["failure"],
+            }
         }
 
 

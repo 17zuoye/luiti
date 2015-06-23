@@ -61,27 +61,75 @@
 
     <body>
 
+      <div id="load_tasks_errors"></div>
+
       <div id="header">
-        <h1 class="title pull-left"></h1>
-        <div class="visual_search current_params pull-right"></div>
-        <div class="clearfix"></div>
+        <h1 className="title pull-left"></h1>
+        <div className="visual_search current_params pull-right"></div>
+        <div className="clearfix"></div>
       </div>
 
       <div id="network_wrap">
-        <div id="network_left" class="pull-left">
-          <div id="task_detail" class=""></div>
+        <div id="network_left" className="pull-left">
+          <div id="task_detail" className=""></div>
           <div id="network"></div>
         </div>
-        <div id="task_groups" class="pull-right">
+        <div id="task_groups" className="pull-right">
           <div id="task_groups_summary"></div>
           <div id="nodes_groups"></div>
         </div>
-        <div class="clearfix"></div>
+        <div className="clearfix"></div>
       </div>
 
       <!-- TECH NOTE: http://stackoverflow.com/questions/28657210/how-to-wait-for-in-browser-jsx-compiler-before-call-to-render-component -->
       <script type="text/jsx">
         // Tech NOTE: React expects a single element to be returned from a render method.
+
+        var LoadTasksErrorsView = React.createClass({
+          render: function() {
+            return (
+              <div className="panel panel-default">
+                <div className="panel-heading">
+                  <h3 className="panel-title">Load Tasks Errors</h3>
+                </div>
+                <div className="panel-body">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <td>Task Class</td>
+                        <td>Errors Backtraces</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      { this.props.errors.load_tasks.map(function(err_info, err_idx) {
+                        return (
+                          <tr key={err_idx} >
+                            <td>
+                              { err_info.task_clsname }
+                            </td>
+                            <td>
+                              <pre>
+                                { err_info.err }
+                              </pre>
+                            </td>
+                          </tr>
+                        );
+                      }) }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          }
+        });
+
+        window.LoadTasksErrorsView_render = function(errors) {
+          React.render(
+            <LoadTasksErrorsView errors={errors} />,
+            $("#load_tasks_errors")[0]
+          );
+        };
+
         var TaskGroupsSummaryView = React.createClass({
           render: function() {
             var package_to_task_clsnames = this.props.package_to_task_clsnames;
@@ -229,6 +277,8 @@
         // TODO 解决 getJSON 和 这里渲染模版得处理逻辑。
 
         setTimeout(function() {  // Give JSX sometimes to compile and run.
+          LoadTasksErrorsView_render(env.errors);
+
           TaskGroupsSummaryView_render(env.task_package_names, env.package_to_task_clsnames);
           TaskGroupsView_render(env.nodes_groups);
 
