@@ -25,7 +25,8 @@ class PackageTaskManagementClass(object):
 
     @cached_property
     def current_init_luiti(self):
-        return importlib.import_module(self.current_package_name + ".luiti_tasks.__init_luiti")
+        __init_luiti = self.current_package_name + ".luiti_tasks.__init_luiti"
+        return importlib.import_module(__init_luiti)
 
     @cached_property
     def current_package_path(self):
@@ -74,7 +75,8 @@ class PackageTaskManagementClass(object):
 
     @cached_property
     def package_to_task_clsnames(self):
-        return {package.__name__: list(task_clsnames) for package, task_clsnames in manager.PackageMap.package_to_task_clsnames.iteritems()}
+        return {package.__name__: list(task_clsnames) for package, task_clsnames
+                in manager.PackageMap.package_to_task_clsnames.iteritems()}
 
     def split_edges_into_groups(self, edges, nodes, task_instances):
         edges = deepcopy(edges)
@@ -113,12 +115,13 @@ class PackageTaskManagementClass(object):
         return result
 
     def get_env(self):
-        # yesterday
-        sample_day = ArrowParameter.now().replace(days=-1).floor("day")
+        yester_day = ArrowParameter.now().replace(days=-1).floor("day")
+        yester_day_str = yester_day.format("YYYY-MM-DD")
+        PTM.current_luiti_visualiser_env["date_end"] = PTM.current_luiti_visualiser_env.get("date_end", yester_day_str)
 
-        PTM.current_luiti_visualiser_env["date_end"] = PTM.current_luiti_visualiser_env.get("date_end", ArrowParameter.now().replace(days=-1).floor("day").format("YYYY-MM-DD"))
-
-        accepted_date_values = sorted(map(str, arrow.Arrow.range("day", ArrowParameter.get(PTM.current_luiti_visualiser_env["date_begin"]), ArrowParameter.get(PTM.current_luiti_visualiser_env["date_end"]))))
+        date_begin = ArrowParameter.get(PTM.current_luiti_visualiser_env["date_begin"])
+        date_end = ArrowParameter.get(PTM.current_luiti_visualiser_env["date_end"])
+        accepted_date_values = sorted(map(str, arrow.Arrow.range("day", date_begin, date_end)))
 
         config = {
             "accepted_params": {
@@ -129,15 +132,16 @@ class PackageTaskManagementClass(object):
         }
 
         current_params = {
-            "date_value": str(sample_day),
+            "date_value": str(yester_day),
         }
 
         for task_param, task_param_opt in PTM.current_luiti_visualiser_env["task_params"].iteritems():
             config["accepted_params"][task_param] = task_param_opt["values"]
             current_params[task_param] = task_param_opt["default"]
 
-        task_instances = map(lambda i1: i1(date_value=sample_day), PTM.task_classes)
-        selected_task_instances = filter(lambda ti: ti.package_name in PTM.current_luiti_visualiser_env["package_config"]["defaults"], task_instances)
+        task_instances = map(lambda i1: i1(date_value=yester_day), PTM.task_classes)
+        default_packages = PTM.current_luiti_visualiser_env["package_config"]["defaults"]
+        selected_task_instances = filter(lambda ti: ti.package_name in default_packages, task_instances)
 
         nodes = ([Template.a_node(ti) for ti in selected_task_instances])
         nodeid_to_node_dict = {node["id"]: node for node in nodes}
