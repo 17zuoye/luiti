@@ -58,8 +58,6 @@ window.render_visualSearch = function(container_id, default_params, vs_accepted_
           };
         });
 
-        console.log("[vs search]", query, searchCollection, result);
-
         if (_.has(result, "date_value")) {  // and is valid.
           var url = URI(window.location);
           url._parts.query = "";
@@ -95,6 +93,11 @@ window.render_visualSearch = function(container_id, default_params, vs_accepted_
   // Run it!
   var visualSearch = VS.init(vs_config);
   visualSearch.searchBox.value(load_params());
+
+  // support click query
+  var searchBox = visualSearch.options.container.find(".VS-icon-search");
+  searchBox.click(vs_config.callbacks.search);
+  searchBox.css("cursor", "pointer");
 
   return visualSearch;
 };
