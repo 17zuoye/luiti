@@ -41,12 +41,13 @@ class CodeShowHandler(tornado.web.RequestHandler):
 
         def __missing__(self, source_file):
             source_code = file(source_file).read()
-
             formatter = HtmlFormatter(linenos=True)
+
+            path_html = u"""<div>source_file: %s</div>""" % source_file
             code_html = highlight(source_code, PythonLexer(), formatter)
             css_html = u"""<style type="text/css">%s</style>""" % formatter.get_style_defs('.highlight')
 
-            return code_html + css_html
+            return path_html + code_html + css_html
 
     code_cache = CodeCache()
 
