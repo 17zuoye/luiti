@@ -27,6 +27,7 @@ class PackageTaskManagementClass(object):
 
     @cached_property
     def current_init_luiti(self):
+        self.current_package_path  # insert pacakge into sys.path
         __init_luiti = self.current_package_name + ".luiti_tasks.__init_luiti"
         return importlib.import_module(__init_luiti)
 
