@@ -64,21 +64,21 @@
       <div id="load_tasks_errors"></div>
 
       <div id="header">
-        <h1 className="title pull-left"></h1>
-        <div className="visual_search current_params pull-right"></div>
-        <div className="clearfix"></div>
+        <h1 class="title pull-left"></h1>
+        <div class="visual_search current_params pull-right"></div>
+        <div class="clearfix"></div>
       </div>
 
       <div id="network_wrap">
-        <div id="network_left" className="pull-left">
-          <div id="task_detail" className=""></div>
+        <div id="network_left" class="pull-left">
+          <div id="task_detail" class=""></div>
           <div id="network"></div>
         </div>
-        <div id="task_groups" className="pull-right">
+        <div id="task_groups" class="pull-right">
           <div id="task_groups_summary"></div>
           <div id="nodes_groups"></div>
         </div>
-        <div className="clearfix"></div>
+        <div class="clearfix"></div>
       </div>
 
       <!-- TECH NOTE: http://stackoverflow.com/questions/28657210/how-to-wait-for-in-browser-jsx-compiler-before-call-to-render-component -->
@@ -277,7 +277,9 @@
         // TODO 解决 getJSON 和 这里渲染模版得处理逻辑。
 
         setTimeout(function() {  // Give JSX sometimes to compile and run.
-          LoadTasksErrorsView_render(env.errors);
+          if (env.errors.length) {
+            LoadTasksErrorsView_render(env.errors);
+          };
 
           TaskGroupsSummaryView_render(env.task_package_names, env.package_to_task_clsnames);
           TaskGroupsView_render(env.nodes_groups);
