@@ -17,12 +17,6 @@ class IndexHandler(tornado.web.RequestHandler):
 
     def get(self):
         # one query key has multiple values
-        # TODO
-        """
-        date_values = map(lambda i1: ArrowParameter.get(i1), self.get_query_arguments("date_value"))
-        gids = map(int, self.get_query_arguments("gid"))
-        subjects = self.get_query_arguments("subject")
-        """
         self.render("index.html")
 
     def get_template_path(self):
@@ -32,7 +26,10 @@ class IndexHandler(tornado.web.RequestHandler):
 class InitDataHandler(tornado.web.RequestHandler):
 
     def get(self):
-        self.write(PTM.get_env())
+        params = self.request.query_arguments
+        data = PTM.get_env(params)
+
+        self.write(data)
 
 
 class CodeShowHandler(tornado.web.RequestHandler):

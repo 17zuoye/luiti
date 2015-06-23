@@ -47,6 +47,8 @@ window.render_visualSearch = function(container_id, default_params, vs_accepted_
       search: function(query, searchCollection) {
         var result = {};
         var self = visualSearch;  // link to self
+
+        // build a url query
         _.map(self.searchQuery.facets(), function(facet) {
           var kv = _.pairs(facet)[0];
           if (_.has(result, kv[0])) {
@@ -55,13 +57,16 @@ window.render_visualSearch = function(container_id, default_params, vs_accepted_
             result[kv[0]] = [kv[1]];
           };
         });
+
         console.log("[vs search]", query, searchCollection, result);
+
         if (_.has(result, "date_value")) {  // and is valid.
           var url = URI(window.location);
           url._parts.query = "";
           url.setQuery(result);
           window.location = url.build();
         }
+
         return false;
       },
       facetMatches: function(callback) {
@@ -100,12 +105,7 @@ window.render_header_title = function(title) {
   $("body #header .title").html(env.title);
 };
 
-
-
-$.getJSON("/luiti/dag_visualiser/init_data.json", function(data) {
-  window.env = data;
-  console.log("load data", env);
-
+window.render_all = function(env) {
   // 1. render network
   render_network(env.nodes,
                  env.edges,
@@ -123,4 +123,13 @@ $.getJSON("/luiti/dag_visualiser/init_data.json", function(data) {
   // Other views.
   render_header_title(env.title);
 
+}
+
+var init_data_url = "/luiti/dag_visualiser/init_data.json" + location.search;
+
+$.getJSON(init_data_url, function(data) {
+  window.env = data;
+  console.log("load data", env);
+
+  render_all(env);
 });

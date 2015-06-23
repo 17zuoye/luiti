@@ -7,7 +7,9 @@ import sys
 from etl_utils import singleton, cached_property
 import importlib
 from copy import deepcopy
-from .. import arrow, ArrowParameter
+import itertools
+import luigi
+from ..parameter import arrow, ArrowParameter
 
 from .. import manager
 from .template import Template
@@ -114,7 +116,7 @@ class PackageTaskManagementClass(object):
         result = sorted(result, key=lambda i1: (-len(i1), i1))
         return result
 
-    def get_env(self):
+    def get_env(self, raw_params=dict()):
         yester_day = ArrowParameter.now().replace(days=-1).floor("day")
         yester_day_str = yester_day.format("YYYY-MM-DD")
         PTM.current_luiti_visualiser_env["date_end"] = PTM.current_luiti_visualiser_env.get("date_end", yester_day_str)
@@ -135,13 +137,44 @@ class PackageTaskManagementClass(object):
             "date_value": str(yester_day),
         }
 
-        for task_param, task_param_opt in PTM.current_luiti_visualiser_env["task_params"].iteritems():
+        # get config from current package's luiti_visualiser_env
+        accepted_params = PTM.current_luiti_visualiser_env["task_params"]
+        for task_param, task_param_opt in accepted_params.iteritems():
             config["accepted_params"][task_param] = task_param_opt["values"]
             current_params[task_param] = task_param_opt["default"]
 
-        task_instances = map(lambda i1: i1(date_value=yester_day), PTM.task_classes)
+        # **remove** luiti_package and task_cls query str
+        query_params = {k1: v1 for k1, v1 in raw_params.iteritems() if k1 in accepted_params or k1 == "date_value"}
+        query_params_with_kv_array = list()
+        for k1, v1 in query_params.iteritems():
+            k1_v2_list = list()
+            for v2 in v1:
+                # Fix overwrited params type in luiti
+                # TODO Fix luigi.Task#__eq__
+                if k1 == "date_value":
+                    v2 = ArrowParameter.get(v2)
+                else:
+                    v2 = unicode(v2)
+                k1_v2_list.append({"key": k1, "val": v2})
+            query_params_with_kv_array.append(k1_v2_list)
+
+        possible_params = list(itertools.product(*query_params_with_kv_array))
+
+        task_instances = list()
+        for ti in PTM.task_classes:
+            for _params in possible_params:
+                _real_task_params = dict()
+                for kv2 in _params:
+                    has_key = hasattr(ti, kv2["key"])
+                    is_luigi_params = isinstance(getattr(ti, kv2["key"], None), luigi.Parameter)
+                    if has_key and is_luigi_params:
+                        _real_task_params[kv2["key"]] = kv2["val"]
+                task_instance = ti(**_real_task_params)
+                task_instances.append(task_instance)
+
         default_packages = PTM.current_luiti_visualiser_env["package_config"]["defaults"]
-        selected_task_instances = filter(lambda ti: ti.package_name in default_packages, task_instances)
+        selected_packages = raw_params.get("luiti_package", default_packages)
+        selected_task_instances = filter(lambda ti: ti.package_name in selected_packages, task_instances)
 
         nodes = ([Template.a_node(ti) for ti in selected_task_instances])
         nodeid_to_node_dict = {node["id"]: node for node in nodes}
