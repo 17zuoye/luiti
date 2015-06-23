@@ -63,8 +63,8 @@ class CodeShowHandler(tornado.web.RequestHandler):
 
 
 web_handlers = [
-    (r'/luiti/assets/thirdparty/(.*)', tornado.web.StaticFileHandler, {'path': assets_thirdparty_dir}),
-    (r'/luiti/assets/main/(.*)', tornado.web.StaticFileHandler, {'path': assets_main_dir}),
+    (r'/bower_components/(.*)', tornado.web.StaticFileHandler, {'path': assets_thirdparty_dir}),
+    (r'/assets/(.*)', tornado.web.StaticFileHandler, {'path': assets_main_dir}),
     (r'/luiti/code/([^/]+)/([^/]+)', CodeShowHandler, {}),
     (r'/luiti/dag_visualiser', IndexHandler, {}),
     (r'/luiti/dag_visualiser/init_data.json', InitDataHandler, {}),
