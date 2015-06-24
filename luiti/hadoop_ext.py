@@ -10,8 +10,8 @@ from luigi.hadoop import flatten
 from itertools import groupby
 
 from .utils import ExtUtils, TargetUtils
-from .parameter import ArrowParameter
 from etl_utils import cached_property
+from .luigi_extensions import TaskInit
 
 # See benchmark at https://gist.github.com/mvj3/02dca2bcc8b0ef1bbfb5
 # force to use faster ujson, or it's meaningless to use JSON format with no performance gained.
@@ -126,9 +126,7 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
     def __init__(self, *args, **kwargs):
         """ 参考 TaskBase, 确保在 继承时还可以有TaskBase的覆写日期功能。 """
         super(HadoopExt, self).__init__(*args, **kwargs)
-        self.orig_date_value = self.orig_date_value or \
-            ArrowParameter.get(self.date_value)
-        self.reset_date()
+        TaskInit.setup(self)
 
     # overwrite
     def job_runner(self):
