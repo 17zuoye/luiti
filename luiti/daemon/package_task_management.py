@@ -162,9 +162,14 @@ class PackageTaskManagementClass(object):
 
         possible_params = map(list, itertools.product(*selected_params_with_kv_array))
 
-        task_instances = list()
+        selected_task_cls_names = raw_params.get("task_cls", self.task_class_names)
+
+        total_task_instances = list()
         _default_params = [{"key": k1, "val": v1} for k1, v1 in default_params.iteritems()]
         for ti in PTM.task_classes:
+            if ti.__name__ not in selected_task_cls_names:
+                continue
+
             for _params in possible_params:
                 _real_task_params = dict()
                 for kv2 in (_default_params + _params):
@@ -173,12 +178,12 @@ class PackageTaskManagementClass(object):
                     if has_key and is_luigi_params:
                         _real_task_params[kv2["key"]] = kv2["val"]
                 task_instance = ti(**_real_task_params)
-                task_instances.append(task_instance)
+                total_task_instances.append(task_instance)
 
         default_packages = PTM.current_luiti_visualiser_env["package_config"]["defaults"]
         selected_packages = raw_params.get("luiti_package", default_packages)
 
-        selected_task_instances = filter(lambda ti: ti.package_name in selected_packages, task_instances)
+        selected_task_instances = filter(lambda ti: ti.package_name in selected_packages, total_task_instances)
 
         nodes = ([Template.a_node(ti) for ti in selected_task_instances])
         nodeid_to_node_dict = {node["id"]: node for node in nodes}
