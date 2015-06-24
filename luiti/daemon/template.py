@@ -28,8 +28,8 @@ class Template(object):
                   "task_file": ti.task_class.__module__.replace(".", "/") + ".py",
                   "package_name": ti.package_name,
 
-                  "tasks_self_dep_on": [],
-                  "tasks_dep_on_self": [],
+                  "tasks_self_dep_on": str([]),
+                  "tasks_dep_on_self": str([]),
                   }
         result["size"] = 20
         return result

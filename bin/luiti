@@ -42,6 +42,9 @@ parser_clean = subparsers.add_parser(
 parser_run = subparsers.add_parser('run', help=u"run a luiti task.")
 
 parser_webui = subparsers.add_parser('webui', help=u"start a luiti DAG visualiser.")
+parser_webui.add_argument(
+    '--luiti-packages', default="",
+    help=u"Add luiti packages, separated by comma.", required=False, )
 
 for parser_1 in [parser_ls, parser_gene, parser_info,
                  parser_clean, parser_run, parser_webui]:
@@ -149,5 +152,9 @@ if subcommand == "run":
     luigi.run(main_task_cls=curr_task)
 
 if subcommand == "webui":
+    # add other luiti packages.
+    for luiti_package in args_main.luiti_packages.split(","):
+        luigi.plug_packages(luiti_package)
+
     from luiti.daemon import run
     run()
