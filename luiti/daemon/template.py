@@ -26,7 +26,11 @@ class Template(object):
                   "data_file": ti.data_file,
                   "task_doc": Template.task_doc(ti),
                   "task_file": ti.task_class.__module__.replace(".", "/") + ".py",
-                  "package_name": ti.package_name}
+                  "package_name": ti.package_name,
+
+                  "tasks_self_dep_on": [],
+                  "tasks_dep_on_self": [],
+                  }
         result["size"] = 20
         return result
 

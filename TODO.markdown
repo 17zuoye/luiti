@@ -4,4 +4,4 @@
 
 
 ## WebUI
-1. search tasks in different packages dynamically.
+1. Add task dep infos.
