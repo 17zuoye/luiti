@@ -121,7 +121,7 @@ window.render_all = function(env) {
                  });
 
   // 2. render visualSearch
-  render_visualSearch(".visual_search", env.current_params, env.config.accepted_params);
+  render_visualSearch(".visual_search", env.default_params, env.config.accepted_params);
 
   // Other views.
   render_header_title(env.title);

@@ -134,15 +134,16 @@ class PackageTaskManagementClass(object):
             }
         }
 
-        current_params = {
+        # assign default params
+        default_params = {
             "date_value": str(yester_day),
+            # to insert more key-value
         }
-
         # get config from current package's luiti_visualiser_env
         accepted_params = PTM.current_luiti_visualiser_env["task_params"]
         for task_param, task_param_opt in accepted_params.iteritems():
             config["accepted_params"][task_param] = task_param_opt["values"]
-            current_params[task_param] = task_param_opt["default"]
+            default_params[task_param] = task_param_opt["default"]
 
         # **remove** luiti_package and task_cls query str
         query_params = {k1: v1 for k1, v1 in raw_params.iteritems() if k1 in accepted_params or k1 == "date_value"}
@@ -159,13 +160,14 @@ class PackageTaskManagementClass(object):
                 k1_v2_list.append({"key": k1, "val": v2})
             query_params_with_kv_array.append(k1_v2_list)
 
-        possible_params = list(itertools.product(*query_params_with_kv_array))
+        possible_params = map(list, itertools.product(*query_params_with_kv_array))
 
         task_instances = list()
+        _default_params = [{"key": k1, "val": v1} for k1, v1 in default_params.iteritems()]
         for ti in PTM.task_classes:
             for _params in possible_params:
                 _real_task_params = dict()
-                for kv2 in _params:
+                for kv2 in (_default_params + _params):
                     has_key = hasattr(ti, kv2["key"])
                     is_luigi_params = isinstance(getattr(ti, kv2["key"], None), luigi.Parameter)
                     if has_key and is_luigi_params:
@@ -189,7 +191,7 @@ class PackageTaskManagementClass(object):
             "config": config,
 
             "title": "A DAG timely visualiser.",
-            "current_params": current_params,
+            "default_params": default_params,
             "luiti_visualiser_env": PTM.current_luiti_visualiser_env,
 
             "task_class_names": PTM.task_class_names,
