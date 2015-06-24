@@ -15,6 +15,7 @@ setup(
     packages=[
                 'luiti',
                 'luiti/luigi_decorators',
+                'luiti/luigi_extensions',
                 'luiti/manager',
                 'luiti/task_templates/',
                 'luiti/task_templates/time',

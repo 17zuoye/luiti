@@ -21,3 +21,15 @@ class TaskInit(object):
 
         self.data_file      # force load it now, or `output` still load it.
         self.package_name   # force load it now, use to serialize
+
+        # Fix luigi.Task#__eq__
+        """
+        >>> t1.param_args
+        (<Arrow [2015-06-23T00:00:00+08:00]>,)
+        >>> map(str, t1.param_args)
+        ['2015-06-23T00:00:00+08:00']
+
+        def __eq__(self, other):
+            return self.__class__ == other.__class__ and self.param_args == other.param_args
+        """
+        self.param_args = map(str, self.param_args)
