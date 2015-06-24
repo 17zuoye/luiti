@@ -128,7 +128,7 @@ window.render_all = function(env) {
 
 }
 
-var init_data_url = "/luiti/dag_visualiser/init_data.json" + location.search;
+var init_data_url = "init_data.json" + location.search;
 
 $.getJSON(init_data_url, function(data) {
   window.env = data;

@@ -60,10 +60,12 @@ class CodeShowHandler(tornado.web.RequestHandler):
 
 
 web_handlers = [
-    (r'/bower_components/(.*)', tornado.web.StaticFileHandler, {'path': assets_thirdparty_dir}),
-    (r'/assets/(.*)', tornado.web.StaticFileHandler, {'path': assets_main_dir}),
+    # make a static HTML vis URL
+    (r'/luiti/bower_components/(.*)', tornado.web.StaticFileHandler, {'path': assets_thirdparty_dir}),
+    (r'/luiti/assets/(.*)', tornado.web.StaticFileHandler, {'path': assets_main_dir}),
+
     (r'/luiti/code/([^/]+)/([^/]+)', CodeShowHandler, {}),
     (r'/luiti/dag_visualiser', IndexHandler, {}),
-    (r'/luiti/dag_visualiser/init_data.json', InitDataHandler, {}),
+    (r'/luiti/init_data.json', InitDataHandler, {}),
     (r'/', tornado.web.RedirectHandler, {"url": "/luiti/dag_visualiser"})
 ]
