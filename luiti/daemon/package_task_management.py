@@ -146,9 +146,9 @@ class PackageTaskManagementClass(object):
             default_params[task_param] = task_param_opt["default"]
 
         # **remove** luiti_package and task_cls query str
-        query_params = {k1: v1 for k1, v1 in raw_params.iteritems() if k1 in accepted_params or k1 == "date_value"}
-        query_params_with_kv_array = list()
-        for k1, v1 in query_params.iteritems():
+        selected_params = {k1: v1 for k1, v1 in raw_params.iteritems() if k1 in accepted_params or k1 == "date_value"}
+        selected_params_with_kv_array = list()
+        for k1, v1 in selected_params.iteritems():
             k1_v2_list = list()
             for v2 in v1:
                 # Fix overwrited params type in luiti
@@ -158,9 +158,9 @@ class PackageTaskManagementClass(object):
                 else:
                     v2 = unicode(v2)
                 k1_v2_list.append({"key": k1, "val": v2})
-            query_params_with_kv_array.append(k1_v2_list)
+            selected_params_with_kv_array.append(k1_v2_list)
 
-        possible_params = map(list, itertools.product(*query_params_with_kv_array))
+        possible_params = map(list, itertools.product(*selected_params_with_kv_array))
 
         task_instances = list()
         _default_params = [{"key": k1, "val": v1} for k1, v1 in default_params.iteritems()]
@@ -177,6 +177,7 @@ class PackageTaskManagementClass(object):
 
         default_packages = PTM.current_luiti_visualiser_env["package_config"]["defaults"]
         selected_packages = raw_params.get("luiti_package", default_packages)
+
         selected_task_instances = filter(lambda ti: ti.package_name in selected_packages, task_instances)
 
         nodes = ([Template.a_node(ti) for ti in selected_task_instances])
@@ -187,11 +188,13 @@ class PackageTaskManagementClass(object):
         nodes_groups = PTM.split_edges_into_groups(edges, nodes, selected_task_instances)
         nodes_groups_in_view = [sorted(list(nodes_set)) for nodes_set in nodes_groups]
 
+        selected_params["luiti_package"] = selected_packages
+
         return {
             "config": config,
 
             "title": "A DAG timely visualiser.",
-            "default_params": default_params,
+            "selected_params": selected_params,
             "luiti_visualiser_env": PTM.current_luiti_visualiser_env,
 
             "task_class_names": PTM.task_class_names,

@@ -30,11 +30,11 @@ window.render_network = function(nodes, edges, container_id, click_event) {
 };
 
 
-window.render_visualSearch = function(container_id, default_params, vs_accepted_params) {
+window.render_visualSearch = function(container_id, selected_params, vs_accepted_params) {
   var env_config_visualSearch = {
     "facet_values": (function() {
         var task_namespaces = _.map(["task_cls", "luiti_package"], function(param) { return {"label": param, "category": "Namespaces"}; });
-        var task_params= _.map(_.keys(default_params), function(param) { return {"label": param, "category": "Params"}; });
+        var task_params= _.map(_.keys(selected_params), function(param) { return {"label": param, "category": "Params"}; });
       return task_params.concat(task_namespaces);
     })(),
   };
@@ -79,7 +79,7 @@ window.render_visualSearch = function(container_id, default_params, vs_accepted_
   // Example format is: visualSearch.searchBox.value("Country: US State: \"New York\" Key: Value")
   var load_params = function() {
     // support same key with multiple values.
-    var query_opts = _.extend({}, default_params, URI.parseQuery(URI(window.location)._parts.query));
+    var query_opts = _.extend({}, selected_params, URI.parseQuery(URI(window.location)._parts.query));
     var vs_values = [];
     _.each(query_opts, function(opt_values, opt_key) {
       if (!_.isArray(opt_values)) { opt_values = [opt_values] };
@@ -121,7 +121,7 @@ window.render_all = function(env) {
                  });
 
   // 2. render visualSearch
-  render_visualSearch(".visual_search", env.default_params, env.config.accepted_params);
+  render_visualSearch(".visual_search", env.selected_params, env.config.accepted_params);
 
   // Other views.
   render_header_title(env.title);
