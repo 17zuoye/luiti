@@ -24,8 +24,21 @@ class MongoImportTask(TaskBase):
     @cached_property
     def mongodb_connection_address(self):
         """ e.g. ('192.168.20.111', 37001) """
-        assert isinstance(self.mongodb_connection.address, tuple)  # new pymongo API
-        return self.mongodb_connection.address
+        methods = dir(self.mongodb_connection)
+        result = None
+
+        # Compact with new pymongo API
+        if "address" in methods:
+            result = getattr(self.mongodb_connection, "address")
+        if "connection" in methods:
+            result = getattr(self.mongodb_connection, "connection").address
+        if ("port" in methods) and ("host" in methods):
+            result = (self.mongodb_connection.host, self.mongodb_connection.port)
+        if result:
+            assert len(result) == 2, result
+            return result
+        else:
+            raise ValueError(self.mongodb_connection)
 
     @cached_property
     def mongodb_connection_host(self):
