@@ -116,9 +116,7 @@ if subcommand == "generate":
     manager.generate_a_task(args_main.task_name, lc.curr_project_dir)
 
 if subcommand == "info":
-    dep_tasks_on_curr_task = manager.find_dep_on_tasks(
-        curr_task, manager.ld.all_task_classes)
-    manager.Table.print_task_info(curr_task, dep_tasks_on_curr_task)
+    manager.Table.print_task_info(curr_task)
 
 if subcommand == "clean":
     dep_tasks_on_curr_task = [curr_task]

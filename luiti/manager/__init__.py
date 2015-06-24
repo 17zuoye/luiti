@@ -62,3 +62,5 @@ class LazyData(object):
         return load_all_tasks()
 
 ld = LazyData()
+Dep.ld = ld
+Table.ld = ld

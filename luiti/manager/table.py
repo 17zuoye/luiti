@@ -1,9 +1,13 @@
 # -*-coding:utf-8-*-
 
 import os
+from .dep import Dep
 
 
 class Table(object):
+    """
+    print task and package info.
+    """
 
     @staticmethod
     def puts(task_table, task_headers, **opts):
@@ -77,7 +81,10 @@ class Table(object):
         print "\n" * 3
 
     @staticmethod
-    def print_task_info(curr_task, dep_tasks_on_curr_task):
+    def print_task_info(curr_task):
+        dep_tasks_on_curr_task = Dep.find_dep_on_tasks(
+            curr_task, Table.ld.all_task_classes)
+
         task_headers = ["Task name", curr_task.__name__]
         task_content = [
             ["Tasks self dep on", str(list(curr_task._ref_tasks))],
