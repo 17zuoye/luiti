@@ -19,13 +19,18 @@ class Table(object):
     @staticmethod
     def print_all_tasks(result):
         """ input from Loader.load_all_tasks """
-        def task_cls_inspect(cls):
-            return cls.__name__
 
-        task_headers = ["", "All Tasks"]
-        task_table = [[idx1 + 1, task_cls_inspect(item1['task_cls'])]
+        def task_inspect(task_cls, order):
+            return [
+                order,
+                task_cls.__name__,
+                task_cls.__module__.split(".")[0]
+            ]
+
+        task_headers = ["", "All Tasks", "luiti_package"]
+        task_table = [task_inspect(item1['task_cls'], idx1 + 1)
                       for idx1, item1 in enumerate(sorted(result['success']))]
-        task_table.extend([["total", len(result['success'])]])
+        task_table.extend([["total", len(result['success']), ""]])
 
         Table.puts(task_table, task_headers, tablefmt="grid")
 
