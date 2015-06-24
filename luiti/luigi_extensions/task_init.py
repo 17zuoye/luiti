@@ -8,6 +8,9 @@ class TaskInit(object):
 
     @staticmethod
     def setup(task_instance):
+        """
+        Let luigi'Task supports luiti's operations.
+        """
         self = task_instance
 
         # 在跨期的时候用于判断 该周应该是该周的哪些天。

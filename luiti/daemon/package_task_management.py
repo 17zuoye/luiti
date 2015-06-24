@@ -200,6 +200,7 @@ class PackageTaskManagementClass(object):
 
             "title": "A DAG timely visualiser.",
             "selected_params": selected_params,
+            "default_params": default_params,
             "luiti_visualiser_env": PTM.current_luiti_visualiser_env,
 
             "task_class_names": PTM.task_class_names,
