@@ -164,3 +164,12 @@ class HadoopExt(luigi.hadoop.JobTask, ExtUtils.ExtendClass):
 
     def mrtest_attrs(self):
         return dict()
+
+    def reader(self, input_stream):
+        """
+        Overwrite luigi, skip blank line
+        """
+        for line in input_stream:
+            line = line.strip()
+            if line:
+                yield line,
