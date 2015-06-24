@@ -257,6 +257,10 @@
                     <td>task doc</td>
                     <td><pre className="well">{ref.task_doc}</pre></td>
                   </tr>
+                  <tr>
+                    <td>tasks self dep on</td>
+                    <td><pre className="well">{ref.tasks_self_dep_on}</pre></td>
+                  </tr>
                 </tbody>
               </table>
             );
@@ -276,6 +280,7 @@
             hdfs_path_in_hue: env.luiti_visualiser_env["hue_url_prefix"] + ref["data_file"],
             task_file: task_file,
             task_file_url: "/luiti/code/" + task_package + "/" + ref["label"],
+            tasks_self_dep_on: ref.tasks_self_dep_on,
           }
           React.render(
             <TaskDetailView params={params} />,

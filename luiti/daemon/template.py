@@ -28,7 +28,8 @@ class Template(object):
                   "task_file": ti.task_class.__module__.replace(".", "/") + ".py",
                   "package_name": ti.package_name,
 
-                  "tasks_self_dep_on": str([]),
+                  # TODO design a new graph algorithm
+                  "tasks_self_dep_on": str(ti._ref_tasks),
                   "tasks_dep_on_self": str([]),
                   }
         result["size"] = 20
