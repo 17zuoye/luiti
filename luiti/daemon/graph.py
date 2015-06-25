@@ -33,7 +33,7 @@ class Graph(object):
             deps = task_instance.requires()
             if not isinstance(deps, list):
                 deps = [deps]
-            deps = filter(lambda i1: str(i1) != "RootTask()", deps)
+            deps = filter(lambda i1: hasattr(i1, "package_name"), deps)
             # filter is very important, or can't find dict data.
             deps = filter(lambda i1: i1.package_name in selected_packages, deps)
             return deps

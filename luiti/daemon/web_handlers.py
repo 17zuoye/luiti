@@ -6,7 +6,7 @@ import pkg_resources
 import tornado.web
 
 from .web_assets import assets_main_dir, assets_thirdparty_dir
-from .package_task_management import PTM
+from .ptm import PTM
 
 from pygments import highlight
 from pygments.lexers import PythonLexer

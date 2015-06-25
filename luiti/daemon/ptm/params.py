@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 
-from ..parameter import arrow, ArrowParameter
+from ...parameter import arrow, ArrowParameter
 from etl_utils import cached_property
 import itertools
 import luigi
@@ -8,7 +8,7 @@ import luigi
 # TODO use a builder
 
 
-class ParamsInWebUI(object):
+class Params(object):
     """
     The module belongs to .package_task_management.PTM
 

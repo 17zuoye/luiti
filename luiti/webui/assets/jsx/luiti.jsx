@@ -203,7 +203,6 @@ var TaskDetailView = React.createClass({
 var TaskLinkView = React.createClass({
   render: function() {
     var task_name = this.props.task_name;
-    window.task_name = task_name;
     var task_info = env.task_instance_repr_to_info[task_name] || {};
 
     var url = URI(window.location);
