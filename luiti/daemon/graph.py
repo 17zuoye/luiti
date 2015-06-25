@@ -25,8 +25,8 @@ class Graph(object):
         uniq_set = set(task_instances)
 
         # 1. raw `requires` and `invert` informations.
-        task_instances_to_their_direct_requires = defaultdict(list)
-        task_instances_to_their_direct_upons = defaultdict(list)
+        task_instances_to_their_direct_requires = defaultdict(set)
+        task_instances_to_their_direct_upons = defaultdict(set)
 
         def read_requires_from_task(task_instance):
             deps = task_instance.requires()
@@ -41,30 +41,32 @@ class Graph(object):
             task_instances_to_their_direct_requires[task_instance] = selected_deps
 
             for dep1 in selected_deps:
-                task_instances_to_their_direct_upons[dep1].append(task_instance)
+                task_instances_to_their_direct_upons[dep1].add(task_instance)
 
         # 2. unfold `requires` and `invert` informations.
-        task_instances_to_their_total_requires = defaultdict(list)
-        task_instances_to_their_total_upons = defaultdict(list)
+        task_instances_to_their_total_requires = defaultdict(set)
+        task_instances_to_their_total_upons = defaultdict(set)
 
-        def add_deps(store, tree, store_node, fetch_node=None):
+        def add_total_deps(store, tree, store_node, fetch_node=None):
             """ add all recursive dependencies.
             1. store_node used to store in a result store.
             2. fetch_node used to fetch dependencies from a tree.
             """
             fetch_node = fetch_node or store_node
             deps = tree[store_node]
-            store[store_node].extend(deps)
+
+            for d1 in deps:
+                store[store_node].add(d1)
 
             for d1 in deps:
                 if store_node == d1:
                     continue
                 if d1 not in store[store_node]:
-                    add_deps(store, tree, store_node, d1)
+                    add_total_deps(store, tree, store_node, d1)
 
         for task_instance in task_instances:
-            add_deps(task_instances_to_their_total_requires, task_instances_to_their_direct_requires, task_instance)
-            add_deps(task_instances_to_their_total_upons, task_instances_to_their_direct_upons, task_instance)
+            add_total_deps(task_instances_to_their_total_requires, task_instances_to_their_direct_requires, task_instance)
+            add_total_deps(task_instances_to_their_total_upons, task_instances_to_their_direct_upons, task_instance)
 
         def stringify(default_dict):
             return {str(k1): map(str, vs1) for k1, vs1 in default_dict.iteritems()}
