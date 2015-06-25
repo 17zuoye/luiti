@@ -4,7 +4,11 @@ __all__ = ["stringify"]
 
 
 def stringify(default_dict):
-    """ make an object can be serialized by JSON. """
+    """
+    make an object can be serialized by JSON.
+
+    This function is general, just for luiti.daemon .
+    """
     result = dict()
     for k1, vs1 in default_dict.iteritems():
         if isinstance(vs1, (list, set)):

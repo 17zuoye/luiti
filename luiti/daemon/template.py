@@ -27,10 +27,6 @@ class Template(object):
                   "task_doc": Template.task_doc(ti),
                   "task_file": ti.task_class.__module__.replace(".", "/") + ".py",
                   "package_name": ti.package_name,
-
-                  # TODO design a new graph algorithm
-                  "tasks_self_dep_on": str(ti._ref_tasks),
-                  "tasks_dep_on_self": str([]),
                   }
         result["size"] = 20
         return result

@@ -71,17 +71,34 @@ class Graph(object):
             add_total_deps(task_instances_to_their_total_requires, task_instances_to_their_direct_requires, task_instance)
             add_total_deps(task_instances_to_their_total_upons, task_instances_to_their_direct_upons, task_instance)
 
-        result = {
-            "requires": {
-                "direct": stringify(task_instances_to_their_direct_requires),
-                "total": stringify(task_instances_to_their_total_requires),
-            },
-            "upons": {
-                "direct": stringify(task_instances_to_their_direct_upons),
-                "total": stringify(task_instances_to_their_total_upons),
-            },
+        def generate_result(_type="python"):
+            """
+            provide two versions of graph infos.
+
+            1. one for front-end javascript.
+            2. another for API python.
+            """
+            def wrap(obj):
+                if _type == "python":
+                    return obj
+                if _type == "json":
+                    return stringify(obj)
+
+            return {
+                "requires": {
+                    "direct": wrap(task_instances_to_their_direct_requires),
+                    "total": wrap(task_instances_to_their_total_requires),
+                },
+                "upons": {
+                    "direct": wrap(task_instances_to_their_direct_upons),
+                    "total": wrap(task_instances_to_their_total_upons),
+                },
+            }
+
+        return {
+            "python": generate_result("python"),
+            "json": generate_result("json"),
         }
-        return result
 
     @staticmethod
     def split_edges_into_groups(edges, nodes, task_instances):

@@ -21,15 +21,35 @@ class Query(object):
         default_packages = self.current_luiti_visualiser_env["package_config"]["defaults"]
 
         selected_packages = raw_params.get("luiti_package", default_packages)
-        selected_task_cls_names = raw_params.get("task_cls", self.task_class_names)
+        selected_task_cls_names = set(raw_params.get("task_cls", []))
+        selected_task_cls_names  # s
 
         selected_query = self.generate_selected_query(default_query, raw_params, selected_packages)
 
-        total_task_instances = self.generate_total_task_instances(default_query, selected_query, selected_task_cls_names)
-        graph_infos = Graph.analysis_dependencies_between_nodes(total_task_instances, selected_packages)
+        # total_task_instances = self.generate_total_task_instances(default_query, selected_query, selected_task_cls_names)
+        # TODO filter nodes
+        total_task_instances = self.generate_total_task_instances(default_query, selected_query, self.task_class_names)
+        graph_infos_data = Graph.analysis_dependencies_between_nodes(total_task_instances, selected_packages)
+        graph_infos_python = graph_infos_data["python"]
 
         selected_task_instances = filter(lambda ti: ti.package_name in selected_packages, total_task_instances)
         selected_task_instances = sorted(list(set(selected_task_instances)))
+
+        # To avoid only self is in the graph.
+        # If select task class, then to find linked task instances.
+        if selected_task_cls_names:
+            pure_selected_task_instances = [ti for ti in selected_task_instances if ti.task_clsname in selected_task_cls_names]
+            pure_linked = set([])
+            for ti in pure_selected_task_instances:
+                for t2 in graph_infos_python["requires"]["total"][ti]:
+                    pure_linked.add(t2)
+                for t2 in graph_infos_python["upons"]["total"][ti]:
+                    pure_linked.add(t2)
+            # filter that tasks are linked, in current task_classes.
+            selected_task_instances = [ti for ti in selected_task_instances if ti in pure_linked]
+            selected_task_instances.extend(pure_selected_task_instances)
+        # import pdb
+        # pdb.set_trace()
 
         nodes = ([Template.a_node(ti) for ti in selected_task_instances])
         nodeid_to_node_dict = {node["id"]: node for node in nodes}
@@ -59,7 +79,7 @@ class Query(object):
             "nodes_groups": nodes_groups_in_view,
             "nodeid_to_node_dict": nodeid_to_node_dict,
 
-            "graph_infos": graph_infos,
+            "graph_infos": graph_infos_data["json"],
             "task_instance_repr_to_info": task_instance_repr_to_info,
 
             "errors": {

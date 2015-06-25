@@ -10,9 +10,9 @@ import luigi
 
 class Params(object):
     """
-    The module belongs to .package_task_management.PTM
+    The module belongs to .__ptm__.PTM
 
-    Related to query.
+    Related to browser query.
     """
     def yesterday(self):
         return ArrowParameter.now().replace(days=-1).floor("day")
@@ -69,6 +69,7 @@ class Params(object):
         return selected_query
 
     def generate_total_task_instances(self, default_query, selected_query, selected_task_cls_names):
+        # 1. build possible params.
         # **remove** luiti_package and task_cls query str
         selected_query_with_kv_array = list()
         for k1, v1 in selected_query.iteritems():
@@ -89,6 +90,7 @@ class Params(object):
 
         possible_params = map(list, itertools.product(*selected_query_with_kv_array))
 
+        # 2. and generate task instances.
         total_task_instances = list()
         _default_query = [{"key": key, "val": val} for key, val in default_query.iteritems()]
         for ti in self.task_classes:
