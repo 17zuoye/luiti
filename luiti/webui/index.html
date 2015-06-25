@@ -96,7 +96,11 @@
       </div>
 
       <!-- TECH NOTE: http://stackoverflow.com/questions/28657210/how-to-wait-for-in-browser-jsx-compiler-before-call-to-render-component -->
-      <script type="text/jsx">
+      <script type="text/jsx_manually">
+        // 'use strict';
+
+        // orig is <script type="text/jsx">, but we want to load jsx scripts manually here, iteract with Ajax loading JSON data.
+
         // Tech NOTE: React expects a single element to be returned from a render method.
 
         var LoadTasksErrorsView = React.createClass({
@@ -137,7 +141,7 @@
           }
         });
 
-        window.LoadTasksErrorsView_render = function(errors) {
+        var LoadTasksErrorsView_render = function(errors) {
           React.render(
             <LoadTasksErrorsView errors={errors} />,
             $("#load_tasks_errors")[0]
@@ -172,7 +176,7 @@
           }
         });
 
-        window.TaskGroupsSummaryView_render = function(task_package_names, package_to_task_clsnames, selected_luiti_packages) {
+        var TaskGroupsSummaryView_render = function(task_package_names, package_to_task_clsnames, selected_luiti_packages) {
           React.render(
             <TaskGroupsSummaryView task_package_names={task_package_names} package_to_task_clsnames={package_to_task_clsnames} selected_luiti_packages={selected_luiti_packages} key={task_package_names}/>,
             $("#task_groups_summary")[0]
@@ -235,7 +239,7 @@
           }
         });
 
-        window.TaskGroupsView_render = function(nodes_groups) {
+        var TaskGroupsView_render = function(nodes_groups) {
           React.render(
             <TaskGroupsView nodes_groups={ nodes_groups } />,
             $("#nodes_groups")[0]
@@ -296,27 +300,28 @@
             $("#task_detail")[0]
           );
         };
+
+        var bundle = {
+          "views": {
+            "LoadTasksErrors": LoadTasksErrorsView,
+            "TaskGroupsSummary": TaskGroupsSummaryView,
+            "TaskGroups": TaskGroupsView,
+            "TaskGroup": TaskGroupView,
+            "TaskInfo": TaskInfoView,
+            "TaskDetail": TaskDetailView,
+          },
+          "renders": {
+            "LoadTasksErrors": LoadTasksErrorsView_render,
+            "TaskGroupsSummary": TaskGroupsSummaryView_render,
+            "TaskGroups": TaskGroupsView_render,
+            "TaskDetail": TaskDetailView_render,
+          },
+        }
+        bundle;  // return eval value.
       </script>
 
 
       <script src="assets/javascripts/luiti.js" type="text/javascript"></script>
-
-      <script type="text/javascript">
-        // TODO 解决 getJSON 和 这里渲染模版得处理逻辑。
-
-        setTimeout(function() {  // Give JSX sometimes to compile and run.
-          if (env.errors.length) {
-            LoadTasksErrorsView_render(env.errors);
-          };
-
-          TaskGroupsSummaryView_render(env.task_package_names, env.package_to_task_clsnames, env.selected_params.luiti_package);
-          TaskGroupsView_render(env.nodes_groups);
-
-          // Select first task instance.
-          $("#nodes_groups").find(".nodes_group ul:first li:first").click();
-        }, 1000);
-
-      </script>
 
     </body>
 </html>

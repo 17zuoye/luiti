@@ -126,6 +126,22 @@ window.render_all = function(env) {
   // Other views.
   render_header_title(env.title);
 
+  // 解决 getJSON 和 这里渲染模版得处理逻辑。
+  var jsx_orig = $("script[type='text/jsx_manually']").html();
+  var jsx_js = JSXTransformer.transform(jsx_orig).code;
+  var jsx_runtime = eval(jsx_js);
+  var renders = jsx_runtime.renders;
+
+  if (env.errors.length) {
+    renders.LoadTasksErrors(env.errors);
+  };
+
+  renders.TaskGroupsSummary(env.task_package_names, env.package_to_task_clsnames, env.selected_params.luiti_package);
+  renders.TaskGroups(env.nodes_groups);
+
+  // Select first task instance.
+  $("#nodes_groups").find(".nodes_group ul:first li:first").click();
+
 }
 
 var init_data_url = "init_data.json" + location.search;
