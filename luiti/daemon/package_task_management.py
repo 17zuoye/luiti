@@ -7,11 +7,13 @@ import sys
 from etl_utils import singleton, cached_property
 import importlib
 import inspect
+from copy import deepcopy
 
 from .. import manager
 from .template import Template
 from .params_in_webui import ParamsInWebUI
 from .graph import Graph
+from .utils import stringify
 
 
 @singleton()
@@ -78,6 +80,15 @@ class PackageTaskManagementClass(ParamsInWebUI):
         return {package.__name__: list(task_clsnames) for package, task_clsnames
                 in manager.PackageMap.package_to_task_clsnames.iteritems()}
 
+    def generate_task_instance_repr_to_info(self, task_instances):
+        result = dict()
+        for ti in task_instances:
+            param_kwargs = deepcopy(ti.param_kwargs)
+            if "pool" in param_kwargs:
+                del param_kwargs["pool"]
+            result[str(ti)] = {"task_cls": ti.task_clsname, "param_kwargs": stringify(param_kwargs)}
+        return result
+
     def get_env(self, raw_params=dict()):
         query_params = self.generate_query_params()
         default_query = self.generate_default_query(query_params)
@@ -90,7 +101,7 @@ class PackageTaskManagementClass(ParamsInWebUI):
         selected_query = self.generate_selected_query(default_query, raw_params, selected_packages)
 
         total_task_instances = self.generate_total_task_instances(default_query, selected_query, selected_task_cls_names)
-        graph_infos = Graph.analysis_dependencies_between_nodes(total_task_instances)
+        graph_infos = Graph.analysis_dependencies_between_nodes(total_task_instances, selected_packages)
 
         selected_task_instances = filter(lambda ti: ti.package_name in selected_packages, total_task_instances)
         selected_task_instances = sorted(list(set(selected_task_instances)))
@@ -102,6 +113,8 @@ class PackageTaskManagementClass(ParamsInWebUI):
 
         nodes_groups = Graph.split_edges_into_groups(edges, nodes, selected_task_instances)
         nodes_groups_in_view = [sorted(list(nodes_set)) for nodes_set in nodes_groups]
+
+        task_instance_repr_to_info = self.generate_task_instance_repr_to_info(selected_task_instances)
 
         return {
             "query_params": query_params,
@@ -122,6 +135,7 @@ class PackageTaskManagementClass(ParamsInWebUI):
             "nodeid_to_node_dict": nodeid_to_node_dict,
 
             "graph_infos": graph_infos,
+            "task_instance_repr_to_info": task_instance_repr_to_info,
 
             "errors": {
                 "load_tasks": self.load_all_tasks_result["failure"],

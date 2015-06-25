@@ -172,22 +172,62 @@ var TaskDetailView = React.createClass({
           </tr>
           <tr>
             <td>tasks requires direct</td>
-            <td><pre className="well">{JSON.stringify(graph_infos.requires.direct[ref.task_name])}</pre></td>
+            <td>
+              <TaskLinksView task_names={ graph_infos.requires.direct[ref.task_name] } />
+            </td>
           </tr>
           <tr>
             <td>tasks requires total</td>
-            <td><pre className="well">{JSON.stringify(graph_infos.requires.total[ref.task_name])}</pre></td>
+            <td>
+              <TaskLinksView task_names={ graph_infos.requires.total[ref.task_name] } />
+            </td>
           </tr>
           <tr>
             <td>tasks upons direct</td>
-            <td><pre className="well">{JSON.stringify(graph_infos.upons.direct[ref.task_name])}</pre></td>
+            <td>
+              <TaskLinksView task_names={ graph_infos.upons.direct[ref.task_name] } />
+            </td>
           </tr>
           <tr>
             <td>tasks upons total</td>
-            <td><pre className="well">{JSON.stringify(graph_infos.upons.total[ref.task_name])}</pre></td>
+            <td>
+              <TaskLinksView task_names={ graph_infos.upons.total[ref.task_name] } />
+            </td>
           </tr>
         </tbody>
       </table>
+    );
+  }
+});
+
+var TaskLinkView = React.createClass({
+  render: function() {
+    var task_name = this.props.task_name;
+    window.task_name = task_name;
+    var task_info = env.task_instance_repr_to_info[task_name] || {};
+
+    var url = URI(window.location);
+    var query = _.extend({}, task_info.param_kwargs, {"task_cls": task_info.task_cls})
+    url.addQuery(query);
+    var link = url.build();
+
+    return (
+      <span>
+        <a href={ link }>{ task_name }</a>
+      </span>
+    );
+  }
+});
+
+var TaskLinksView = React.createClass({
+  render: function() {
+    var task_names = this.props.task_names;
+    return (
+      <pre className="well">
+        { (task_names || []).map(function(dep1) {
+          return <TaskLinkView task_name={dep1}/>
+        }) }
+     </pre>
     );
   }
 });

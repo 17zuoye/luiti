@@ -125,6 +125,10 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
         return self.__class__
 
     @cached_property
+    def task_clsname(self):
+        return self.task_class.__name__
+
+    @cached_property
     def package_name(self):
         module_name = self.task_class.__module__
         package_name = module_name.split(".")[0]

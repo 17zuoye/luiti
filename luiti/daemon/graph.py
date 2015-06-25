@@ -6,6 +6,7 @@ from copy import deepcopy
 from collections import defaultdict
 
 from .template import Template
+from .utils import stringify
 
 
 class Graph(object):
@@ -14,7 +15,7 @@ class Graph(object):
     """
 
     @staticmethod
-    def analysis_dependencies_between_nodes(task_instances):
+    def analysis_dependencies_between_nodes(task_instances, selected_packages):
         """
         Based on Data:
         1. Task_instances
@@ -32,7 +33,9 @@ class Graph(object):
             deps = task_instance.requires()
             if not isinstance(deps, list):
                 deps = [deps]
-            deps = filter(lambda i1: i1, deps)
+            deps = filter(lambda i1: str(i1) != "RootTask()", deps)
+            # filter is very important, or can't find dict data.
+            deps = filter(lambda i1: i1.package_name in selected_packages, deps)
             return deps
 
         for task_instance in task_instances:
@@ -67,9 +70,6 @@ class Graph(object):
         for task_instance in task_instances:
             add_total_deps(task_instances_to_their_total_requires, task_instances_to_their_direct_requires, task_instance)
             add_total_deps(task_instances_to_their_total_upons, task_instances_to_their_direct_upons, task_instance)
-
-        def stringify(default_dict):
-            return {str(k1): map(str, vs1) for k1, vs1 in default_dict.iteritems()}
 
         result = {
             "requires": {
