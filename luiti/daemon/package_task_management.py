@@ -9,14 +9,15 @@ import importlib
 from copy import deepcopy
 import itertools
 import luigi
-from ..parameter import arrow, ArrowParameter
+from ..parameter import ArrowParameter
 
 from .. import manager
 from .template import Template
+from .params_in_webui import ParamsInWebUI
 
 
 @singleton()
-class PackageTaskManagementClass(object):
+class PackageTaskManagementClass(ParamsInWebUI):
     """
     Manage packages and tasks.
     """
@@ -118,31 +119,17 @@ class PackageTaskManagementClass(object):
         return result
 
     def get_env(self, raw_params=dict()):
-        yester_day = ArrowParameter.now().replace(days=-1).floor("day")
-        yester_day_str = yester_day.format("YYYY-MM-DD")
-        PTM.current_luiti_visualiser_env["date_end"] = PTM.current_luiti_visualiser_env.get("date_end", yester_day_str)
-
-        date_begin = ArrowParameter.get(PTM.current_luiti_visualiser_env["date_begin"])
-        date_end = ArrowParameter.get(PTM.current_luiti_visualiser_env["date_end"])
-        accepted_date_values = sorted(map(str, arrow.Arrow.range("day", date_begin, date_end)))
-
-        config = {
-            "accepted_params": {
-                "date_value": accepted_date_values,
-                "task_cls": PTM.task_class_names,
-                "luiti_package": PTM.task_package_names,
-            }
-        }
+        query_params = self.generate_query_params()
 
         # assign default params
         default_params = {
-            "date_value": str(yester_day),
+            "date_value": str(self.yesterday()),
             # to insert more key-value
         }
         # get config from current package's luiti_visualiser_env
         accepted_params = PTM.current_luiti_visualiser_env["task_params"]
         for task_param, task_param_opt in accepted_params.iteritems():
-            config["accepted_params"][task_param] = task_param_opt["values"]
+            query_params["accepted"][task_param] = task_param_opt["values"]
             default_params[task_param] = task_param_opt["default"]
 
         # **remove** luiti_package and task_cls query str
@@ -196,7 +183,7 @@ class PackageTaskManagementClass(object):
         selected_params["luiti_package"] = selected_packages
 
         return {
-            "config": config,
+            "query_params": query_params,
 
             "title": "A DAG timely visualiser.",
             "selected_params": selected_params,

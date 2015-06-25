@@ -1,3 +1,5 @@
+'use strict';
+
 window.render_network = function(nodes, edges, container_id, click_event) {
     // NOTE: original code is http://visjs.org/examples/network/nodeStyles/customGroups.html
     var color = 'gray';
@@ -24,7 +26,7 @@ window.render_network = function(nodes, edges, container_id, click_event) {
         }
     };
 
-    network = new vis.Network(container, data, options);
+    var network = new vis.Network(container, data, options);
     network.on("click", click_event);
 
 };
@@ -121,7 +123,7 @@ window.render_all = function(env) {
                  });
 
   // 2. render visualSearch
-  render_visualSearch(".visual_search", env.default_params, env.selected_params, env.config.accepted_params);
+  render_visualSearch(".visual_search", env.default_params, env.selected_params, env.query_params.accepted);
 
   // Other views.
   render_header_title(env.title);
