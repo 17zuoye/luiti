@@ -170,8 +170,20 @@ var TaskDetailView = React.createClass({
             <td><pre className="well">{ref.task_doc}</pre></td>
           </tr>
           <tr>
-            <td>tasks self dep on</td>
-            <td><pre className="well">{ref.tasks_self_dep_on}</pre></td>
+            <td>tasks requires direct</td>
+            <td><pre className="well">{JSON.stringify(env.graph_infos.requires.direct[ref.task_name])}</pre></td>
+          </tr>
+          <tr>
+            <td>tasks requires total</td>
+            <td><pre className="well">{JSON.stringify(env.graph_infos.requires.total[ref.task_name])}</pre></td>
+          </tr>
+          <tr>
+            <td>tasks upons direct</td>
+            <td><pre className="well">{JSON.stringify(env.graph_infos.upons.direct[ref.task_name])}</pre></td>
+          </tr>
+          <tr>
+            <td>tasks upons total</td>
+            <td><pre className="well">{JSON.stringify(env.graph_infos.upons.total[ref.task_name])}</pre></td>
           </tr>
         </tbody>
       </table>
