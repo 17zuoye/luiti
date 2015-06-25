@@ -125,7 +125,7 @@ var TaskInfoView = React.createClass({
     var current_target = $(event.target);
     current_target.parents("#nodes_groups").find("li").removeClass("highlighted");
     current_target.addClass("highlighted");
-    return TaskDetailView_render(this.props.node_label);
+    return TaskDetailView_render(this.props.node_label, env.graph_infos);
   },
   task_attrs: {},
   render: function() {
@@ -149,6 +149,7 @@ var TaskDetailView = React.createClass({
   // show task code
   render: function() {
     var ref = this.props.params;
+    var graph_infos = this.props.graph_infos;
 
     return (
       <table className="table">
@@ -171,19 +172,19 @@ var TaskDetailView = React.createClass({
           </tr>
           <tr>
             <td>tasks requires direct</td>
-            <td><pre className="well">{JSON.stringify(env.graph_infos.requires.direct[ref.task_name])}</pre></td>
+            <td><pre className="well">{JSON.stringify(graph_infos.requires.direct[ref.task_name])}</pre></td>
           </tr>
           <tr>
             <td>tasks requires total</td>
-            <td><pre className="well">{JSON.stringify(env.graph_infos.requires.total[ref.task_name])}</pre></td>
+            <td><pre className="well">{JSON.stringify(graph_infos.requires.total[ref.task_name])}</pre></td>
           </tr>
           <tr>
             <td>tasks upons direct</td>
-            <td><pre className="well">{JSON.stringify(env.graph_infos.upons.direct[ref.task_name])}</pre></td>
+            <td><pre className="well">{JSON.stringify(graph_infos.upons.direct[ref.task_name])}</pre></td>
           </tr>
           <tr>
             <td>tasks upons total</td>
-            <td><pre className="well">{JSON.stringify(env.graph_infos.upons.total[ref.task_name])}</pre></td>
+            <td><pre className="well">{JSON.stringify(graph_infos.upons.total[ref.task_name])}</pre></td>
           </tr>
         </tbody>
       </table>
@@ -191,7 +192,7 @@ var TaskDetailView = React.createClass({
   }
 });
 
-var TaskDetailView_render = function(task_id) {
+var TaskDetailView_render = function(task_id, graph_infos) {
   var ref = env.nodeid_to_node_dict[task_id];
 
   var task_file = ref["task_file"];
@@ -204,10 +205,10 @@ var TaskDetailView_render = function(task_id) {
     hdfs_path_in_hue: env.luiti_visualiser_env["hue_url_prefix"] + ref["data_file"],
     task_file: task_file,
     task_file_url: "/luiti/code/" + task_package + "/" + ref["label"],
-    tasks_self_dep_on: ref.tasks_self_dep_on,
+    graph_infos: graph_infos,
   }
   React.render(
-    <TaskDetailView params={params} />,
+    <TaskDetailView params={params} graph_infos={graph_infos}/>,
     $("#task_detail")[0]
   );
 };
