@@ -5,4 +5,6 @@
 
 
 ## WebUI
-1. Add task dep infos.
+1. OPTIMIZE task dep infos.
+2. Add daemon tests.
+2. Add webui tests.

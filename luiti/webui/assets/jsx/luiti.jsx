@@ -211,9 +211,13 @@ var TaskLinkView = React.createClass({
     var link = url.build();
 
     return (
-      <span>
-        <a href={ link }>{ task_name }</a>
-      </span>
+      <a href={ link }>
+        <h4>
+          <span className="label label-default task-link">
+            { task_name }
+          </span>
+        </h4>
+      </a>
     );
   }
 });

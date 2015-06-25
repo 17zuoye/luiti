@@ -38,3 +38,10 @@
 #task_detail table.table td:first-child {
   width: 15%;
 }
+
+#task_detail table td .task-link {
+  margin: 5px;
+}
+#task_detail table td .task-link a {
+  color: white;
+}
