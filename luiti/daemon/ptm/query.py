@@ -48,8 +48,7 @@ class Query(object):
             # filter that tasks are linked, in current task_classes.
             selected_task_instances = [ti for ti in selected_task_instances if ti in pure_linked]
             selected_task_instances.extend(pure_selected_task_instances)
-        # import pdb
-        # pdb.set_trace()
+            selected_task_instances = list(set(selected_task_instances))
 
         nodes = ([Template.a_node(ti) for ti in selected_task_instances])
         nodeid_to_node_dict = {node["id"]: node for node in nodes}
