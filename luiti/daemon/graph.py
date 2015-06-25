@@ -49,20 +49,20 @@ class Graph(object):
 
         def add_total_deps(store, tree, store_node, fetch_node=None):
             """ add all recursive dependencies.
-            1. store_node used to store in a result store.
-            2. fetch_node used to fetch dependencies from a tree.
+            1. `store_node` used to store in a result store.
+            2. `fetch_node` used to fetch dependencies from a tree.
             """
             fetch_node = fetch_node or store_node
-            deps = tree[store_node]
 
-            for d1 in deps:
+            for d1 in tree[fetch_node]:
+                if d1 == store_node:
+                    continue
+
                 store[store_node].add(d1)
 
-            for d1 in deps:
-                if store_node == d1:
-                    continue
-                if d1 not in store[store_node]:
-                    add_total_deps(store, tree, store_node, d1)
+                for d2 in tree[d1]:
+                    if d2 not in store[store_node]:
+                        add_total_deps(store, tree, store_node, d2)
 
         for task_instance in task_instances:
             add_total_deps(task_instances_to_their_total_requires, task_instances_to_their_direct_requires, task_instance)
