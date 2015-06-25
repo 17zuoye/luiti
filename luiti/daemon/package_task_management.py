@@ -6,6 +6,7 @@ __all__ = ["PTM"]
 import sys
 from etl_utils import singleton, cached_property
 import importlib
+import inspect
 
 from .. import manager
 from .template import Template
@@ -58,8 +59,6 @@ class PackageTaskManagementClass(ParamsInWebUI):
 
     @cached_property
     def task_clsname_to_source_file(self):
-        import inspect
-
         def get_pyfile(task_cls):
             f1 = inspect.getfile(task_cls)
             return f1.replace(".pyc", ".py")
@@ -91,6 +90,7 @@ class PackageTaskManagementClass(ParamsInWebUI):
         selected_query = self.generate_selected_query(default_query, raw_params, selected_packages)
 
         total_task_instances = self.generate_total_task_instances(default_query, selected_query, selected_task_cls_names)
+        graph_infos = Graph.analysis_dependencies_between_nodes(total_task_instances)
 
         selected_task_instances = filter(lambda ti: ti.package_name in selected_packages, total_task_instances)
         selected_task_instances = sorted(list(set(selected_task_instances)))
@@ -120,6 +120,8 @@ class PackageTaskManagementClass(ParamsInWebUI):
             "edges": edges,
             "nodes_groups": nodes_groups_in_view,
             "nodeid_to_node_dict": nodeid_to_node_dict,
+
+            "graph_infos": graph_infos,
 
             "errors": {
                 "load_tasks": self.load_all_tasks_result["failure"],
