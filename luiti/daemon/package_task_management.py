@@ -7,9 +7,6 @@ import sys
 from etl_utils import singleton, cached_property
 import importlib
 from copy import deepcopy
-import itertools
-import luigi
-from ..parameter import ArrowParameter
 
 from .. import manager
 from .template import Template
@@ -120,57 +117,19 @@ class PackageTaskManagementClass(ParamsInWebUI):
 
     def get_env(self, raw_params=dict()):
         query_params = self.generate_query_params()
+        default_query = self.generate_default_query(query_params)
 
-        # assign default params
-        default_params = {
-            "date_value": str(self.yesterday()),
-            # to insert more key-value
-        }
-        # get config from current package's luiti_visualiser_env
-        accepted_params = PTM.current_luiti_visualiser_env["task_params"]
-        for task_param, task_param_opt in accepted_params.iteritems():
-            query_params["accepted"][task_param] = task_param_opt["values"]
-            default_params[task_param] = task_param_opt["default"]
+        default_packages = self.current_luiti_visualiser_env["package_config"]["defaults"]
 
-        # **remove** luiti_package and task_cls query str
-        selected_params = {k1: v1 for k1, v1 in raw_params.iteritems() if k1 in accepted_params or k1 == "date_value"}
-        selected_params_with_kv_array = list()
-        for k1, v1 in selected_params.iteritems():
-            k1_v2_list = list()
-            for v2 in v1:
-                # Fix overwrited params type in luiti
-                # TODO Fix luigi.Task#__eq__
-                if k1 == "date_value":
-                    v2 = ArrowParameter.get(v2)
-                else:
-                    v2 = unicode(v2)
-                k1_v2_list.append({"key": k1, "val": v2})
-            selected_params_with_kv_array.append(k1_v2_list)
-
-        possible_params = map(list, itertools.product(*selected_params_with_kv_array))
-
+        selected_packages = raw_params.get("luiti_package", default_packages)
         selected_task_cls_names = raw_params.get("task_cls", self.task_class_names)
 
-        total_task_instances = list()
-        _default_params = [{"key": k1, "val": v1} for k1, v1 in default_params.iteritems()]
-        for ti in PTM.task_classes:
-            if ti.__name__ not in selected_task_cls_names:
-                continue
+        selected_query = self.generate_selected_query(default_query, raw_params, selected_packages)
 
-            for _params in possible_params:
-                _real_task_params = dict()
-                for kv2 in (_default_params + _params):
-                    has_key = hasattr(ti, kv2["key"])
-                    is_luigi_params = isinstance(getattr(ti, kv2["key"], None), luigi.Parameter)
-                    if has_key and is_luigi_params:
-                        _real_task_params[kv2["key"]] = kv2["val"]
-                task_instance = ti(**_real_task_params)
-                total_task_instances.append(task_instance)
-
-        default_packages = PTM.current_luiti_visualiser_env["package_config"]["defaults"]
-        selected_packages = raw_params.get("luiti_package", default_packages)
+        total_task_instances = self.generate_total_task_instances(default_query, selected_query, selected_task_cls_names)
 
         selected_task_instances = filter(lambda ti: ti.package_name in selected_packages, total_task_instances)
+        selected_task_instances = sorted(list(set(selected_task_instances)))
 
         nodes = ([Template.a_node(ti) for ti in selected_task_instances])
         nodeid_to_node_dict = {node["id"]: node for node in nodes}
@@ -180,14 +139,12 @@ class PackageTaskManagementClass(ParamsInWebUI):
         nodes_groups = PTM.split_edges_into_groups(edges, nodes, selected_task_instances)
         nodes_groups_in_view = [sorted(list(nodes_set)) for nodes_set in nodes_groups]
 
-        selected_params["luiti_package"] = selected_packages
-
         return {
             "query_params": query_params,
 
             "title": "A DAG timely visualiser.",
-            "selected_params": selected_params,
-            "default_params": default_params,
+            "selected_query": selected_query,
+            "default_query": default_query,
             "luiti_visualiser_env": PTM.current_luiti_visualiser_env,
 
             "task_class_names": PTM.task_class_names,
