@@ -1,7 +1,21 @@
 # -*-coding:utf-8-*-
 
 
+import os
 from setuptools import setup
+
+
+def get_static_files(root):
+    return [os.path.join(path, name)
+            for path, subdirs, files in os.walk(root)
+            for name in files]
+package_data = sum(map(get_static_files,
+                       ["luiti/java/",
+                        "luiti/webui/assets/",
+                        "luiti/webui/bower_components/",
+                        ]), [])
+package_data += ["luiti/webui/index.html"]
+
 
 setup(
     name='luiti',
@@ -27,15 +41,7 @@ setup(
         'bin/luiti',
     ],
 
-    package_data={'luiti': [
-        "luiti/java/*.java",
-
-        "luiti/webui/*.html",
-        "luiti/webui/assets/*/**",
-        "luiti/webui/bower_components/*/*",
-        "luiti/webui/bower_components/*/*/*",
-        "luiti/webui/bower_components/*/*/*/*",
-    ]},
+    package_data={'luiti': package_data},
     include_package_data=True,
 
     zip_safe=False,
