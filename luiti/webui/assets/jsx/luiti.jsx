@@ -48,9 +48,18 @@ var LoadTasksErrorsView_render = function(errors) {
 };
 
 var TaskGroupsSummaryView = React.createClass({
+  mixins: [React.addons.LinkedStateMixin],
+  getInitialState: function() {
+    return {
+      "package_to_task_clsnames" : this.props.package_to_task_clsnames,
+      "selected_luiti_packages"  : this.props.selected_luiti_packages,
+      "task_package_names"       : this.props.task_package_names,
+    };
+  },
   render: function() {
-    var package_to_task_clsnames = this.props.package_to_task_clsnames;
-    var selected_luiti_packages = this.props.selected_luiti_packages;
+    var package_to_task_clsnames = this.linkState("package_to_task_clsnames").value;
+    var selected_luiti_packages = this.linkState("selected_luiti_packages").value;
+    window.that = this;
 
     return (
       <div>
@@ -58,7 +67,7 @@ var TaskGroupsSummaryView = React.createClass({
         <div>
           <h4>All packages</h4>
           <ul>
-          {this.props.task_package_names.map(function(package_name) {
+          { _.map(this.linkState("task_package_names").value, function(package_name) {
             var is_checked = _.contains(selected_luiti_packages, package_name);
 
             return (
@@ -67,7 +76,7 @@ var TaskGroupsSummaryView = React.createClass({
                 <li className="pull-right">{package_name}[{package_to_task_clsnames[package_name].length}]</li>
               </div>
             );
-          })}
+          }) }
           </ul>
         </div>
       </div>
