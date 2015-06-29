@@ -228,7 +228,7 @@ var TaskLinksView = React.createClass({
     return (
       <pre className="well">
         { (task_names || []).map(function(dep1) {
-          return <TaskLinkView task_name={dep1}/>
+          return <TaskLinkView key={dep1} task_name={dep1}/>
         }) }
      </pre>
     );
