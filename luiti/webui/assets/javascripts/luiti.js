@@ -41,32 +41,27 @@
       })(),
     };
 
+    var get_current_query = function(visualSearch) {
+      var result = {};
+
+      _.map(visualSearch.searchQuery.facets(), function(facet) {
+        var kv = _.pairs(facet)[0];
+        if (_.has(result, kv[0])) {
+          result[kv[0]].push(kv[1]);
+        } else {
+          result[kv[0]] = [kv[1]];
+        };
+      });
+
+      return result;
+    }
+
     var vs_config = {
       container: $(container_id),
       query: '',
       autosearch: true,
       callbacks: {
         search: function(query, searchCollection) {
-          var result = {};
-          var self = visualSearch;  // link to self
-
-          // build a url query
-          _.map(self.searchQuery.facets(), function(facet) {
-            var kv = _.pairs(facet)[0];
-            if (_.has(result, kv[0])) {
-              result[kv[0]].push(kv[1]);
-            } else {
-              result[kv[0]] = [kv[1]];
-            };
-          });
-
-          if (_.has(result, "date_value")) {  // and is valid.
-            var url = URI(window.location);
-            url._parts.query = "";
-            url.setQuery(result);
-            window.location = url.build();
-          }
-
           return false;
         },
         facetMatches: function(callback) {
@@ -83,6 +78,8 @@
           return callback(result);
         },
         blur: function() {
+          var result = get_current_query(visualSearch);
+          group_summary.setState({"selected_luiti_packages": result["luiti_package"]})
         },
       }
     };
@@ -107,7 +104,17 @@
 
     // support click query
     var searchBox = visualSearch.options.container.find(".VS-icon-search");
-    searchBox.click(vs_config.callbacks.search);
+    searchBox.click(function(event) {
+      var result = get_current_query(visualSearch);
+
+      // build a url query
+      var url = URI(window.location);
+      url._parts.query = "";
+      url.setQuery(result);
+      window.location = url.build();
+
+      return false;
+    });
     searchBox.css("cursor", "pointer");
 
     return visualSearch;

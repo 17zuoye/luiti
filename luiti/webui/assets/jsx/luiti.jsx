@@ -57,9 +57,9 @@ var TaskGroupsSummaryView = React.createClass({
     };
   },
   render: function() {
+    window.group_summary = this;  // TODO improve with a real event system.
     var package_to_task_clsnames = this.linkState("package_to_task_clsnames").value;
     var selected_luiti_packages = this.linkState("selected_luiti_packages").value;
-    window.that = this;
 
     return (
       <div>
