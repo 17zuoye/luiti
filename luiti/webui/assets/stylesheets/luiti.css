@@ -18,7 +18,7 @@
 #task_groups {
   width: 30%;
 }
-#nodes_groups .nodes_group ul li {
+#nodes_groups .nodes_group ul li, #task_groups_summary ul li {
   cursor: pointer;
 }
 #nodes_groups .nodes_group ul li:hover {
@@ -29,7 +29,9 @@
 }
 #task_groups_summary ul li {
   list-style-type: none;
-  margin-left: 10px;
+}
+#task_groups_summary ul li input {
+  margin-right: 10px;
 }
 
 #task_detail table.table {

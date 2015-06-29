@@ -56,6 +56,21 @@ var TaskGroupsSummaryView = React.createClass({
       "task_package_names"       : this.props.task_package_names,
     };
   },
+  handleClick: function(event) {
+    var li = $(event.target).closest("li.luiti_package");
+    window.li = li;
+    var checkBox = li.find("input[type=checkbox]");
+    var current_checked = !checkBox.prop("checked");
+    checkBox.prop("checked", current_checked);
+    var current_package = li.attr("data-package_name");
+
+    if (current_checked) {
+      env.visualSearch.current_query.luiti_package = env.visualSearch.current_query.luiti_package.concat(current_package);
+    } else {
+      env.visualSearch.current_query.luiti_package = _.without(env.visualSearch.current_query.luiti_package, current_package);
+    };
+    env.visualSearch.setValue(env.visualSearch.current_query);
+  },
   render: function() {
     window.group_summary = this;  // TODO improve with a real event system.
     var package_to_task_clsnames = this.linkState("package_to_task_clsnames").value;
@@ -71,10 +86,10 @@ var TaskGroupsSummaryView = React.createClass({
             var is_checked = _.contains(selected_luiti_packages, package_name);
 
             return (
-              <div key={package_name} className="input-group">
+              <li onClick={group_summary.handleClick} key={package_name} className="input-group luiti_package" data-package_name={package_name}>
                 <input type="checkbox" defaultChecked={false} checked={is_checked} ></input>
-                <li className="pull-right">{package_name}[{package_to_task_clsnames[package_name].length}]</li>
-              </div>
+                <span className="pull-right">{package_name}[{package_to_task_clsnames[package_name].length}]</span>
+              </li>
             );
           }) }
           </ul>

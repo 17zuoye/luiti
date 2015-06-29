@@ -85,12 +85,10 @@
     };
 
     // Example format is: visualSearch.searchBox.value("Country: US State: \"New York\" Key: Value")
-    var load_params = function() {
+    var load_params = function(query_opts) {
       // support same key with multiple values.
-      var query_opts = _.extend({}, selected_query, URI.parseQuery(URI(window.location)._parts.query));
       var vs_values = [];
       _.each(query_opts, function(opt_values, opt_key) {
-        if (!_.isArray(opt_values)) { opt_values = [opt_values] };
         _.each(opt_values, function(opt_value) {
           vs_values = vs_values.concat(JSON.stringify(opt_key) + ": " + JSON.stringify(opt_value));
         });
@@ -100,7 +98,22 @@
 
     // Run it!
     var visualSearch = VS.init(vs_config);
-    visualSearch.searchBox.value(load_params());
+
+    visualSearch.current_query = (function() {
+      var result = _.extend({}, selected_query, URI.parseQuery(URI(window.location)._parts.query));
+      // wrap value in a Array.
+      _.each(_.keys(result), function(key) {
+        if (!_.isArray(result[key])) {
+          result[key] = [result[key]];
+        };
+      });
+      return result;
+    })();
+
+    visualSearch.setValue = function(opts) {
+      return visualSearch.searchBox.value(load_params(opts));
+    };
+    visualSearch.setValue(visualSearch.current_query);
 
     // support click query
     var searchBox = visualSearch.options.container.find(".VS-icon-search");
@@ -139,7 +152,7 @@
                    });
 
     // 2. render visualSearch
-    render_visualSearch(".visual_search", env.default_query, env.selected_query, env.query_params.accepted);
+    env.visualSearch = render_visualSearch(".visual_search", env.default_query, env.selected_query, env.query_params.accepted);
 
     // Other views.
     render_header_title(env.title);
