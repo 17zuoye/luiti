@@ -6,4 +6,4 @@ include luiti/java/*.java
 include luiti/webui/assets/*/**
 
 include luiti/webui/*.html
-recursive-include luiti/webui/bower_components
+recursive-include luiti/webui/bower_components *

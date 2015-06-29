@@ -44,7 +44,7 @@
     var vs_config = {
       container: $(container_id),
       query: '',
-      autosearch: false,
+      autosearch: true,
       callbacks: {
         search: function(query, searchCollection) {
           var result = {};
@@ -73,9 +73,17 @@
           callback(env_config_visualSearch["facet_values"]);
         },
         valueMatches: function(facet, searchTerm, callback) {
-          // TODO smart match
-          return callback(vs_accepted_params[facet]);
-        }
+          // support smart match, from any position of strs.
+          var orig_array = vs_accepted_params[facet];
+          searchTerm = searchTerm.toLowerCase();
+          var result = _.filter(orig_array , function(str) {
+            return s.contains(str.toLowerCase(), searchTerm);
+          });
+          // dont work, see more details at search_fact.js#autocompleteValues
+          return callback(result);
+        },
+        blur: function() {
+        },
       }
     };
 
