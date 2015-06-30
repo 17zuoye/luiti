@@ -61,25 +61,27 @@ class QueryBuilder(object):
 
     @cached_property
     def selected_task_instances(self):
-        # TODO filter nodes
+        # filter by package
+        result = sorted(list(set(self.total_task_instances)))
         result = filter(lambda ti: ti.package_name in self.selected_packages,
-                        self.total_task_instances)
-        result = sorted(list(set(result)))
+                        result)
 
         # To avoid only self is in the graph.
         # If select task class, then to find linked task instances.
-        if self.selected_task_cls_names:
-            pure_selected_task_instances = [ti for ti in result if ti.task_clsname in self.selected_task_cls_names]
-            pure_linked = set([])
-            for ti in pure_selected_task_instances:
-                for t2 in self.graph_infos_python["requires"]["total"][ti]:
-                    pure_linked.add(t2)
-                for t2 in self.graph_infos_python["upons"]["total"][ti]:
-                    pure_linked.add(t2)
-            # filter that tasks are linked, in current task_classes.
-            result = [ti for ti in result if ti in pure_linked]
-            result.extend(pure_selected_task_instances)
-            result = list(set(result))
+        if not self.selected_task_cls_names:
+            return result
+
+        pure_selected_task_instances = [ti for ti in result if ti.task_clsname in self.selected_task_cls_names]
+        pure_linked = set([])
+        for ti in pure_selected_task_instances:
+            for t2 in self.graph_infos_python["requires"]["direct"][ti]:
+                pure_linked.add(t2)
+            for t2 in self.graph_infos_python["upons"]["direct"][ti]:
+                pure_linked.add(t2)
+        # filter that tasks are linked, in current task_classes.
+        result = [ti for ti in result if ti in pure_linked]
+        result.extend(pure_selected_task_instances)
+        result = list(set(result))
         return result
 
     @cached_property
