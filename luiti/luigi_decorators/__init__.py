@@ -9,7 +9,7 @@ luigi.hadoop = luigi.hadoop
 import luigi.hdfs
 luigi.hdfs = luigi.hdfs
 
-from ..hadoop_ext import HadoopExt
+from ..luigi_extensions import HadoopExt
 luigi.hadoop.HadoopExt = HadoopExt  # write back
 # NOTE 对 luigi.hadoop 兼容 "track the job: "
 

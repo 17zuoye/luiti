@@ -8,10 +8,10 @@ import sys
 import luigi.hadoop
 from luigi.hadoop import flatten
 from itertools import groupby
-
-from .utils import ExtUtils, TargetUtils
 from etl_utils import cached_property
-from .luigi_extensions import TaskInit
+
+from ..utils import ExtUtils, TargetUtils
+from .task_init import TaskInit
 
 # See benchmark at https://gist.github.com/mvj3/02dca2bcc8b0ef1bbfb5
 # force to use faster ujson, or it's meaningless to use JSON format with no performance gained.

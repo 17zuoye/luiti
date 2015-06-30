@@ -6,7 +6,7 @@ __all__ = ['MrTestCase']
 from collections import defaultdict
 import json
 
-from .manager import Loader
+from ..manager import Loader
 
 
 def MrTestCase(cls, verbose=False):
