@@ -2,7 +2,7 @@
 
 __all__ = ['TaskMonth']
 
-from .task_base import TaskBase
+from ...luigi_extensions import TaskBase
 
 
 class TaskMonth(TaskBase):

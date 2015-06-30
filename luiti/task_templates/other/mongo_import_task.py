@@ -1,12 +1,13 @@
 # -*-coding:utf-8-*-
 
-from ..time.task_base import TaskBase, cached_property
-from etl_utils import process_notifier
-from ...utils import CommandUtils, TargetUtils, MRUtils, HDFSUtils
+from etl_utils import process_notifier, cached_property
 import luigi
 import os
 import arrow
 import json
+
+from ...luigi_extensions import TaskBase
+from ...utils import CommandUtils, TargetUtils, MRUtils, HDFSUtils
 
 
 class MongoImportTask(TaskBase):

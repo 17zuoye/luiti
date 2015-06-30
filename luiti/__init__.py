@@ -39,7 +39,6 @@ from etl_utils import cached_property
 
 from .luigi_decorators import luigi
 from .hadoop_ext import HadoopExt
-from .task_templates.time.task_base import TaskBase
 from .task_templates.time.task_hour import TaskHour
 from .task_templates.time.task_day import TaskDay
 from .task_templates.time.task_week import TaskWeek
@@ -59,7 +58,7 @@ from .utils import IOUtils, DateUtils, TargetUtils, HDFSUtils, \
     MRUtils, MathUtils, CommandUtils, CompressUtils
 
 import arrow
-from .luigi_extensions import ArrowParameter
+from .luigi_extensions import TaskBase, ArrowParameter
 
 from .mr_test_case import MrTestCase
 

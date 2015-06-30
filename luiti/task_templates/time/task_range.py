@@ -2,7 +2,7 @@
 
 __all__ = ['TaskRange']
 
-from .task_base import TaskBase
+from ...luigi_extensions import TaskBase
 from ...utils import DateUtils
 
 

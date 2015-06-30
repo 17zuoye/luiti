@@ -2,7 +2,8 @@
 
 __all__ = ['TaskWeek']
 
-from .task_base import TaskBase, cached_property
+from etl_utils import cached_property
+from ...luigi_extensions import TaskBase
 from ...utils import DateUtils
 
 

@@ -7,12 +7,13 @@ import arrow
 from inflector import Inflector
 from etl_utils import cached_property
 
-from ...luigi_decorators import luigi
-from ..other.root_task import RootTask
-from ...utils import DateUtils, ExtUtils, IOUtils
-from ...luigi_extensions import ArrowParameter
-from ...manager import luiti_config
-from ...luigi_extensions import TaskInit
+from ..luigi_decorators import luigi
+from ..task_templates.other.root_task import RootTask
+from ..utils import DateUtils, ExtUtils, IOUtils
+from ..manager import luiti_config
+
+from .parameter import ArrowParameter
+from .task_init import TaskInit
 
 
 class TaskBase(luigi.Task, ExtUtils.ExtendClass):

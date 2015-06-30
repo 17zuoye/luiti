@@ -2,7 +2,7 @@
 
 __all__ = ['TaskRangeHadoop']
 
-from .task_base import luigi
+import luigi
 from .task_range import TaskRange
 
 
