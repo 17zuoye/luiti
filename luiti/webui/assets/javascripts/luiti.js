@@ -1,13 +1,25 @@
 (function() {
   'use strict';
 
-  var render_network = function(nodes, edges, container_id, click_event) {
-      // NOTE: original code is http://visjs.org/examples/network/nodeStyles/customGroups.html
-      var color = 'gray';
-      var len = undefined;
+  // mark color, when select a task, separate in and out.
+  var colors = {
+      "requires": "lime",
+      "self": "#7BE141",
+      "upons": "green",
+  };
 
-      // create a network
-      var container = $(container_id)[0];
+  var render_network = function(nodes, edges, container_id, click_event) {
+      nodes = _.map(nodes, function(node) {
+          if (_.contains(env.selected_query.task_cls, node.label)) {
+            node.color = colors.self;
+          } else {
+            node.color = colors.requires;
+          };
+          return node;
+      });
+
+      // NOTE: original code is http://visjs.org/examples/network/nodeStyles/customGroups.html
+      var container = $(container_id)[0];  // create a network
       var data = {
           nodes: nodes,
           edges: edges
@@ -35,8 +47,12 @@
   var render_visualSearch = function(container_id, default_query, selected_query, vs_accepted_params) {
     var env_config_visualSearch = {
       "facet_values": (function() {
-          var task_namespaces = _.map(["task_cls", "luiti_package"], function(param) { return {"label": param, "category": "Namespaces"}; });
-          var task_params= _.map(_.keys(default_query), function(param) { return {"label": param, "category": "Params"}; });
+          var task_namespaces = _.map(["task_cls", "luiti_package"], function(param) {
+            return {"label": param, "category": "Namespaces"};
+          });
+          var task_params= _.map(_.keys(default_query), function(param) {
+            return {"label": param, "category": "Params"};
+          });
         return task_params.concat(task_namespaces);
       })(),
     };
