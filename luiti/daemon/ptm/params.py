@@ -1,6 +1,7 @@
 # -*-coding:utf-8-*-
 
-from ...parameter import arrow, ArrowParameter
+import arrow
+from ...luigi_extensions import ArrowParameter
 from etl_utils import cached_property
 import itertools
 import luigi

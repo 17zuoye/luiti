@@ -2,7 +2,7 @@
 
 __all__ = ["check_runtime_range"]
 
-from ..parameter import ArrowParameter
+from ..luigi_extensions import ArrowParameter
 
 
 def check_runtime_range(**opts_1):  # 装饰器

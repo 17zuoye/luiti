@@ -10,7 +10,7 @@ from etl_utils import cached_property
 from ...luigi_decorators import luigi
 from ..other.root_task import RootTask
 from ...utils import DateUtils, ExtUtils, IOUtils
-from ...parameter import ArrowParameter
+from ...luigi_extensions import ArrowParameter
 from ...manager import luiti_config
 from ...luigi_extensions import TaskInit
 

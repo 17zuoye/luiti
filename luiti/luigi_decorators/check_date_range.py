@@ -2,7 +2,7 @@
 
 __all__ = ["check_date_range"]
 
-from ..parameter import ArrowParameter
+from ..luigi_extensions import ArrowParameter
 
 
 def check_date_range():  # 装饰器

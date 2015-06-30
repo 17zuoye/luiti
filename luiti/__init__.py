@@ -58,7 +58,8 @@ from . import manager
 from .utils import IOUtils, DateUtils, TargetUtils, HDFSUtils, \
     MRUtils, MathUtils, CommandUtils, CompressUtils
 
-from .parameter import ArrowParameter, arrow
+import arrow
+from .luigi_extensions import ArrowParameter
 
 from .mr_test_case import MrTestCase
 

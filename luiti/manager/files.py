@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 
-from ..parameter import ArrowParameter
+from ..luigi_extensions import ArrowParameter
 import luigi.hdfs
 from datetime import datetime
 

@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 
 from dateutil import tz
-from ..parameter import ArrowParameter
+from .parameter import ArrowParameter
 
 
 class TaskInit(object):
