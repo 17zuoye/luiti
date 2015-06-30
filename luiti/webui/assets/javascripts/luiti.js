@@ -79,6 +79,8 @@
         },
         blur: function() {
           var result = get_current_query(visualSearch);
+
+          // Update a React view.
           group_summary.setState({"selected_luiti_packages": result["luiti_package"]})
         },
       }
@@ -180,6 +182,17 @@
 
         // Select first task instance.
         $("#nodes_groups").find(".nodes_group ul:first li:first").click();
+
+        var lis = $("#nodes_groups").find(".nodes_group ul li");
+        var selector_attrs_task_cls = _.map((env.selected_query.task_cls || []), function(task_cls) {
+            return "[data-task_cls=" + task_cls + "]";
+          });
+        // e.g. "[data-task_cls*=Profile], [data-task_cls*=Dump]"
+        var selected_lis = lis.filter(selector_attrs_task_cls.join(", "));
+        if (selected_lis.length == 0) {
+          selected_lis = lis;
+        };
+        selected_lis.first().click();
     });
   });
 })(window);

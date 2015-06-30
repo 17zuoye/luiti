@@ -60,6 +60,8 @@ class Query(object):
 
         task_instance_repr_to_info = self.generate_task_instance_repr_to_info(selected_task_instances)
 
+        selected_query["task_cls"] = list(selected_task_cls_names)
+
         return {
             "query_params": query_params,
 
