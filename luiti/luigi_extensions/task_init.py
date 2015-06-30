@@ -35,4 +35,11 @@ class TaskInit(object):
         def __eq__(self, other):
             return self.__class__ == other.__class__ and self.param_args == other.param_args
         """
-        self.param_args = map(str, self.param_args)
+        self.param_kwargs["date_value"] = ArrowParameter.get(self.param_kwargs["date_value"])
+        self.param_args = tuple(sorted(map(str, [value for key, value in self.param_kwargs.iteritems()])))
+
+        # NOTE below codes are copied from luigi's Task
+        # Build up task id
+        task_id_parts = ["%s=%s" % (k1, v1) for k1, v1 in self.param_kwargs.iteritems() if k1 not in ["pool"]]
+        self.task_id = '%s(%s)' % (self.task_family, ', '.join(task_id_parts))
+        self.__hash = hash(self.task_id)

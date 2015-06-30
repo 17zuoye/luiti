@@ -101,7 +101,7 @@ class QueryBuilder(object):
 
     @cached_property
     def edges(self):
-        return Template.edges_from_task_instances(self.selected_task_instances)
+        return Template.edges_from_nodes(self.selected_task_instances)
 
     @cached_property
     def nodes_groups(self):
@@ -156,6 +156,7 @@ class Query(object):
         Generate all data needed.
         """
         # total_task_instances = self.generate_total_task_instances(default_query, selected_query, selected_task_cls_names)
+        ptm = self
 
-        qb = QueryBuilder(self, raw_params)
+        qb = QueryBuilder(ptm, raw_params)
         return qb.result

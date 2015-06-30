@@ -32,22 +32,27 @@ class Template(object):
         return result
 
     @staticmethod
-    def edges_from_task_instances(task_instances):
-        assert isinstance(task_instances, list)
-        if len(task_instances):
-            assert isinstance(task_instances[0], luigi.Task)
+    def edges_from_nodes(nodes):
+        """
+        Generate relations between current task instances, but just only these task instances.
+        """
+        # 1. check input is valid
+        assert isinstance(nodes, list)
+        if len(nodes):
+            assert isinstance(nodes[0], luigi.Task)
 
         edges = list()
-        for ti in task_instances:
+        for ti in nodes:
             t2_in_requires = ti.requires()
             if not isinstance(t2_in_requires, list):
                 t2_in_requires = [t2_in_requires]
             for t2 in t2_in_requires:
                 if t2 is None:  # dep on none tasks
                     continue
-                if t2 not in task_instances:
+                if t2 not in nodes:
                     continue
                 edges.append(Template.an_edge(t2, ti))
+
         return edges
 
     @staticmethod
