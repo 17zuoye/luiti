@@ -179,6 +179,12 @@ var TaskDetailView = React.createClass({
     var ref = this.props.params;
     var graph_infos = this.props.graph_infos;
 
+    var require_task_names_direct = graph_infos.requires.direct[ref.task_name];
+    var require_task_names_direct_total = _.difference(graph_infos.requires.total[ref.task_name], require_task_names_direct);
+
+    var upons_task_names_direct = graph_infos.upons.direct[ref.task_name];
+    var upons_task_names_direct_total = _.difference(graph_infos.upons.total[ref.task_name], upons_task_names_direct);
+
     return (
       <table className="table">
         <tbody>
@@ -201,25 +207,25 @@ var TaskDetailView = React.createClass({
           <tr>
             <td>tasks requires direct</td>
             <td>
-              <TaskLinksView task_names={ graph_infos.requires.direct[ref.task_name] } />
+              <TaskLinksView task_names={ require_task_names_direct } />
             </td>
           </tr>
           <tr>
-            <td>tasks requires total</td>
+            <td>tasks requires total (without direct)</td>
             <td>
-              <TaskLinksView task_names={ graph_infos.requires.total[ref.task_name] } />
+              <TaskLinksView task_names={ require_task_names_direct_total } />
             </td>
           </tr>
           <tr>
             <td>tasks upons direct</td>
             <td>
-              <TaskLinksView task_names={ graph_infos.upons.direct[ref.task_name] } />
+              <TaskLinksView task_names={ upons_task_names_direct } />
             </td>
           </tr>
           <tr>
-            <td>tasks upons total</td>
+            <td>tasks upons total (without direct)</td>
             <td>
-              <TaskLinksView task_names={ graph_infos.upons.total[ref.task_name] } />
+              <TaskLinksView task_names={ upons_task_names_direct_total } />
             </td>
           </tr>
         </tbody>
