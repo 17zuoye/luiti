@@ -70,6 +70,8 @@ var TaskGroupsSummaryView = React.createClass({
       env.visualSearch.current_query.luiti_package = _.without(env.visualSearch.current_query.luiti_package, current_package);
     };
     env.visualSearch.setValue(env.visualSearch.current_query);
+
+    event.stopPropagation();  // disable checkbox default's behavior
   },
   render: function() {
     window.group_summary = this;  // TODO improve with a real event system.
