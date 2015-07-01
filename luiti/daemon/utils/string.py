@@ -11,6 +11,7 @@ def stringify(default_dict):
     """
     result = dict()
     for k1, vs1 in default_dict.iteritems():
+        # only wrap first level, such as ArrowParameter
         if isinstance(vs1, (list, set)):
             vs1 = map(str, vs1)
         else:

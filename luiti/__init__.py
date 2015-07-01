@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 
-__all__ = ['luigi', 'config',
+__all__ = ['luigi', 'config', "VisualiserEnvTemplate",
 
            'TaskBase',
            'TaskHour',
@@ -48,6 +48,8 @@ from .utils import IOUtils, DateUtils, TargetUtils, HDFSUtils, \
 
 import arrow
 from .luigi_extensions import RootTask, TaskBase, ArrowParameter, HadoopExt
+
+from .daemon import VisualiserEnvTemplate
 
 from .tests import MrTestCase
 

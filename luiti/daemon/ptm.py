@@ -9,6 +9,7 @@ import importlib
 import inspect
 
 from .. import manager
+from .visualiser_env_template import VisualiserEnvTemplate
 
 
 @singleton()
@@ -37,8 +38,9 @@ class PackageTaskManagementClass(object):
 
     @cached_property
     def current_luiti_visualiser_env(self):
-        # TODO assert must setup `luiti_visualiser_env`
-        return getattr(self.current_init_luiti, "luiti_visualiser_env")
+        env = getattr(self.current_init_luiti, "luiti_visualiser_env", VisualiserEnvTemplate())
+        assert isinstance(env, VisualiserEnvTemplate), env
+        return env.data
 
     @cached_property
     def load_all_tasks_result(self):

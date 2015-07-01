@@ -51,7 +51,3 @@ def run(address, api_port):
 
     logger.info("Scheduler starting up")
     tornado.ioloop.IOLoop.instance().start()
-
-
-if __name__ == "__main__":
-    run()

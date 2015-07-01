@@ -280,7 +280,7 @@ var TaskDetailView_render = function(task_id, graph_infos) {
     task_name: ref["id"],
     hdfs_path: ref["data_file"],
     task_doc: ref["task_doc"],
-    hdfs_path_in_hue: queryparams.luiti_visualiser_env["hue_url_prefix"] + ref["data_file"],
+    hdfs_path_in_hue: queryparams.luiti_visualiser_env.file_web_url_prefix + ref["data_file"],
     task_file: task_file,
     task_file_url: "/luiti/code/" + task_package + "/" + ref["label"],
     graph_infos: graph_infos,

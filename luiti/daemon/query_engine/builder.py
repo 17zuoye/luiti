@@ -49,8 +49,7 @@ class QueryBuilder(object):
         """
         Comes from current luiti that selected.
         """
-        # TODO provide a template
-        return self.ptm.current_luiti_visualiser_env["task_params"]
+        return self.ptm.current_luiti_visualiser_env["additional_task_parameters"]
 
     @cached_property
     def accepted_query_params(self):
