@@ -7,7 +7,7 @@ import luigi
 import luigi.hadoop
 luigi.hadoop = luigi.hadoop
 import luigi.hdfs
-luigi.hdfs = luigi.hdfs
+luigi.hdfs = luigi.hdfs  # just make a link
 
 from ..luigi_extensions import HadoopExt
 luigi.hadoop.HadoopExt = HadoopExt  # write back

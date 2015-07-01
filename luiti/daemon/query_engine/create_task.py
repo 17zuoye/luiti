@@ -11,6 +11,7 @@ class CreateTask(object):
     @staticmethod
     def new(task_cls, _params):
         """ Initialize a task instance, with filter invalid params. """
+        # TODO maybe add a cache here
         _real_task_params = dict()
         for k1, v1 in _params.iteritems():
             has_key = hasattr(task_cls, k1)
