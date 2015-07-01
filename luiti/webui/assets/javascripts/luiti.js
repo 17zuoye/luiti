@@ -197,8 +197,6 @@
         renders.TaskGroups(env.nodes_groups);
 
         // Select first task instance.
-        $("#nodes_groups").find(".nodes_group ul:first li:first").click();
-
         var lis = $("#nodes_groups").find(".nodes_group ul li");
         var selector_attrs_task_cls = _.map((env.selected_query.task_cls || []), function(task_cls) {
             return "[data-task_cls=" + task_cls + "]";

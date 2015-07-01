@@ -29,7 +29,7 @@ logger = logging.getLogger("luiti.server")
 from .web_handlers import web_handlers
 
 
-def app(scheduler):
+def app():
     settings = {
         "unescape": tornado.escape.xhtml_unescape,
         # "autoreload": True
@@ -39,25 +39,15 @@ def app(scheduler):
     return api_app
 
 
-def _init_api(scheduler, api_port=None, address=None):
-    api_app = app(scheduler)
-    api_sockets = tornado.netutil.bind_sockets(api_port, address=address)
-    server = tornado.httpserver.HTTPServer(api_app)
-    server.add_sockets(api_sockets)
-
-    # Return the bound socket names.  Useful for connecting client in test scenarios.
-    return [s.getsockname() for s in api_sockets]
-
-
-def run(api_port=8082, address=None, scheduler=None):
+def run(address, api_port):
     """
     Runs one instance of the API server.
     """
-    _init_api(scheduler, api_port, address)
+    api_app = app()
 
-    # prune work DAG every 60 seconds
-    # pruner = tornado.ioloop.PeriodicCallback(scheduler.prune, 60000)
-    # pruner.start()
+    api_sockets = tornado.netutil.bind_sockets(api_port, address=address)
+    server = tornado.httpserver.HTTPServer(api_app)
+    server.add_sockets(api_sockets)
 
     logger.info("Scheduler starting up")
     tornado.ioloop.IOLoop.instance().start()
