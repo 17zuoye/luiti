@@ -24,21 +24,25 @@ class QueryBuilder(object):
         self.ptm = ptm
 
     @cached_property
-    def query_params(self):
-        return self.ptm.generate_query_params()
+    def accepted_query_params(self):
+        """ autocomplete params key/value. """
+        return self.ptm.generate_accepted_query_params()
 
     @cached_property
     def selected_query(self):
+        """ user query via URL search. """
         return self.ptm.generate_selected_query(self.default_query,
                                                 self.raw_params,
                                                 self.selected_packages)
 
     @cached_property
     def default_query(self):
-        return self.ptm.generate_default_query(self.query_params)
+        """ Query provide by user config. """
+        return self.ptm.generate_default_query(self.accepted_query_params)
 
     @cached_property
     def default_packages(self):
+        """ user provided. """
         return self.ptm.current_luiti_visualiser_env["package_config"]["defaults"]
 
     @cached_property
@@ -124,7 +128,7 @@ class QueryBuilder(object):
             "title": "A DAG timely visualiser.",
 
             "queryparams": {
-                "query_params": self.query_params,
+                "accepted": self.accepted_query_params,
                 "selected_query": self.selected_query,
                 "default_query": self.default_query,
                 "luiti_visualiser_env": self.ptm.current_luiti_visualiser_env,
@@ -160,7 +164,6 @@ class Query(object):
         """
         Generate all data needed.
         """
-        # total_task_instances = self.generate_total_task_instances(default_query, selected_query, selected_task_cls_names)
         ptm = self
 
         qb = QueryBuilder(ptm, raw_params)

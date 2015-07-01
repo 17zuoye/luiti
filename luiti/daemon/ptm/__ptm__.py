@@ -20,6 +20,8 @@ from .query import Query
 class PackageTaskManagementClass(Params, Query):
     """
     Manage packages and tasks.
+
+    When webui daemon started, these values are readed, and will not be modified. It means they are static.
     """
 
     @cached_property

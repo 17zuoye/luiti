@@ -170,7 +170,7 @@
                    });
 
     // 2. render visualSearch
-    env.visualSearch = render_visualSearch(".visual_search", queryparams.default_query, queryparams.selected_query, queryparams.query_params.accepted);
+    env.visualSearch = render_visualSearch(".visual_search", queryparams.default_query, queryparams.selected_query, queryparams.accepted);
 
     // Other views.
     render_header_title(title);

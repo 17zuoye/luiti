@@ -6,8 +6,6 @@ from etl_utils import cached_property
 import itertools
 import luigi
 
-# TODO use a builder
-
 
 class Params(object):
     """
@@ -26,9 +24,9 @@ class Params(object):
         # TODO provide a template
         return self.current_luiti_visualiser_env["task_params"]
 
-    def generate_query_params(self):
+    def generate_accepted_query_params(self):
         """
-        provide config to visualSearch.js
+        provide to visualSearch.js, used for autocomplete.
         """
         # date range related.
         yesterday_str = self.yesterday().format("YYYY-MM-DD")
@@ -39,25 +37,22 @@ class Params(object):
         accepted_date_values = sorted(map(str, arrow.Arrow.range("day", date_begin, date_end)))
 
         # result
-        query_params = {
-            "accepted": {
-                "date_value": accepted_date_values,
-                "task_cls": self.task_class_names,
-                "luiti_package": self.task_package_names,
-            }
+        return {
+            "date_value": accepted_date_values,
+            "task_cls": self.task_class_names,
+            "luiti_package": self.task_package_names,
         }
 
-        return query_params
-
-    def generate_default_query(self, query_params):
+    def generate_default_query(self, accepted_query_params):
         # assign default params
         default_query = {
             "date_value": str(self.yesterday()),
             # to insert more key-value
         }
+
         # get config from current package's luiti_visualiser_env
         for task_param, task_param_opt in self.accepted_params.iteritems():
-            query_params["accepted"][task_param] = task_param_opt["values"]
+            accepted_query_params[task_param] = task_param_opt["values"]
             default_query[task_param] = task_param_opt["default"]
 
         return default_query
