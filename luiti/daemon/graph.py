@@ -4,9 +4,7 @@ __all__ = ["Graph"]
 
 from copy import deepcopy
 
-from .template import Template
-from .utils import stringify
-from .task_storage import TaskStorageSet, TaskStorageDict
+from .utils import Template, stringify, TaskStorageSet, TaskStorageDict
 
 
 class Graph(object):

@@ -26,7 +26,7 @@ logger = logging.getLogger("luiti.server")
 
 # 1. Setup business package env
 # list current package's related tasks, group by package name.
-from .web_handlers import web_handlers
+from .handlers import web_handlers
 
 
 def app():

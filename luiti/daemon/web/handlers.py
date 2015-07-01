@@ -2,11 +2,13 @@
 
 __all__ = ["web_handlers"]
 
+from etl_utils import cached_property
 import pkg_resources
 import tornado.web
 
-from .web_assets import assets_main_dir, assets_thirdparty_dir
-from .ptm import PTM
+from .assets import assets_main_dir, assets_thirdparty_dir
+from ..ptm import PTM
+from ..query_engine import Query
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
@@ -20,14 +22,18 @@ class IndexHandler(tornado.web.RequestHandler):
         self.render("index.html")
 
     def get_template_path(self):
-        return pkg_resources.resource_filename(__name__, "../webui")
+        return pkg_resources.resource_filename(__name__, "../../webui")
 
 
 class InitDataHandler(tornado.web.RequestHandler):
 
+    @cached_property
+    def query_engine(self):
+        return Query(PTM)
+
     def get(self):
         params = self.request.query_arguments
-        data = PTM.get_env(params)
+        data = self.query_engine.get_env(params)
 
         self.write(data)
 

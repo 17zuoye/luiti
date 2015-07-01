@@ -29,7 +29,9 @@ setup(
     packages=[
                 'luiti',
                 'luiti/daemon',
-                'luiti/daemon/ptm',
+                'luiti/daemon/query_engine',
+                'luiti/daemon/utils',
+                'luiti/daemon/web',
                 'luiti/luigi_decorators',
                 'luiti/luigi_extensions',
                 'luiti/manager',

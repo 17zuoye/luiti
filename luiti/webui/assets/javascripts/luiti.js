@@ -197,7 +197,7 @@
     // orig is <script type="text/jsx">, but we want to load jsx scripts manually here, iteract with Ajax loading JSON data.
     $.get("assets/jsx/luiti.jsx", function(jsx_orig) {
         var jsx_js = JSXTransformer.transform(jsx_orig).code;
-        var renders = eval(jsx_js).renders;
+        window.renders = eval(jsx_js).renders;
 
         if (errors.length) {
           renders.LoadTasksErrors(errors);

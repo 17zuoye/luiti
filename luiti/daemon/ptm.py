@@ -7,17 +7,12 @@ import sys
 from etl_utils import singleton, cached_property
 import importlib
 import inspect
-from copy import deepcopy
 
-from ... import manager
-from ..utils import stringify
-
-from .params import Params
-from .query import Query
+from .. import manager
 
 
 @singleton()
-class PackageTaskManagementClass(Params, Query):
+class PackageTaskManagementClass(object):
     """
     Manage packages and tasks.
 
@@ -82,13 +77,5 @@ class PackageTaskManagementClass(Params, Query):
         return {package.__name__: list(task_clsnames) for package, task_clsnames
                 in manager.PackageMap.package_to_task_clsnames.iteritems()}
 
-    def generate_task_instance_repr_to_info(self, task_instances):
-        result = dict()
-        for ti in task_instances:
-            param_kwargs = deepcopy(ti.param_kwargs)
-            if "pool" in param_kwargs:
-                del param_kwargs["pool"]
-            result[str(ti)] = {"task_cls": ti.task_clsname, "param_kwargs": stringify(param_kwargs)}
-        return result
 
 PTM = PackageTaskManagementClass()
