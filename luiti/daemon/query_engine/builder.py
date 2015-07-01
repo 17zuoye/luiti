@@ -4,13 +4,13 @@ __all__ = ["QueryBuilder"]
 
 import arrow
 from etl_utils import cached_property
-import itertools
-import luigi
 from copy import deepcopy
 
 from ...luigi_extensions import ArrowParameter
 from ..graph import Graph
 from ..utils import stringify, Template, TaskStorageSet
+from .params import Params
+from .create_task import CreateTask
 
 
 class QueryBuilder(object):
@@ -126,41 +126,17 @@ class QueryBuilder(object):
         """
         # 1. build possible params.
         # **remove** luiti_package and task_cls query str
-        selected_query_with_kv_array = list()
-        for k1, v1 in self.selected_query.iteritems():
-            k1_v2_list = list()
-
-            # v1 is params value list
-            if not isinstance(v1, list):
-                v1 = [v1]
-            for v2 in v1:
-                # Already overwrited params type and luigi.Task#__eq__ in luiti.
-                # See more details at task_templates.time.task_base.py
-                if k1 == "date_value":
-                    v2 = ArrowParameter.get(v2)
-                else:
-                    v2 = unicode(v2)
-                k1_v2_list.append({"key": k1, "val": v2})
-            selected_query_with_kv_array.append(k1_v2_list)
-
-        possible_params = map(list, itertools.product(*selected_query_with_kv_array))
+        params_array = Params.build_params_array(self.default_query, self.selected_query)
 
         # 2. and generate task instances.
         total_task_instances = list()
-        _default_query = [{"key": key, "val": val} for key, val in self.default_query.iteritems()]
         for ti in self.ptm.task_classes:
             # TODO why below two lines exist before.
             # if ti.__name__ not in self.selected_task_cls_names:
             #     continue
 
-            for _params in possible_params:
-                _real_task_params = dict()
-                for kv2 in (_default_query + _params):
-                    has_key = hasattr(ti, kv2["key"])
-                    is_luigi_params = isinstance(getattr(ti, kv2["key"], None), luigi.Parameter)
-                    if has_key and is_luigi_params:
-                        _real_task_params[kv2["key"]] = kv2["val"]
-                task_instance = ti(**_real_task_params)
+            for _params in params_array:
+                task_instance = CreateTask.new(ti, _params)
                 total_task_instances.append(task_instance)
 
         result = sorted(list(set(total_task_instances)))
