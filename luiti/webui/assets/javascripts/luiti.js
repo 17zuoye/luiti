@@ -10,7 +10,7 @@
 
   var render_network = function(nodes, edges, container_id, click_event) {
       nodes = _.map(nodes, function(node) {
-          if (_.contains(env.queryparams.selected_query.task_cls, node.label)) {
+          if (_.contains(queryparams.selected_query.task_cls, node.label)) {
             node.color = colors.self;
           } else {
             node.color = colors.requires;
@@ -153,14 +153,14 @@
 
 
   var render_header_title = function(title) {
-    $("head title").html(env.title);
-    $("body #header .title").html(env.title);
+    $("head title").html(title);
+    $("body #header .title").html(title);
   };
 
   var render_all = function(env) {
     // 1. render network
-    render_network(env.nodeedge.nodes,
-                   env.nodeedge.edges,
+    render_network(nodeedge.nodes,
+                   nodeedge.edges,
                    "#network",
                    function (params) {
                      console.log("[click a node on #network]", params);
@@ -170,20 +170,24 @@
                    });
 
     // 2. render visualSearch
-    env.visualSearch = render_visualSearch(".visual_search", env.queryparams.default_query, env.queryparams.selected_query, env.queryparams.query_params.accepted);
+    env.visualSearch = render_visualSearch(".visual_search", queryparams.default_query, queryparams.selected_query, queryparams.query_params.accepted);
 
     // Other views.
-    render_header_title(env.title);
+    render_header_title(title);
   };
 
   var init_data_url = "init_data.json" + location.search;
 
   $.getJSON(init_data_url, function(data) {
+    // bind env's first level key to global `window` object.
+    _.each(data, function(value, key) {
+      window[key] = value;
+    });
     window.env = data;
     console.log("load data", env);
 
     // transform data
-    env.nodeedge.nodeid_to_node_dict = _.reduce(env.nodeedge.nodes, function(dict, node) {
+    nodeedge.nodeid_to_node_dict = _.reduce(nodeedge.nodes, function(dict, node) {
       dict[node.id] = node;
       return dict;
     }, {});
@@ -195,16 +199,16 @@
         var jsx_js = JSXTransformer.transform(jsx_orig).code;
         var renders = eval(jsx_js).renders;
 
-        if (env.errors.length) {
-          renders.LoadTasksErrors(env.errors);
+        if (errors.length) {
+          renders.LoadTasksErrors(errors);
         };
 
-        renders.TaskGroupsSummary(env.ptm.task_package_names, env.ptm.package_to_task_clsnames, env.queryparams.selected_query.luiti_package);
-        renders.TaskGroups(env.nodeedge.nodes_groups);
+        renders.TaskGroupsSummary(ptm.task_package_names, ptm.package_to_task_clsnames, queryparams.selected_query.luiti_package);
+        renders.TaskGroups(nodeedge.nodes_groups);
 
         // Select first task instance.
         var lis = $("#nodes_groups").find(".nodes_group ul li");
-        var selector_attrs_task_cls = _.map((env.queryparams.selected_query.task_cls || []), function(task_cls) {
+        var selector_attrs_task_cls = _.map((queryparams.selected_query.task_cls || []), function(task_cls) {
             return "[data-task_cls=" + task_cls + "]";
           });
         // e.g. "[data-task_cls*=Profile], [data-task_cls*=Dump]"

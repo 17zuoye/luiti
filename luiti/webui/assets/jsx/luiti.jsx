@@ -62,17 +62,18 @@ var TaskGroupsSummaryView = React.createClass({
     var li = ele_click.closest("li.luiti_package");
     var checkBox = li.find("input[type=checkbox]");
     var current_package = li.attr("data-package_name");
+    var current_query = env.visualSearch.current_query;
 
-    var current_check_status = ! _.contains(env.visualSearch.current_query.luiti_package, current_package);
+    var current_check_status = ! _.contains(current_query.luiti_package, current_package);
 
     if (current_check_status) {
-      env.visualSearch.current_query.luiti_package = env.visualSearch.current_query.luiti_package.concat(current_package);
+      current_query.luiti_package = current_query.luiti_package.concat(current_package);
     } else {
-      env.visualSearch.current_query.luiti_package = _.without(env.visualSearch.current_query.luiti_package, current_package);
+      current_query.luiti_package = _.without(current_query.luiti_package, current_package);
     };
-    env.visualSearch.setValue(env.visualSearch.current_query);
+    env.visualSearch.setValue(current_query);
 
-    this.setState({"selected_luiti_packages": env.visualSearch.current_query.luiti_package});
+    this.setState({"selected_luiti_packages": current_query.luiti_package});
   },
   render: function() {
     window.group_summary = this;  // TODO improve with a real event system.
@@ -81,7 +82,7 @@ var TaskGroupsSummaryView = React.createClass({
 
     return (
       <div>
-        <h4>Total tasks count: {env.ptm.task_class_names.length}</h4>
+        <h4>Total tasks count: {ptm.task_class_names.length}</h4>
         <div>
           <h4>All packages</h4>
           <ul>
@@ -152,7 +153,7 @@ var TaskInfoView = React.createClass({
     var current_target = $(event.target);
     current_target.parents("#nodes_groups").find("li").removeClass("highlighted");
     current_target.addClass("highlighted");
-    return TaskDetailView_render(this.props.node_label, env.nodeedge.graph_infos);
+    return TaskDetailView_render(this.props.node_label, nodeedge.graph_infos);
   },
   task_attrs: {},
   render: function() {
@@ -160,7 +161,7 @@ var TaskInfoView = React.createClass({
       var task_cls = node_label.slice(0, node_label.indexOf('('));
       return (
         <li onClick={this.handleClick} key={this.props.group_idx + ' ' + this.props.node_idx} data-task-id={node_label} data-task_cls={task_cls} >
-          { task_cls + "." + env.nodeedge.nodeid_to_node_dict[node_label].package_name }
+          { task_cls + "." + nodeedge.nodeid_to_node_dict[node_label].package_name }
         </li>
       );
   }
@@ -237,7 +238,7 @@ var TaskDetailView = React.createClass({
 var TaskLinkView = React.createClass({
   render: function() {
     var task_name = this.props.task_name;
-    var task_info = env.ptm.task_instance_repr_to_info[task_name] || {};
+    var task_info = ptm.task_instance_repr_to_info[task_name] || {};
 
     var url = URI(window.location);
     var query = _.extend({}, task_info.param_kwargs, {"task_cls": task_info.task_cls})
@@ -270,7 +271,7 @@ var TaskLinksView = React.createClass({
 });
 
 var TaskDetailView_render = function(task_id, graph_infos) {
-  var ref = env.nodeedge.nodeid_to_node_dict[task_id];
+  var ref = nodeedge.nodeid_to_node_dict[task_id];
 
   var task_file = ref["task_file"];
   var task_package = task_file.split("/")[0];
@@ -279,7 +280,7 @@ var TaskDetailView_render = function(task_id, graph_infos) {
     task_name: ref["id"],
     hdfs_path: ref["data_file"],
     task_doc: ref["task_doc"],
-    hdfs_path_in_hue: env.queryparams.luiti_visualiser_env["hue_url_prefix"] + ref["data_file"],
+    hdfs_path_in_hue: queryparams.luiti_visualiser_env["hue_url_prefix"] + ref["data_file"],
     task_file: task_file,
     task_file_url: "/luiti/code/" + task_package + "/" + ref["label"],
     graph_infos: graph_infos,
