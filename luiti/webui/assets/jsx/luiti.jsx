@@ -81,7 +81,7 @@ var TaskGroupsSummaryView = React.createClass({
 
     return (
       <div>
-        <h4>Total tasks count: {env.task_class_names.length}</h4>
+        <h4>Total tasks count: {env.ptm.task_class_names.length}</h4>
         <div>
           <h4>All packages</h4>
           <ul>
@@ -152,7 +152,7 @@ var TaskInfoView = React.createClass({
     var current_target = $(event.target);
     current_target.parents("#nodes_groups").find("li").removeClass("highlighted");
     current_target.addClass("highlighted");
-    return TaskDetailView_render(this.props.node_label, env.graph_infos);
+    return TaskDetailView_render(this.props.node_label, env.nodeedge.graph_infos);
   },
   task_attrs: {},
   render: function() {
@@ -237,7 +237,7 @@ var TaskDetailView = React.createClass({
 var TaskLinkView = React.createClass({
   render: function() {
     var task_name = this.props.task_name;
-    var task_info = env.task_instance_repr_to_info[task_name] || {};
+    var task_info = env.ptm.task_instance_repr_to_info[task_name] || {};
 
     var url = URI(window.location);
     var query = _.extend({}, task_info.param_kwargs, {"task_cls": task_info.task_cls})
@@ -279,7 +279,7 @@ var TaskDetailView_render = function(task_id, graph_infos) {
     task_name: ref["id"],
     hdfs_path: ref["data_file"],
     task_doc: ref["task_doc"],
-    hdfs_path_in_hue: env.luiti_visualiser_env["hue_url_prefix"] + ref["data_file"],
+    hdfs_path_in_hue: env.queryparams.luiti_visualiser_env["hue_url_prefix"] + ref["data_file"],
     task_file: task_file,
     task_file_url: "/luiti/code/" + task_package + "/" + ref["label"],
     graph_infos: graph_infos,

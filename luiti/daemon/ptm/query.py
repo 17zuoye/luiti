@@ -123,24 +123,27 @@ class QueryBuilder(object):
         return {
             "title": "A DAG timely visualiser.",
 
-            "query_params": self.query_params,
-            "selected_query": self.selected_query,
-            "default_query": self.default_query,
-            "luiti_visualiser_env": self.ptm.current_luiti_visualiser_env,
+            "queryparams": {
+                "query_params": self.query_params,
+                "selected_query": self.selected_query,
+                "default_query": self.default_query,
+                "luiti_visualiser_env": self.ptm.current_luiti_visualiser_env,
+            },
 
-            "task_class_names": self.ptm.task_class_names,
-            "task_package_names": self.ptm.task_package_names,
-            "task_clsname_to_package_name": self.ptm.task_clsname_to_package_name,
-            "package_to_task_clsnames": self.ptm.package_to_task_clsnames,
+            "ptm": {
+                "task_class_names": self.ptm.task_class_names,
+                "task_package_names": self.ptm.task_package_names,
+                "task_clsname_to_package_name": self.ptm.task_clsname_to_package_name,
+                "package_to_task_clsnames": self.ptm.package_to_task_clsnames,
+                "task_instance_repr_to_info": self.task_instance_repr_to_info,
+            },
 
             "nodeedge": {
                 "nodes": self.nodes,
                 "edges": self.edges,
                 "nodes_groups": self.nodes_groups_in_view,
+                "graph_infos": self.graph_infos_data["json"],
             },
-
-            "graph_infos": self.graph_infos_data["json"],
-            "task_instance_repr_to_info": self.task_instance_repr_to_info,
 
             "errors": {
                 "load_tasks": self.ptm.load_all_tasks_result["failure"],

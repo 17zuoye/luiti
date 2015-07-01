@@ -10,7 +10,7 @@
 
   var render_network = function(nodes, edges, container_id, click_event) {
       nodes = _.map(nodes, function(node) {
-          if (_.contains(env.selected_query.task_cls, node.label)) {
+          if (_.contains(env.queryparams.selected_query.task_cls, node.label)) {
             node.color = colors.self;
           } else {
             node.color = colors.requires;
@@ -170,7 +170,7 @@
                    });
 
     // 2. render visualSearch
-    env.visualSearch = render_visualSearch(".visual_search", env.default_query, env.selected_query, env.query_params.accepted);
+    env.visualSearch = render_visualSearch(".visual_search", env.queryparams.default_query, env.queryparams.selected_query, env.queryparams.query_params.accepted);
 
     // Other views.
     render_header_title(env.title);
@@ -199,12 +199,12 @@
           renders.LoadTasksErrors(env.errors);
         };
 
-        renders.TaskGroupsSummary(env.task_package_names, env.package_to_task_clsnames, env.selected_query.luiti_package);
+        renders.TaskGroupsSummary(env.ptm.task_package_names, env.ptm.package_to_task_clsnames, env.queryparams.selected_query.luiti_package);
         renders.TaskGroups(env.nodeedge.nodes_groups);
 
         // Select first task instance.
         var lis = $("#nodes_groups").find(".nodes_group ul li");
-        var selector_attrs_task_cls = _.map((env.selected_query.task_cls || []), function(task_cls) {
+        var selector_attrs_task_cls = _.map((env.queryparams.selected_query.task_cls || []), function(task_cls) {
             return "[data-task_cls=" + task_cls + "]";
           });
         // e.g. "[data-task_cls*=Profile], [data-task_cls*=Dump]"
