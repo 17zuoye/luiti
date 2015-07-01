@@ -44,7 +44,19 @@ class CodeShowHandler(tornado.web.RequestHandler):
             code_html = highlight(source_code, PythonLexer(), formatter)
             css_html = u"""<style type="text/css">%s</style>""" % formatter.get_style_defs('.highlight')
 
-            return path_html + code_html + css_html
+            body_html = path_html + code_html + css_html
+            title = source_file.split("/")[-1]
+
+            return u"""
+            <html lang="en">
+                <head>
+                    <title>%s</title>
+                </head>
+                <body>
+                    %s
+                </body>
+            </html>
+            """ % (title, body_html)
 
     code_cache = CodeCache()
 
