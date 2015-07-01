@@ -50,13 +50,14 @@ optional arguments:
 subcommands:
   valid subcommands
 
-  {ls,new,generate,info,clean,run}
+  {ls,new,generate,info,clean,run,webui}
     ls                  list all current luiti tasks.
     new                 create a new luiti project.
     generate            generate a new luiti task python file.
     info                show a detailed task.
     clean               manage files that outputed by luiti tasks.
     run                 run a luiti task.
+    webui               start a luiti DAG visualiser.
 ```
 
 
