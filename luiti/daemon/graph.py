@@ -3,10 +3,10 @@
 __all__ = ["Graph"]
 
 from copy import deepcopy
-from collections import defaultdict
 
 from .template import Template
 from .utils import stringify
+from .task_storage import TaskStorageSet, TaskStorageDict
 
 
 class Graph(object):
@@ -23,53 +23,26 @@ class Graph(object):
 
         Related function is luiti.manager.dep.Dep.find_dep_on_tasks
         """
-        uniq_set = set(task_instances)
+        uniq_set = TaskStorageSet(task_instances)
 
         # 1. raw `requires` and `invert` informations.
-        task_instances_to_their_direct_requires = defaultdict(set)
-        task_instances_to_their_direct_upons = defaultdict(set)
-
-        def read_requires_from_task(task_instance):
-            deps = task_instance.requires()
-            if not isinstance(deps, list):
-                deps = [deps]
-            deps = filter(lambda i1: hasattr(i1, "package_name"), deps)
-            # filter is very important, or can't find dict data.
-            deps = filter(lambda i1: i1.package_name in selected_packages, deps)
-            return deps
+        task_instances_to_their_direct_requires = TaskStorageDict()
+        task_instances_to_their_direct_upons = TaskStorageDict()
 
         for task_instance in task_instances:
-            deps = read_requires_from_task(task_instance)
+            deps = Utils.read_requires_from_task(task_instance, selected_packages)
             selected_deps = [d1 for d1 in deps if d1 in uniq_set]
-            task_instances_to_their_direct_requires[task_instance] = selected_deps
-
+            task_instances_to_their_direct_requires[task_instance] = TaskStorageSet(selected_deps)
             for dep1 in selected_deps:
                 task_instances_to_their_direct_upons[dep1].add(task_instance)
 
         # 2. unfold `requires` and `invert` informations.
-        task_instances_to_their_total_requires = defaultdict(set)
-        task_instances_to_their_total_upons = defaultdict(set)
-
-        def add_total_deps(store, tree, store_node, fetch_node=None):
-            """ add all recursive dependencies.
-            1. `store_node` used to store in a result store.
-            2. `fetch_node` used to fetch dependencies from a tree.
-            """
-            fetch_node = fetch_node or store_node
-
-            for d1 in tree[fetch_node]:
-                if d1 == store_node:
-                    continue
-
-                store[store_node].add(d1)
-
-                for d2 in tree[d1]:
-                    if d2 not in store[store_node]:
-                        add_total_deps(store, tree, store_node, d2)
+        task_instances_to_their_total_requires = TaskStorageDict()
+        task_instances_to_their_total_upons = TaskStorageDict()
 
         for task_instance in task_instances:
-            add_total_deps(task_instances_to_their_total_requires, task_instances_to_their_direct_requires, task_instance)
-            add_total_deps(task_instances_to_their_total_upons, task_instances_to_their_direct_upons, task_instance)
+            Utils.add_total_deps(task_instances_to_their_total_requires, task_instances_to_their_direct_requires, task_instance)
+            Utils.add_total_deps(task_instances_to_their_total_upons, task_instances_to_their_direct_upons, task_instance)
 
         def generate_result(_type="python"):
             """
@@ -139,3 +112,36 @@ class Graph(object):
 
         result = sorted(result, key=lambda i1: (-len(i1), i1))
         return result
+
+
+class Utils(object):
+    """ only for this file """
+
+    @staticmethod
+    def read_requires_from_task(task_instance, selected_packages):
+        deps = task_instance.requires()
+        if not isinstance(deps, list):
+            deps = [deps]
+        # make sure it's a valid luiti task
+        deps = filter(lambda i1: hasattr(i1, "package_name"), deps)
+        # filter is very important, or can't find dict data.
+        deps = filter(lambda i1: i1.package_name in selected_packages, deps)
+        return deps
+
+    @staticmethod
+    def add_total_deps(store, tree, store_node, fetch_node=None):
+        """ add all recursive dependencies.
+        1. `store_node` used to store in a result store.
+        2. `fetch_node` used to fetch dependencies from a tree.
+        """
+        fetch_node = fetch_node or store_node
+
+        for d1 in tree[fetch_node]:
+            if d1 == store_node:
+                continue
+
+            store[store_node].add(d1)
+
+            for d2 in tree[d1]:
+                if d2 not in store[store_node]:
+                    Utils.add_total_deps(store, tree, store_node, d2)

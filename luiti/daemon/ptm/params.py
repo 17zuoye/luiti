@@ -108,4 +108,4 @@ class Params(object):
                 task_instance = ti(**_real_task_params)
                 total_task_instances.append(task_instance)
 
-        return total_task_instances
+        return sorted(list(set(total_task_instances)))

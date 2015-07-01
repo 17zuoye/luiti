@@ -6,6 +6,7 @@ from etl_utils import cached_property
 
 from ..graph import Graph
 from ..template import Template
+from ..task_storage import TaskStorageSet
 
 
 # TODO more modular
@@ -61,6 +62,7 @@ class QueryBuilder(object):
 
     @cached_property
     def selected_task_instances(self):
+        """ nodes that drawed in vis.js """
         # filter by package
         result = sorted(list(set(self.total_task_instances)))
         result = filter(lambda ti: ti.package_name in self.selected_packages,
@@ -72,12 +74,13 @@ class QueryBuilder(object):
             return result
 
         pure_selected_task_instances = [ti for ti in result if ti.task_clsname in self.selected_task_cls_names]
-        pure_linked = set([])
+        pure_linked = TaskStorageSet()
         for ti in pure_selected_task_instances:
             for t2 in self.graph_infos_python["requires"]["direct"][ti]:
                 pure_linked.add(t2)
             for t2 in self.graph_infos_python["upons"]["direct"][ti]:
                 pure_linked.add(t2)
+
         # filter that tasks are linked, in current task_classes.
         result = [ti for ti in result if ti in pure_linked]
         result.extend(pure_selected_task_instances)
