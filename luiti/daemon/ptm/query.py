@@ -101,10 +101,6 @@ class QueryBuilder(object):
         return [Template.a_node(ti) for ti in self.selected_task_instances]
 
     @cached_property
-    def nodeid_to_node_dict(self):
-        return {node["id"]: node for node in self.nodes}
-
-    @cached_property
     def edges(self):
         return Template.edges_from_nodes(self.selected_task_instances)
 
@@ -125,9 +121,9 @@ class QueryBuilder(object):
     @cached_property
     def result(self):
         return {
-            "query_params": self.query_params,
-
             "title": "A DAG timely visualiser.",
+
+            "query_params": self.query_params,
             "selected_query": self.selected_query,
             "default_query": self.default_query,
             "luiti_visualiser_env": self.ptm.current_luiti_visualiser_env,
@@ -137,10 +133,11 @@ class QueryBuilder(object):
             "task_clsname_to_package_name": self.ptm.task_clsname_to_package_name,
             "package_to_task_clsnames": self.ptm.package_to_task_clsnames,
 
-            "nodes": self.nodes,
-            "edges": self.edges,
-            "nodes_groups": self.nodes_groups_in_view,
-            "nodeid_to_node_dict": self.nodeid_to_node_dict,
+            "nodeedge": {
+                "nodes": self.nodes,
+                "edges": self.edges,
+                "nodes_groups": self.nodes_groups_in_view,
+            },
 
             "graph_infos": self.graph_infos_data["json"],
             "task_instance_repr_to_info": self.task_instance_repr_to_info,

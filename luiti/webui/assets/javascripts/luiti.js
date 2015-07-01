@@ -159,8 +159,8 @@
 
   var render_all = function(env) {
     // 1. render network
-    render_network(env.nodes,
-                   env.edges,
+    render_network(env.nodeedge.nodes,
+                   env.nodeedge.edges,
                    "#network",
                    function (params) {
                      console.log("[click a node on #network]", params);
@@ -182,6 +182,12 @@
     window.env = data;
     console.log("load data", env);
 
+    // transform data
+    env.nodeedge.nodeid_to_node_dict = _.reduce(env.nodeedge.nodes, function(dict, node) {
+      dict[node.id] = node;
+      return dict;
+    }, {});
+
     render_all(env);
 
     // orig is <script type="text/jsx">, but we want to load jsx scripts manually here, iteract with Ajax loading JSON data.
@@ -194,7 +200,7 @@
         };
 
         renders.TaskGroupsSummary(env.task_package_names, env.package_to_task_clsnames, env.selected_query.luiti_package);
-        renders.TaskGroups(env.nodes_groups);
+        renders.TaskGroups(env.nodeedge.nodes_groups);
 
         // Select first task instance.
         var lis = $("#nodes_groups").find(".nodes_group ul li");

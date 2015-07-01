@@ -160,7 +160,7 @@ var TaskInfoView = React.createClass({
       var task_cls = node_label.slice(0, node_label.indexOf('('));
       return (
         <li onClick={this.handleClick} key={this.props.group_idx + ' ' + this.props.node_idx} data-task-id={node_label} data-task_cls={task_cls} >
-          { task_cls + "." + env.nodeid_to_node_dict[node_label].package_name }
+          { task_cls + "." + env.nodeedge.nodeid_to_node_dict[node_label].package_name }
         </li>
       );
   }
@@ -270,7 +270,7 @@ var TaskLinksView = React.createClass({
 });
 
 var TaskDetailView_render = function(task_id, graph_infos) {
-  var ref = env.nodeid_to_node_dict[task_id];
+  var ref = env.nodeedge.nodeid_to_node_dict[task_id];
 
   var task_file = ref["task_file"];
   var task_package = task_file.split("/")[0];
