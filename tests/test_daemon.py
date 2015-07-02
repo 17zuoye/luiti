@@ -110,6 +110,31 @@ class TestDaemon(unittest.TestCase):
             'project_A': ['ADay', 'BDay', 'CDay', 'DDay', 'FoobarDay', 'ImportPackagesDay', 'MultipleDependentDay'],
         })
 
+    def test_Graph(self):
+        from luiti.daemon.graph import Graph, Utils
+        Graph
+        Utils
+
+    def test_query_engine_params(self):
+        from luiti.daemon.query_engine.params import Params
+
+        default_query = {"date_value": "2014-09-01", "language": "Chinese", "gender": "Male"}
+        selected_query = {"date_value": "2015-07-02", "city": ["Beijing", "London"]}
+
+        params_array = Params.build_params_array(default_query, selected_query)
+
+        base_expected_opt = {
+            "date_value": ArrowParameter.get("2015-07-02"),
+            "city": ["Beijing", "London"],
+            "language": "Chinese",
+            "gender": "Male",
+        }
+        expected_opts = [
+            dict(base_expected_opt.items() + {"city": "Beijing"}.items()),
+            dict(base_expected_opt.items() + {"city": "London"}.items()),
+        ]
+        self.assertEqual(params_array, expected_opts)
+
 
 if __name__ == '__main__':
     unittest.main()

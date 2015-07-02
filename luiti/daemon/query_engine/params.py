@@ -40,4 +40,4 @@ class Params(object):
             opt = dict(default_query.items() + opt.items())
             params_array.append(opt)
 
-        return params_array
+        return sorted(params_array)

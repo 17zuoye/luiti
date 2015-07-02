@@ -8,6 +8,9 @@ class ADay(TaskDay):
 
     root_dir = "/foobar"
 
+    def requires(self):
+        return [self.BDay_task, self.CDay_task]
+
     @cached_property
     def count(self):
         return 1
