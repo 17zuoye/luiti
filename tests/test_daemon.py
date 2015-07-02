@@ -56,6 +56,26 @@ class TestDaemon(unittest.TestCase):
         self.assertEqual(t1.task_id, t2.task_id)
         self.assertEqual(hash(t1), hash(t2))
 
+    def test_VisualiserEnvTemplate(self):
+        from luiti.daemon import VisualiserEnvTemplate
+
+        env = VisualiserEnvTemplate({
+            "file_web_url_prefix": "http://HUE:8888/filebrowser/#/",
+            "date_begin": lambda: "2014-09-01",
+            "additional_task_parameters": {
+                "subject": {
+                    "values": ["english", "math"],
+                    "default": "english",
+                }
+            },
+            "package_config": {
+                "defaults": ["foo", "bar", ],
+            }
+        }).data
+
+        self.assertTrue(isinstance(env, dict), "raw dict")
+        self.assertEqual(env["date_begin"], "2014-09-01", "eval lambda")
+
 
 if __name__ == '__main__':
     unittest.main()
