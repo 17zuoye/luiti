@@ -38,19 +38,33 @@ class CodeShowHandler(tornado.web.RequestHandler):
 
     class CodeCache(dict):
 
-        def __missing__(self, source_file):
-            from pygments import highlight
+        @cached_property
+        def highlight(self):
+            """ Lazy load pygments, so user dont need to load all daemon code. """
+            import pygments
             from pygments.lexers import PythonLexer
-            from pygments.formatters import HtmlFormatter
+            lexer = PythonLexer()
 
+            def func(source_code):
+                return pygments.highlight(source_code, lexer, self.formatter)
+            return func
+
+        @cached_property
+        def formatter(self):
+            from pygments.formatters import HtmlFormatter
+            return HtmlFormatter(linenos=True)
+
+        @cached_property
+        def css_html(self):
+            return u"""<style type="text/css">%s</style>""" % self.formatter.get_style_defs('.highlight')
+
+        def __missing__(self, source_file):
             source_code = file(source_file).read()
-            formatter = HtmlFormatter(linenos=True)
 
             path_html = u"""<div>source_file: %s</div>""" % source_file
-            code_html = highlight(source_code, PythonLexer(), formatter)
-            css_html = u"""<style type="text/css">%s</style>""" % formatter.get_style_defs('.highlight')
+            code_html = self.highlight(source_code)
 
-            body_html = path_html + code_html + css_html
+            body_html = path_html + code_html + self.css_html
             title = source_file.split("/")[-1]
 
             return u"""
