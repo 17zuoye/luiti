@@ -8,9 +8,18 @@ sys.path.insert(0, root_dir)
 import unittest
 
 from luiti.task_templates import TaskDay
-from luiti import luigi
+from luiti import luigi, config
 from luiti.luigi_extensions import ArrowParameter
 current_time = ArrowParameter.now()
+
+
+def setup_luiti_env_in_test():
+    # setup luiti package path
+    sys.path.insert(0, os.path.join(root_dir, "tests"))
+    sys.path.insert(0, os.path.join(root_dir, "tests/zip_package_by_luiti"))
+
+    # setup env
+    config.curr_project_dir = os.path.join(root_dir, "tests/project_A")
 
 
 class FoobarDay(TaskDay):
@@ -77,15 +86,9 @@ class TestDaemon(unittest.TestCase):
         self.assertEqual(env["date_begin"], "2014-09-01", "eval lambda")
 
     def test_ptm(self):
-        from luiti import config
         from luiti.daemon.ptm import PTM
 
-        # setup luiti package path
-        sys.path.insert(0, os.path.join(root_dir, "tests"))
-        sys.path.insert(0, os.path.join(root_dir, "tests/zip_package_by_luiti"))
-
-        # setup env
-        config.curr_project_dir = os.path.join(root_dir, "tests/project_A")
+        setup_luiti_env_in_test()
 
         self.assertEqual(PTM.current_package_name, "project_A")
         self.assertEqual(PTM.current_package_path, config.curr_project_dir)
@@ -134,6 +137,36 @@ class TestDaemon(unittest.TestCase):
             dict(base_expected_opt.items() + {"city": "London"}.items()),
         ]
         self.assertEqual(params_array, expected_opts)
+
+    def test_QueryBuilder(self):
+        from luiti.daemon.query_engine.builder import QueryBuilder
+        from luiti.daemon.ptm import PTM
+
+        setup_luiti_env_in_test()
+
+        builder = QueryBuilder(PTM, {})
+
+        self.assertEqual(builder.date_begin, "2014-09-01")
+        self.assertEqual(builder.date_end, builder.yesterday_str)
+        self.assertEqual(builder.accepted_params, {'language': {'default': 'English', 'values': ['Chinese', 'English']}})
+        self.assertTrue(len(builder.accepted_query_params["date_value"]) > 200)  # many days
+        self.assertEqual(len(builder.accepted_query_params), 3)
+
+        self.assertEqual(sorted(builder.default_query.keys()), ['date_value', 'language'])
+        self.assertEqual(builder.default_query["language"], "English")
+
+        self.assertEqual(sorted(builder.selected_query.keys()), ["date_value", "language", "luiti_package"])
+        self.assertEqual(builder.selected_query["luiti_package"], ["project_A"])  # default
+
+        self.assertEqual(list(builder.selected_task_cls_names), [])
+
+        self.assertEqual(len(builder.total_task_instances), 8)
+        self.assertEqual(len(builder.selected_task_instances), 7)
+        HDay_task = list(set(builder.total_task_instances) - set(builder.selected_task_instances))[0]
+        self.assertEqual(HDay_task.task_clsname, "HDay", "HDay is project_B, and project_B in not selected")
+
+        self.assertTrue("requires" in builder.graph_infos_data["json"])
+        # ... to be continued.
 
 
 if __name__ == '__main__':

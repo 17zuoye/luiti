@@ -14,7 +14,6 @@ class Params(object):
         1. build possible params
         2. and with default params
         """
-
         selected_query_with_kv_array = list()
         for k1, v1 in selected_query.iteritems():
             k1_v2_list = list()
@@ -22,6 +21,10 @@ class Params(object):
             # v1 is params value list
             if not isinstance(v1, list):
                 v1 = [v1]
+
+            if len(v1) == 0:
+                continue  # ignore key that no value.
+
             for v2 in v1:
                 # Already overwrited params type and luigi.Task#__eq__ in luiti.
                 # See more details at task_templates.time.task_base.py
