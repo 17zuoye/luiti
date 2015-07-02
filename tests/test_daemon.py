@@ -7,6 +7,16 @@ sys.path.insert(0, root_dir)
 
 import unittest
 
+from luiti.task_templates import TaskDay
+from luiti import luigi
+from luiti.luigi_extensions import ArrowParameter
+current_time = ArrowParameter.now()
+
+
+class FoobarDay(TaskDay):
+    root_dir = "/tmp"
+    foobar = luigi.Parameter()
+
 
 class TestDaemon(unittest.TestCase):
 
@@ -16,13 +26,6 @@ class TestDaemon(unittest.TestCase):
 
     def test_utils(self):
         from luiti.daemon.utils import TaskStorageSet, TaskStorageDict
-        from luiti.task_templates import TaskDay
-        from luiti.luigi_extensions import ArrowParameter
-        from luiti import luigi
-
-        class FoobarDay(TaskDay):
-            root_dir = "/tmp"
-            foobar = luigi.Parameter()
 
         current_time = ArrowParameter.now()
         t1 = FoobarDay(date_value=current_time, foobar="1")
@@ -41,6 +44,17 @@ class TestDaemon(unittest.TestCase):
         d1[t2].add(t2)
         self.assertEqual(len(d1), 1)
         self.assertEqual(len(d1[t1]), 1)
+
+    def test_create_task(self):
+        """ test tasks are the same one completely. """
+        from luiti.daemon.query_engine.create_task import CreateTask
+
+        t1 = CreateTask.new(FoobarDay, {"date_value": current_time, "foobar": 1})
+        t2 = CreateTask.new(FoobarDay, {"date_value": current_time, "foobar": 1})
+
+        self.assertEqual(t1, t2)
+        self.assertEqual(t1.task_id, t2.task_id)
+        self.assertEqual(hash(t1), hash(t2))
 
 
 if __name__ == '__main__':
