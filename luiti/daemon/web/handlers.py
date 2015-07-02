@@ -10,10 +10,6 @@ from .assets import assets_main_dir, assets_thirdparty_dir
 from ..ptm import PTM
 from ..query_engine import Query
 
-from pygments import highlight
-from pygments.lexers import PythonLexer
-from pygments.formatters import HtmlFormatter
-
 
 class IndexHandler(tornado.web.RequestHandler):
 
@@ -43,6 +39,10 @@ class CodeShowHandler(tornado.web.RequestHandler):
     class CodeCache(dict):
 
         def __missing__(self, source_file):
+            from pygments import highlight
+            from pygments.lexers import PythonLexer
+            from pygments.formatters import HtmlFormatter
+
             source_code = file(source_file).read()
             formatter = HtmlFormatter(linenos=True)
 
