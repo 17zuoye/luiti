@@ -76,6 +76,40 @@ class TestDaemon(unittest.TestCase):
         self.assertTrue(isinstance(env, dict), "raw dict")
         self.assertEqual(env["date_begin"], "2014-09-01", "eval lambda")
 
+    def test_ptm(self):
+        from luiti import config
+        from luiti.daemon.ptm import PTM
+
+        # setup luiti package path
+        sys.path.insert(0, os.path.join(root_dir, "tests"))
+        sys.path.insert(0, os.path.join(root_dir, "tests/zip_package_by_luiti"))
+
+        # setup env
+        config.curr_project_dir = os.path.join(root_dir, "tests/project_A")
+
+        self.assertEqual(PTM.current_package_name, "project_A")
+        self.assertEqual(PTM.current_package_path, config.curr_project_dir)
+        self.assertTrue(isinstance(PTM.current_luiti_visualiser_env, dict))
+
+        self.assertEqual(len(PTM.task_classes), 8)
+        self.assertEqual(PTM.task_class_names, ['ADay', 'BDay', 'CDay', 'DDay', 'FoobarDay', 'HDay', 'ImportPackagesDay', 'MultipleDependentDay'])
+
+        self.assertEqual(len(PTM.task_clsname_to_package), len(PTM.task_classes))
+        self.assertEqual(PTM.task_clsname_to_package["ADay"].__name__, "project_A")
+
+        self.assertEqual(len(PTM.task_clsname_to_source_file), len(PTM.task_classes))
+        self.assertTrue("project_A/luiti_tasks/a_day.py" in PTM.task_clsname_to_source_file["ADay"])
+
+        self.assertEqual(len(PTM.task_clsname_to_package_name), len(PTM.task_classes))
+        self.assertEqual(PTM.task_clsname_to_package_name["ADay"], "project_A")
+
+        self.assertEqual(PTM.task_package_names, ["project_A", "project_B"])
+
+        self.assertEqual(PTM.package_to_task_clsnames, {
+            'project_B': ['HDay'],
+            'project_A': ['ADay', 'BDay', 'CDay', 'DDay', 'FoobarDay', 'ImportPackagesDay', 'MultipleDependentDay'],
+        })
+
 
 if __name__ == '__main__':
     unittest.main()

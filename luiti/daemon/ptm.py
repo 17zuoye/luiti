@@ -52,7 +52,7 @@ class PackageTaskManagementClass(object):
 
     @cached_property
     def task_class_names(self):
-        return [i1.__name__ for i1 in self.task_classes]
+        return sorted([i1.__name__ for i1 in self.task_classes])
 
     @cached_property
     def task_clsname_to_package(self):
@@ -76,7 +76,7 @@ class PackageTaskManagementClass(object):
 
     @cached_property
     def package_to_task_clsnames(self):
-        return {package.__name__: list(task_clsnames) for package, task_clsnames
+        return {package.__name__: sorted(list(task_clsnames)) for package, task_clsnames
                 in manager.PackageMap.package_to_task_clsnames.iteritems()}
 
 

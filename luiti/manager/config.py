@@ -106,6 +106,7 @@ class LuitiConfigClass(object):
 
     def get_curr_project_name(self):
         """ a valid Python package path. """
+        assert isinstance(luiti_config.curr_project_dir, str), luiti_config.curr_project_dir
         return os.path.basename(luiti_config.curr_project_dir)
 
     def fix_project_dir(self):
