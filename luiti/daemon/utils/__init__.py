@@ -2,9 +2,11 @@
 
 __all__ = ["stringify",
            "TaskStorageSet", "TaskStorageDict",
-           "Template", ]
+           "Template",
+           "CacheByDictKey", ]
 
 
 from .string import stringify
 from .task_storage import TaskStorageSet, TaskStorageDict
 from .template import Template
+from .cache import CacheByDictKey
