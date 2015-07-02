@@ -24,6 +24,7 @@ class Graph(object):
         uniq_set = TaskStorageSet(task_instances)
 
         # 1. raw `requires` and `invert` informations.
+        # TODO TaskStorageDict are already String, modify back to real Python objects.
         task_instances_to_their_direct_requires = TaskStorageDict()
         task_instances_to_their_direct_upons = TaskStorageDict()
 

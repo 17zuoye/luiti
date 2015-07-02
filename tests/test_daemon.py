@@ -114,8 +114,32 @@ class TestDaemon(unittest.TestCase):
         })
 
     def test_Graph(self):
+        from luiti.daemon.query_engine.builder import QueryBuilder
+        from luiti.daemon.ptm import PTM
         from luiti.daemon.graph import Graph, Utils
-        Graph
+        setup_luiti_env_in_test()
+
+        builder = QueryBuilder(PTM, {"luiti_package": ["project_A", "project_B"]})
+        builder.total_task_instances
+        builder.selected_task_instances
+
+        result = Graph.analysis_dependencies_between_nodes(builder.selected_task_instances, ["project_A"])
+        self.assertEqual(sorted(result.keys()), ["json", "python"])
+
+        d1 = result["json"]["upons"]["direct"]
+        c_instance = filter(lambda i1: "CDay(" in i1, d1.keys())[0]
+        c_deps = d1[c_instance]
+        self.assertEqual(len(c_deps), 1)
+        self.assertTrue("ADay" in repr(c_deps))
+
+        d2 = result["json"]["requires"]["total"]
+        a_instance = filter(lambda i1: "ADay(" in i1, d1.keys())[0]
+        a_deps = d2[a_instance]
+        self.assertEqual(len(a_deps), 2)
+        self.assertTrue("BDay(" in repr(a_deps))
+        self.assertTrue("CDay(" in repr(a_deps))
+        # TODO why FoobarDay dont appear here?
+
         Utils
 
     def test_query_engine_params(self):
@@ -141,7 +165,6 @@ class TestDaemon(unittest.TestCase):
     def test_QueryBuilder(self):
         from luiti.daemon.query_engine.builder import QueryBuilder
         from luiti.daemon.ptm import PTM
-
         setup_luiti_env_in_test()
 
         builder = QueryBuilder(PTM, {})
