@@ -1,4 +1,4 @@
-### 0.1.5   - July 7, 2015
+### 0.2.0   - July 7, 2015
 * Add WebUI and daemon.
 * Lots of bug fixes and refactor.
 
