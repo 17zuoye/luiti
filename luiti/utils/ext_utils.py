@@ -14,6 +14,8 @@ class ExtUtils(object):
 
         @classmethod
         def extend(cls, attrs):
+            assert isinstance(attrs, dict), attrs
+
             for attr_k1, attr_v1 in attrs.iteritems():
                 orig_attr = getattr(cls, attr_k1, None)
 

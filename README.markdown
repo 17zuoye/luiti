@@ -40,7 +40,7 @@ in the package.
 
 ```text
 $ luiti
-usage: luiti [-h] {ls,new,generate,info,clean,run} ...
+usage: luiti [-h] {ls,new,generate,info,clean,run,webui} ...
 
 Luiti tasks manager.
 
