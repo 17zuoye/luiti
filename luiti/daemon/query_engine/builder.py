@@ -100,11 +100,13 @@ class QueryBuilder(object):
     @cached_property
     def default_packages(self):
         """ user provided. """
-        return self.ptm.current_luiti_visualiser_env["package_config"]["defaults"]
+        return self.ptm.current_luiti_visualiser_env["package_config"].get("defaults", [])
 
     @cached_property
     def selected_packages(self):
-        return self.raw_params.get("luiti_package", self.default_packages)
+        result = self.raw_params.get("luiti_package", self.default_packages)
+        result = result or self.ptm.task_package_names
+        return result
 
     @cached_property
     def selected_task_cls_names(self):
