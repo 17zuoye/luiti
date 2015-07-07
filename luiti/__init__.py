@@ -49,7 +49,7 @@ from .utils import IOUtils, DateUtils, TargetUtils, HDFSUtils, \
 import arrow
 from .luigi_extensions import RootTask, TaskBase, ArrowParameter, HadoopExt
 
-from .daemon.visualiser_env_template import VisualiserEnvTemplate
+from .utils.visualiser_env_template import VisualiserEnvTemplate
 
 from .tests import MrTestCase
 

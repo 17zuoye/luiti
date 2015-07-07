@@ -9,7 +9,8 @@ __all__ = [
     "CommandUtils",
     "CompressUtils",
     "DateUtils",
-    "ExtUtils"
+    "ExtUtils",
+    "VisualiserEnvTemplate"
 ]
 
 from .io_utils import IOUtils
@@ -21,3 +22,4 @@ from .command_utils import CommandUtils
 from .date_utils import DateUtils
 from .compress_utils import CompressUtils
 from .ext_utils import ExtUtils
+from .visualiser_env_template import VisualiserEnvTemplate

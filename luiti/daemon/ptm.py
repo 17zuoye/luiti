@@ -9,7 +9,7 @@ import importlib
 import inspect
 
 from .. import manager
-from .visualiser_env_template import VisualiserEnvTemplate
+from ..utils import VisualiserEnvTemplate
 
 
 @singleton()

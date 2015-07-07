@@ -66,7 +66,7 @@ class TestDaemon(unittest.TestCase):
         self.assertEqual(hash(t1), hash(t2))
 
     def test_VisualiserEnvTemplate(self):
-        from luiti.daemon import VisualiserEnvTemplate
+        from luiti.utils import VisualiserEnvTemplate
 
         env = VisualiserEnvTemplate({
             "file_web_url_prefix": "http://HUE:8888/filebrowser/#/",
