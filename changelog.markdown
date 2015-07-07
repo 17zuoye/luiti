@@ -1,3 +1,7 @@
+### 0.1.5   - July 7, 2015
+* Add WebUI and daemon.
+* Lots of bug fixes and refactor.
+
 ### 0.1.4   - May 10, 2015
 * Add English README
 
