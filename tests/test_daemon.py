@@ -15,11 +15,14 @@ current_time = ArrowParameter.now()
 
 def setup_luiti_env_in_test():
     # setup luiti package path
-    sys.path.insert(0, os.path.join(root_dir, "tests"))
-    sys.path.insert(0, os.path.join(root_dir, "tests/zip_package_by_luiti"))
+    parent = os.path.join(root_dir, "tests/webui_packages")
+    luiti_package_names = "dump clean middle summary".split(" ")
+    for project_name in luiti_package_names + ["webui_tests"]:
+        package_path = os.path.join(parent, "luiti_" + project_name)
+        sys.path.insert(0, package_path)
 
     # setup env
-    config.curr_project_dir = os.path.join(root_dir, "tests/project_A")
+    config.curr_project_dir = os.path.join(root_dir, "tests/webui_packages/luiti_summary")
 
 
 class FoobarDay(TaskDay):
@@ -90,27 +93,31 @@ class TestDaemon(unittest.TestCase):
 
         setup_luiti_env_in_test()
 
-        self.assertEqual(PTM.current_package_name, "project_A")
+        self.assertEqual(PTM.current_package_name, "luiti_summary")
         self.assertEqual(PTM.current_package_path, config.curr_project_dir)
         self.assertTrue(isinstance(PTM.current_luiti_visualiser_env, dict))
 
-        self.assertEqual(len(PTM.task_classes), 8)
-        self.assertEqual(PTM.task_class_names, ['ADay', 'BDay', 'CDay', 'DDay', 'FoobarDay', 'HDay', 'ImportPackagesDay', 'MultipleDependentDay'])
+        self.assertEqual(len(PTM.task_classes), 7)
+        self.assertEqual(PTM.task_class_names, ['BetaReportDay', 'CleanWebLogDay', 'CounterVisitorByBrowserDay', 'CounterVisitorByRegionDay', 'CounterVisitorDay', 'DumpBrowserMapDay', 'DumpWebLogDay'])
 
         self.assertEqual(len(PTM.task_clsname_to_package), len(PTM.task_classes))
-        self.assertEqual(PTM.task_clsname_to_package["ADay"].__name__, "project_A")
+        self.assertEqual(PTM.task_clsname_to_package["DumpBrowserMapDay"].__name__, "luiti_dump")
 
         self.assertEqual(len(PTM.task_clsname_to_source_file), len(PTM.task_classes))
-        self.assertTrue("project_A/luiti_tasks/a_day.py" in PTM.task_clsname_to_source_file["ADay"])
+        self.assertTrue("luiti_dump/luiti_tasks/dump_browser_map_day.py" in PTM.task_clsname_to_source_file["DumpBrowserMapDay"])
 
         self.assertEqual(len(PTM.task_clsname_to_package_name), len(PTM.task_classes))
-        self.assertEqual(PTM.task_clsname_to_package_name["ADay"], "project_A")
+        self.assertEqual(PTM.task_clsname_to_package_name["DumpBrowserMapDay"], "luiti_dump")
 
-        self.assertEqual(PTM.task_package_names, ["project_A", "project_B"])
+        self.assertEqual(PTM.task_package_names, ['luiti_clean', 'luiti_dump', 'luiti_middle', 'luiti_summary'])
 
         self.assertEqual(PTM.package_to_task_clsnames, {
-            'project_B': ['HDay'],
-            'project_A': ['ADay', 'BDay', 'CDay', 'DDay', 'FoobarDay', 'ImportPackagesDay', 'MultipleDependentDay'],
+            'luiti_clean': ['CleanWebLogDay'],
+            'luiti_dump': ['DumpBrowserMapDay', 'DumpWebLogDay'],
+            'luiti_middle': ['CounterVisitorByBrowserDay',
+                             'CounterVisitorByRegionDay',
+                             'CounterVisitorDay'],
+            'luiti_summary': ['BetaReportDay']
         })
 
     def test_Graph(self):
@@ -119,25 +126,26 @@ class TestDaemon(unittest.TestCase):
         from luiti.daemon.graph import Graph, Utils
         setup_luiti_env_in_test()
 
-        builder = QueryBuilder(PTM, {"luiti_package": ["project_A", "project_B"]})
+        builder = QueryBuilder(PTM, {"luiti_package": []})  # default select all packages.
         builder.total_task_instances
         builder.selected_task_instances
 
-        result = Graph.analysis_dependencies_between_nodes(builder.selected_task_instances, ["project_A"])
+        result = Graph.analysis_dependencies_between_nodes(builder.selected_task_instances, ["luiti_summary", "luiti_middle"])
         self.assertEqual(sorted(result.keys()), ["json", "python"])
 
         d1 = result["json"]["upons"]["direct"]
-        c_instance = filter(lambda i1: "CDay(" in i1, d1.keys())[0]
+        c_instance = filter(lambda i1: "CounterVisitorByBrowserDay(" in i1, d1.keys())[0]
         c_deps = d1[c_instance]
-        self.assertEqual(len(c_deps), 1)
-        self.assertTrue("ADay" in repr(c_deps))
+        self.assertEqual(len(c_deps), 2)
+        self.assertTrue("CounterVisitorDay" in repr(c_deps))
+        self.assertTrue("BetaReportDay" in repr(c_deps))
 
         d2 = result["json"]["requires"]["total"]
-        a_instance = filter(lambda i1: "ADay(" in i1, d1.keys())[0]
+        a_instance = filter(lambda i1: "BetaReportDay(" in i1, d1.keys())[0]
         a_deps = d2[a_instance]
-        self.assertEqual(len(a_deps), 2)
-        self.assertTrue("BDay(" in repr(a_deps))
-        self.assertTrue("CDay(" in repr(a_deps))
+        self.assertEqual(len(a_deps), 3)
+        self.assertTrue("CounterVisitorByBrowserDay(" in repr(a_deps))
+        self.assertTrue("CounterVisitorDay(" in repr(a_deps))
         # TODO why FoobarDay dont appear here?
 
         Utils
@@ -179,14 +187,14 @@ class TestDaemon(unittest.TestCase):
         self.assertEqual(builder.default_query["language"], "English")
 
         self.assertEqual(sorted(builder.selected_query.keys()), ["date_value", "language", "luiti_package"])
-        self.assertEqual(builder.selected_query["luiti_package"], ["project_A"])  # default
+        self.assertEqual(builder.selected_query["luiti_package"], ["luiti_summary"])  # default
 
         self.assertEqual(list(builder.selected_task_cls_names), [])
 
-        self.assertEqual(len(builder.total_task_instances), 8)
-        self.assertEqual(len(builder.selected_task_instances), 7)
-        HDay_task = list(set(builder.total_task_instances) - set(builder.selected_task_instances))[0]
-        self.assertEqual(HDay_task.task_clsname, "HDay", "HDay is project_B, and project_B in not selected")
+        self.assertEqual(len(builder.total_task_instances), 7)
+        self.assertEqual(len(builder.selected_task_instances), 1)
+        DumpWebLogDay_task = sorted(list(set(builder.total_task_instances) - set(builder.selected_task_instances)))[-1]
+        self.assertEqual(DumpWebLogDay_task.task_clsname, "DumpWebLogDay", "DumpWebLogDay is luiti_dump, and luiti_dump in not selected")
 
         self.assertTrue("requires" in builder.graph_infos_data["json"])
         # ... to be continued.

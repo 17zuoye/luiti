@@ -20,7 +20,7 @@ class QueryBuilder(object):
     All propertyies are generated lazily by using `cached_property`, as in a **DAG**.
     """
 
-    def __init__(self, ptm, raw_params):
+    def __init__(self, ptm, raw_params=dict()):
         assert isinstance(raw_params, dict), raw_params
 
         self.raw_params = raw_params

@@ -6,7 +6,7 @@ Provide test environment for webui_packages.
 
 import os
 from etl_utils import cached_property
-from luiti import luigi, TaskBase, TaskDay
+from luiti import luigi, TaskBase, TaskDay, VisualiserEnvTemplate
 from luigi.mock import MockTarget
 
 
@@ -16,7 +16,7 @@ def root_dir(self):
 
 
 def data_file(self):
-    return os.path.join(self.root_dir, self.task_name, self.date_str)
+    return os.path.join(self.root_dir, self.task_clsname, self.date_str)
 
 
 def mock_output(self):
@@ -31,4 +31,4 @@ TaskBase.extend({
 })
 
 
-__all__ = ["luigi", "TaskDay"]
+__all__ = ["luigi", "TaskDay", "VisualiserEnvTemplate"]
