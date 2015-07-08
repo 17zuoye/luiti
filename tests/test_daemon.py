@@ -13,7 +13,6 @@ from luiti.luigi_extensions import ArrowParameter
 current_time = ArrowParameter.now()
 
 from luiti.tests import SetupLuitiPackages
-
 config = SetupLuitiPackages.config
 
 
@@ -87,8 +86,9 @@ class TestDaemon(unittest.TestCase):
         self.assertTrue(PTM.current_package_path in config.curr_project_dir)
         self.assertTrue(isinstance(PTM.current_luiti_visualiser_env, dict))
 
-        self.assertEqual(len(PTM.task_classes), 7)
-        self.assertEqual(PTM.task_class_names, ['BetaReportDay', 'CleanWebLogDay', 'CounterVisitorByBrowserDay', 'CounterVisitorByRegionDay', 'CounterVisitorDay', 'DumpBrowserMapDay', 'DumpWebLogDay'])
+        self.assertEqual(len(PTM.task_classes), 7 + 8)
+        webui_task_clses = ['BetaReportDay', 'CleanWebLogDay', 'CounterVisitorByBrowserDay', 'CounterVisitorByRegionDay', 'CounterVisitorDay', 'DumpBrowserMapDay', 'DumpWebLogDay']
+        self.assertTrue(len(set(webui_task_clses) - set(PTM.task_class_names)) == 0, "is the subset.")
 
         self.assertEqual(len(PTM.task_clsname_to_package), len(PTM.task_classes))
         self.assertEqual(PTM.task_clsname_to_package["DumpBrowserMapDay"].__name__, "luiti_dump")
@@ -99,7 +99,7 @@ class TestDaemon(unittest.TestCase):
         self.assertEqual(len(PTM.task_clsname_to_package_name), len(PTM.task_classes))
         self.assertEqual(PTM.task_clsname_to_package_name["DumpBrowserMapDay"], "luiti_dump")
 
-        self.assertEqual(PTM.task_package_names, ['luiti_clean', 'luiti_dump', 'luiti_middle', 'luiti_summary'])
+        self.assertEqual(PTM.task_package_names, ['luiti_clean', 'luiti_dump', 'luiti_middle', 'luiti_summary', "project_A", "project_B"])
 
         self.assertEqual(PTM.package_to_task_clsnames, {
             'luiti_clean': ['CleanWebLogDay'],
@@ -107,7 +107,15 @@ class TestDaemon(unittest.TestCase):
             'luiti_middle': ['CounterVisitorByBrowserDay',
                              'CounterVisitorByRegionDay',
                              'CounterVisitorDay'],
-            'luiti_summary': ['BetaReportDay']
+            'luiti_summary': ['BetaReportDay'],
+            'project_A': ['ADay',
+                          'BDay',
+                          'CDay',
+                          'DDay',
+                          'FoobarDay',
+                          'ImportPackagesDay',
+                          'MultipleDependentDay'],
+            'project_B': ['HDay']
         })
 
     def test_Graph(self):
@@ -163,29 +171,31 @@ class TestDaemon(unittest.TestCase):
         from luiti.daemon.query_engine.builder import QueryBuilder
         from luiti.daemon.ptm import PTM
 
-        builder = QueryBuilder(PTM, {})
+        builder = QueryBuilder(PTM, {"luiti_package": ['luiti_clean', 'luiti_dump', 'luiti_middle', 'luiti_summary']})
 
+        # test default query value
         self.assertEqual(builder.date_begin, "2014-09-01")
         self.assertEqual(builder.date_end, builder.yesterday_str)
         self.assertEqual(builder.accepted_params, {'language': {'default': 'English', 'values': ['Chinese', 'English']}})
         self.assertTrue(len(builder.accepted_query_params["date_value"]) > 200)  # many days
         self.assertEqual(len(builder.accepted_query_params), 3)
-
         self.assertEqual(sorted(builder.default_query.keys()), ['date_value', 'language'])
         self.assertEqual(builder.default_query["language"], "English")
 
         self.assertEqual(sorted(builder.selected_query.keys()), ["date_value", "language", "luiti_package"])
-        self.assertEqual(builder.selected_query["luiti_package"], ["luiti_summary"])  # default
 
         self.assertEqual(list(builder.selected_task_cls_names), [])
 
-        self.assertEqual(len(builder.total_task_instances), 7)
-        self.assertEqual(len(builder.selected_task_instances), 1)
-        DumpWebLogDay_task = sorted(list(set(builder.total_task_instances) - set(builder.selected_task_instances)))[-1]
-        self.assertEqual(DumpWebLogDay_task.task_clsname, "DumpWebLogDay", "DumpWebLogDay is luiti_dump, and luiti_dump in not selected")
+        self.assertEqual(len(builder.total_task_instances), (7 + 8), "with project_A+B")
+        self.assertEqual(len(builder.selected_task_instances), 7)
+
+        rest_tasks_info = repr(sorted(list(set(builder.total_task_instances) - set(builder.selected_task_instances))))
+        self.assertTrue("ADay(" in rest_tasks_info, "ADay is project_A, and project_A in not selected")
 
         self.assertTrue("requires" in builder.graph_infos_data["json"])
         # ... to be continued.
+
+        self.assertEqual(QueryBuilder(PTM, {}).selected_query["luiti_package"], ["luiti_summary"])  # default
 
 
 if __name__ == '__main__':

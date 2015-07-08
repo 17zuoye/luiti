@@ -8,25 +8,16 @@ os.environ['LUIGI_CONFIG_PATH'] = RootDir + '/tests/client.cfg'
 
 import unittest
 
-# add egg libarary
-sys.path.insert(0, os.path.join(
-    RootDir, "tests/zip_package_by_luiti"))
-
-# 1. change to work dir
-project_dir = RootDir + "/tests/project_A"
+from luiti.tests import SetupLuitiPackages
+luiti_config = SetupLuitiPackages.config  # make a ref
 
 # 3. setup tests variables
-from luiti import manager, luigi, ArrowParameter
-luiti_config = luigi.luiti_config  # make a ref
+from luiti import manager, ArrowParameter
 day_str = "2014-09-01T00:00:00+08:00"  # ISO 8601 format
 day_arrow = ArrowParameter.get(day_str)  # Fix maybe tested in other time zone.
 
 
 class TestLuitiExt(unittest.TestCase):
-
-    def setUp(self):
-        # let luiti find `luiti_tasks` dir
-        os.chdir(project_dir)
 
     def test_ref_tasks(self):
         ADay = manager.load_a_task_by_name("ADay")
@@ -91,8 +82,6 @@ class TestLuitiExt(unittest.TestCase):
         serialize_and_unserialize_a_task_instance('ADay', cPickle)
         serialize_and_unserialize_a_task_instance('DDay', pickle)
         serialize_and_unserialize_a_task_instance('DDay', cPickle)
-
-        self.assertEqual(luiti_config.curr_project_name, "project_A")
 
     def test_plug_packages(self):
         global manager, luigi
