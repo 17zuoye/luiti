@@ -19,6 +19,9 @@ class Query(object):
         """
         Generate all data needed.
         """
+        # Compact with yesterday and today are the same cache key.
+        raw_params["date_value"] = raw_params.get("date_value", unicode(QueryBuilder.yesterday()))
+
         # TODO cache maybe replaced by a decorator, such as @functools.lru_cache
         cache_key = unicode(sorted(raw_params.items()))  # A simple cache
 

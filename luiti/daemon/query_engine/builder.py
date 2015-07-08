@@ -20,7 +20,7 @@ class QueryBuilder(object):
     All propertyies are generated lazily by using `cached_property`, as in a **DAG**.
     """
 
-    def __init__(self, ptm, raw_params=dict()):
+    def __init__(self, ptm, raw_params):
         assert isinstance(raw_params, dict), raw_params
 
         self.raw_params = raw_params
@@ -36,13 +36,13 @@ class QueryBuilder(object):
         self.ptm.current_luiti_visualiser_env["date_end"] = date_end
         return date_end
 
-    @cached_property
-    def yesterday(self):
+    @staticmethod
+    def yesterday():
         return ArrowParameter.now().replace(days=-1).floor("day")
 
     @cached_property
     def yesterday_str(self):
-        return self.yesterday.format("YYYY-MM-DD")
+        return QueryBuilder.yesterday().format("YYYY-MM-DD")
 
     @cached_property
     def accepted_params(self):
@@ -78,7 +78,7 @@ class QueryBuilder(object):
         """ Query provide by user config. """
         # assign default params
         default_query = {
-            "date_value": str(self.yesterday),
+            "date_value": str(QueryBuilder.yesterday()),
             # to insert more key-value
         }
 
