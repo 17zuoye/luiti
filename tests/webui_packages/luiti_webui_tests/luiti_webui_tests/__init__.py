@@ -6,7 +6,7 @@ Provide test environment for webui_packages.
 
 import os
 from etl_utils import cached_property
-from luiti import luigi, TaskBase, TaskDay, VisualiserEnvTemplate
+from luiti import luigi, TaskDay, VisualiserEnvTemplate
 from luigi.mock import MockTarget
 
 
@@ -24,11 +24,18 @@ def mock_output(self):
     return MockTarget(self.data_file)
 
 
-TaskBase.extend({
+class WebuiDay(TaskDay):
+    """
+    Don't overwrite TaskDay or TaskBase, or will fail other tests files.
+    """
+    pass
+
+
+WebuiDay.extend({
     "root_dir": root_dir,
     "data_file": data_file,
     "output": mock_output,
 })
 
 
-__all__ = ["luigi", "TaskDay", "VisualiserEnvTemplate"]
+__all__ = ["luigi", "WebuiDay", "VisualiserEnvTemplate"]

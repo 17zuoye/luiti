@@ -1,10 +1,10 @@
 # -*-coding:utf-8-*-
 
-from .__init_luiti import TaskDay, luigi
+from .__init_luiti import WebuiDay, luigi
 
 
 @luigi.ref_tasks("CleanWebLogDay", "DumpBrowserMapDay")
-class CounterVisitorByBrowserDay(TaskDay):
+class CounterVisitorByBrowserDay(WebuiDay):
 
     def requires(self):
         return [self.CleanWebLogDay_task, self.DumpBrowserMapDay_task]

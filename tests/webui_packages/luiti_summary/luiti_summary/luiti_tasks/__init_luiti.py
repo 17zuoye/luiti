@@ -1,9 +1,9 @@
 # -*-coding:utf-8-*-
 
-__all__ = ["TaskDay", "luigi"]
+__all__ = ["WebuiDay", "luigi"]
 
 
-from luiti_webui_tests import TaskDay, luigi, VisualiserEnvTemplate
+from luiti_webui_tests import WebuiDay, luigi, VisualiserEnvTemplate
 luigi.plug_packages("luiti_dump", "luiti_clean", "luiti_middle", "luiti_summary")
 
 

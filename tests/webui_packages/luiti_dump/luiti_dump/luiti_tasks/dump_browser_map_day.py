@@ -1,10 +1,10 @@
 # -*-coding:utf-8-*-
 
-from .__init_luiti import TaskDay
+from .__init_luiti import WebuiDay
 from etl_utils import cached_property
 
 
-class DumpBrowserMapDay(TaskDay):
+class DumpBrowserMapDay(WebuiDay):
     """
     Mimic dump {int: name} format data from MySQL relational database.
     """

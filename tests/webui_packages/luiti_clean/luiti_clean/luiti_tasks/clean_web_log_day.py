@@ -1,10 +1,10 @@
 # -*-coding:utf-8-*-
 
-from .__init_luiti import TaskDay, luigi
+from .__init_luiti import WebuiDay, luigi
 
 
 @luigi.ref_tasks("DumpWebLogDay")
-class CleanWebLogDay(TaskDay):
+class CleanWebLogDay(WebuiDay):
     """
     Clean web log
     """
