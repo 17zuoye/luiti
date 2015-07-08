@@ -8,21 +8,13 @@ sys.path.insert(0, root_dir)
 import unittest
 
 from luiti.task_templates import TaskDay
-from luiti import luigi, config
+from luiti import luigi
 from luiti.luigi_extensions import ArrowParameter
 current_time = ArrowParameter.now()
 
+from luiti.tests import SetupLuitiPackages
 
-def setup_luiti_env_in_test():
-    # setup luiti package path
-    parent = os.path.join(root_dir, "tests/webui_packages")
-    luiti_package_names = "dump clean middle summary".split(" ")
-    for project_name in luiti_package_names + ["webui_tests"]:
-        package_path = os.path.join(parent, "luiti_" + project_name)
-        sys.path.insert(0, package_path)
-
-    # setup env
-    config.curr_project_dir = os.path.join(root_dir, "tests/webui_packages/luiti_summary")
+config = SetupLuitiPackages.config
 
 
 class FoobarDay(TaskDay):
@@ -91,10 +83,8 @@ class TestDaemon(unittest.TestCase):
     def test_ptm(self):
         from luiti.daemon.ptm import PTM
 
-        setup_luiti_env_in_test()
-
         self.assertEqual(PTM.current_package_name, "luiti_summary")
-        self.assertEqual(PTM.current_package_path, config.curr_project_dir)
+        self.assertTrue(PTM.current_package_path in config.curr_project_dir)
         self.assertTrue(isinstance(PTM.current_luiti_visualiser_env, dict))
 
         self.assertEqual(len(PTM.task_classes), 7)
@@ -124,7 +114,6 @@ class TestDaemon(unittest.TestCase):
         from luiti.daemon.query_engine.builder import QueryBuilder
         from luiti.daemon.ptm import PTM
         from luiti.daemon.graph import Graph, Utils
-        setup_luiti_env_in_test()
 
         builder = QueryBuilder(PTM, {"luiti_package": []})  # default select all packages.
         builder.total_task_instances
@@ -173,7 +162,6 @@ class TestDaemon(unittest.TestCase):
     def test_QueryBuilder(self):
         from luiti.daemon.query_engine.builder import QueryBuilder
         from luiti.daemon.ptm import PTM
-        setup_luiti_env_in_test()
 
         builder = QueryBuilder(PTM, {})
 
