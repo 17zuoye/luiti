@@ -35,6 +35,7 @@ setup(
                 'luiti/luigi_decorators',
                 'luiti/luigi_extensions',
                 'luiti/manager',
+                'luiti/schedule/',
                 'luiti/task_templates/',
                 'luiti/task_templates/time',
                 'luiti/task_templates/other',
@@ -69,6 +70,7 @@ setup(
         "jsonpickle",
         "six",
         "tabulate",
+        "toposort>=1.0,<1.1",
     ],
     classifiers=[
         'Intended Audience :: Developers',

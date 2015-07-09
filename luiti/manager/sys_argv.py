@@ -24,11 +24,11 @@ class SysArgv(object):
         for idx1, arg1 in enumerate(sys.argv):
             if idx1 in delete_argv_idxes:
                 continue
-            # 1. 排除 tasks, files, run 等
+            # 1. remove tasks, files, run, etc.
             if (not arg1.startswith("--")) and (arg1 in luiti_only_opts):
                 delete_argv_idxes.add(idx1)
                 continue
-            # 2. 处理 --task-name 等参数
+            # 2. process --task-name and more params
             if "=" in arg1:
                 arg2, val2 = arg1.split("=", 1)
                 if arg2 in luiti_only_opts:
