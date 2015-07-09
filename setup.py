@@ -68,6 +68,7 @@ setup(
         "ujson",
         "jsonpickle",
         "six",
+        "tabulate",
     ],
     classifiers=[
         'Intended Audience :: Developers',
