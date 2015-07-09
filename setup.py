@@ -58,7 +58,7 @@ setup(
         "mechanize>=0.2,<0.3",
         "python-daemon>=1.6,<1.7",
         "MySQL-python>=1.2,<1.3",
-        "pymongo>=2.7,<2.8",
+        "pymongo>=3.0",
 
         # 2. luiti self
         "etl_utils>=0.1,<0.2",
