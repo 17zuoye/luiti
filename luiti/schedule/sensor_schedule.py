@@ -56,8 +56,13 @@ IOError: [Errno 104] Connection reset by peer
                     else:
                         time.sleep(cls.default_wait_seconds)
 
-            # TODO turn into a task instance
-            luigi.run(main_task_cls=t1)  # support other task parameter, or yesterday (diff from current date_value)
+            # Can't turn into a task instance
+            # luigi.run(main_task_cls=t1 is not cls)  # support other task parameter, or yesterday (diff from current date_value)
+
+            # Actually we do it manually.
+            from luigi.interface import ArgParseInterface
+            interface = ArgParseInterface()
+            interface.run([t1])  # , worker_scheduler_factory, override_defaults=override_defaults) can be ignored.
 
 
 def read_all_required_tasks(curr_task):
