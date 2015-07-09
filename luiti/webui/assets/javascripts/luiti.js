@@ -199,7 +199,7 @@
         var jsx_js = JSXTransformer.transform(jsx_orig).code;
         window.renders = eval(jsx_js).renders;
 
-        if (errors.length) {
+        if (errors.load_tasks.length) {
           renders.LoadTasksErrors(errors);
         };
 
