@@ -51,10 +51,8 @@ class SensorSchedule(object):
         ss = SensorSchedule(curr_task, date_value)
 
         while True:
-            is_all_external_task_instances_complete = len(filter(lambda t1: not t1.t1.output().exists(), ss.external_task_instances_list)) == 0
-
             # 1. all output arrives
-            if is_all_external_task_instances_complete:
+            if ss.is_external_all_complete():
                 break
             else:
                 cls.current_sleep_seconds += cls.default_wait_seconds
@@ -145,6 +143,9 @@ class SensorSchedule(object):
     @cached_property
     def external_task_instances_list(self):
         return filter(lambda i1: SensorSchedule.is_external(i1.__class__), self.ordered_task_instances_list)
+
+    def is_external_all_complete(self):
+        return len(filter(lambda t1: not t1.output().exists(), self.external_task_instances_list)) == 0
 
     @staticmethod
     def is_external(task_instance):
