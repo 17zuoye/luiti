@@ -34,15 +34,14 @@ def MrTestCase(cls, verbose=False, date_value="2014-09-01"):
             print "[task_cls]", task_cls
 
         def test_mr(self):
-            # TODO print which json line error
             task_instance_1 = task_cls(date_value=date_value)
             if verbose:
                 print "[task_instance]", task_instance_1
 
             task_instance_1.lines = map_lines(task_instance_1.mrtest_input())
             result_expect = sorted(
-                [json.loads(i2) for i2
-                 in map_lines(task_instance_1.mrtest_output())])
+                [read_json_from_mrtest_output(i2, idx) for idx, i2
+                 in enumerate(map_lines(task_instance_1.mrtest_output()))])
 
             self.assertEqual(result_expect, run_map_reduce(task_instance_1))
         return test_mr
@@ -83,3 +82,12 @@ def run_map_reduce(task_instance_1):
         for _, val_2 in task_instance_1.reducer(key_1, vals_generator):
             result_list.append(json.loads(val_2))
     return sorted(result_list)
+
+
+def read_json_from_mrtest_output(line, idx):
+    """ print which json line error """
+    try:
+        return json.loads(line)
+    except Exception as e:
+        print u"[line#%s] %s" % (idx, line)
+        raise e
