@@ -36,6 +36,7 @@ IOError: [Errno 104] Connection reset by peer
     At last, I found a new solution, inspired by `Luiti webui` and `Airflow`. We can calculate the DAG on the client side via `requires` function, and check output manually with adding `is_external` attribute to luigi.Task.
     """
     default_wait_seconds = 5
+    max_wait_seconds = 3600 * 2
 
     @classmethod
     def run(cls, curr_task, date_value):
@@ -50,10 +51,16 @@ IOError: [Errno 104] Connection reset by peer
         for t1 in ordered_task_instances_list:
             should_wait = is_external(t1.__class__)
             if should_wait:
+                sleep_seconds = 0
                 while True:
+                    # 1. output arrives
                     if t1.output().exists():
                         break
                     else:
+                        sleep_seconds += cls.default_wait_seconds
+                        # 2. time arrives
+                        if sleep_seconds > cls.max_wait_seconds:
+                            break
                         time.sleep(cls.default_wait_seconds)
 
             # Can't turn into a task instance
