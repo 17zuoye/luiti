@@ -101,6 +101,9 @@ def read_all_required_tasks(curr_task):
 
 def is_external(task_instance):
     """ Is the data came from uncontrolled outside blackbox. """
+    # 0. default case
+    if isinstance(task_instance, luigi.ExternalTask):
+        return True
     # 1. assert is_external attribute exists.
     if getattr(task_instance, "is_external", False) is not True:
         return False
