@@ -30,14 +30,15 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     _persist_files = []
     _ref_tasks = []
 
+    is_external = False  # mark current task as a External Task, same to luigi.ExternalTask
+
     root_dir = NotImplementedError
 
     # Default one, always return True
     def requires(self):
         return RootTask()
 
-    def run(self):
-        raise NotImplementedError
+    run = NotImplementedError
 
     def __init__(self, *args, **kwargs):
         super(TaskBase, self).__init__(*args, **kwargs)

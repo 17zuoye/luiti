@@ -6,6 +6,8 @@ from ...utils import TargetUtils
 
 
 class StaticFile(luigi.Task):
+
+    is_external = True  # see more documents at TaskBase
     filepath = None
 
     # Mimic default luigi.ExternalTask
