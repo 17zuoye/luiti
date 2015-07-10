@@ -91,9 +91,9 @@ luiti webui --project-dir your_main_project_path
 
 Here's some screenshots.
 
-![Luiti WebUI list](https://raw.githubusercontent.com/17zuoye/luigi/master/screenshots/luiti_webui_list.png)
-![Luiti WebUI show](https://raw.githubusercontent.com/17zuoye/luigi/master/screenshots/luiti_webui_show.png)
-![Luiti Code show](https://raw.githubusercontent.com/17zuoye/luigi/master/screenshots/luiti_code_show.png)
+![Luiti WebUI list](https://raw.githubusercontent.com/17zuoye/luiti/master/screenshots/luiti_webui_list.png)
+![Luiti WebUI show](https://raw.githubusercontent.com/17zuoye/luiti/master/screenshots/luiti_webui_show.png)
+![Luiti Code show](https://raw.githubusercontent.com/17zuoye/luiti/master/screenshots/luiti_code_show.png)
 
 
 Core concepts based on time management
