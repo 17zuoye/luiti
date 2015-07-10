@@ -36,20 +36,21 @@ periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.
 Document guide
 ------------------------
 1. [Intro](#luiti)
-2. [Luiti command tool & WebUI screenshots](#luiti-command-tool)
-3. [Core concepts based on time management](#core-concepts-based-on-time-management)
-4. [Task specification and built-in properties and recommendation](#task-specification-and-built-in-properties-and-recommendation)
-5. [Manage multiple projects in luiti](#manage-multiple-projects-in-luiti)
-6. [A simple guide to Luigi](#a-simple-guide-to-luigi)
-7. [A simple example in luiti](#a-simple-example-in-luiti)
-8. [Install](#install)
-9. [Task recommendation](#task-recommendation)
-10. [Task decorators](#task-decorators)
-11. [MapReduce related](#mapreduce-related)
-12. [Extend luiti](#extend-luiti)
-13. [FAQ](#faq)
-14. [Run tests](#run-tests)
-15. [Who uses Luiti?](#who-uses-luiti)
+3. [Luiti command tool](#luiti-command-tool)
+2. [Luiti WebUI screenshots](#luiti-webui-screenshots)
+4. [Core concepts based on time management](#core-concepts-based-on-time-management)
+5. [Task specification and built-in properties and recommendation](#task-specification-and-built-in-properties-and-recommendation)
+6. [Manage multiple projects in luiti](#manage-multiple-projects-in-luiti)
+7. [A simple guide to Luigi](#a-simple-guide-to-luigi)
+8. [A simple example in luiti](#a-simple-example-in-luiti)
+9. [Install](#install)
+10. [Task recommendation](#task-recommendation)
+11. [Task decorators](#task-decorators)
+12. [MapReduce related](#mapreduce-related)
+13. [Extend luiti](#extend-luiti)
+14. [FAQ](#faq)
+15. [Run tests](#run-tests)
+16. [Who uses Luiti?](#who-uses-luiti)
 
 
 Luiti command tool
@@ -79,14 +80,12 @@ subcommands:
     webui               start a luiti DAG visualiser.
 ```
 
-Luiti WebUI
+Luiti WebUI screenshots
 ------------------------
 ```bash
 ./example_webui_run.py
-
 # or
-
-luiti webui --project-dir your_main_project_path
+luiti webui --project-dir your_main_luiti_package_path
 ```
 
 Here's some screenshots.
