@@ -18,8 +18,9 @@ class TestSensorSchedule(unittest.TestCase):
 
     def test_read_all_required_tasks(self):
         BetaReportDay = manager.load_a_task_by_name("BetaReportDay")
-        ordered_task_instances = SensorSchedule.read_all_required_tasks(BetaReportDay(date_value="2014-09-01"))
-        result = map(lambda i1: i1.task_clsname, ordered_task_instances)
+        ss = SensorSchedule(BetaReportDay, "2014-09-01")
+
+        result = map(lambda i1: i1.task_clsname, ss.ordered_task_instances_list)
         self.assertEqual(result, ['DumpBrowserMapDay', 'DumpWebLogDay', 'CleanWebLogDay', 'CounterVisitorByBrowserDay', 'CounterVisitorByRegionDay', 'CounterVisitorDay', 'BetaReportDay'])
 
     def test_is_external(self):
