@@ -210,7 +210,7 @@ class QueryBuilder(object):
     @cached_property
     def result(self):
         return {
-            "title": "A DAG timely visualiser.",
+            "title": "Luiti WebUI, a DAG timely visualiser.",
 
             "queryparams": {
                 "accepted": self.accepted_query_params,

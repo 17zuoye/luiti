@@ -36,7 +36,7 @@ periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.
 Document guide
 ------------------------
 1. [Intro](#luiti)
-2. [Luiti command tool](#luiti-command-tool)
+2. [Luiti command tool & WebUI](#luiti-command-tool)
 3. [Core concepts based on time management](#core-concepts-based-on-time-management)
 4. [Task specification and built-in properties and recommendation](#task-specification-and-built-in-properties-and-recommendation)
 5. [Manage multiple projects in luiti](#manage-multiple-projects-in-luiti)
@@ -77,6 +77,16 @@ subcommands:
     clean               manage files that outputed by luiti tasks.
     run                 run a luiti task.
     webui               start a luiti DAG visualiser.
+```
+
+Luiti WebUI
+------------------------
+```bash
+./example_webui_run.py
+
+# or
+
+luiti webui --project-dir your_main_project_path
 ```
 
 

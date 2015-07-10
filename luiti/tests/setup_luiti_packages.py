@@ -21,6 +21,7 @@ class SetupLuitiPackagesClass(object):
             package_path = os.path.join(parent, "luiti_" + project_name)
             sys.path.insert(0, package_path)
 
+        sys.path.insert(0, os.path.join(root_dir, "tests"))
         sys.path.insert(0, os.path.join(root_dir, "tests/project_A"))
         sys.path.insert(0, os.path.join(root_dir, "tests/project_B"))
         sys.path.insert(0, os.path.join(root_dir, "tests/zip_package_by_luiti"))
