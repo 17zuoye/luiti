@@ -33,7 +33,26 @@ to pass only `date_value` parameter. So you can run Luiti tasks
 periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.
 
 
-luiti command tool
+Document guide
+------------------------
+1. [Intro](#luiti)
+2. [Luiti command tool](#luiti-command-tool)
+3. [Core concepts based on time management](#core-concepts-based-on-time-management)
+4. [Task specification and built-in properties and recommendation](#task-specification-and-built-in-properties-and-recommendation)
+5. [Manage multiple projects in luiti](#manage-multiple-projects-in-luiti)
+6. [A simple guide to Luigi](#a-simple-guide-to-luigi)
+7. [A simple example in luiti](#a-simple-example-in-luiti)
+8. [Install](#install)
+9. [Task recommendation](#task-recommendation)
+10. [Task decorators](#task-decorators)
+11. [MapReduce related](#mapreduce-related)
+12. [Extend luiti](#extend-luiti)
+13. [FAQ](#faq)
+14. [Run tests](#run-tests)
+15. [Who uses Luiti?](#who-uses-luiti)
+
+
+Luiti command tool
 ------------------------
 After installed package, you can use `luiti` command tool that contained
 in the package.
