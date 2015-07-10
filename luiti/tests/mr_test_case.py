@@ -34,6 +34,8 @@ def MrTestCase(cls, verbose=False):
             print "[task_cls]", task_cls
 
         def test_mr(self):
+            # TODO customize date
+            # TODO print which json line error
             task_instance_1 = task_cls("2014-09-01")
             if verbose:
                 print "[task_instance]", task_instance_1
