@@ -55,13 +55,34 @@ to pass only <code>date_value</code> parameter. So you can run Luiti tasks
 periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.</p>
 
 <h2>
-<a id="luiti-command-tool" class="anchor" href="#luiti-command-tool" aria-hidden="true"><span class="octicon octicon-link"></span></a>luiti command tool</h2>
+<a id="document-guide" class="anchor" href="#document-guide" aria-hidden="true"><span class="octicon octicon-link"></span></a>Document guide</h2>
+
+<ol>
+<li><a href="#luiti">Intro</a></li>
+<li><a href="#luiti-command-tool">Luiti command tool</a></li>
+<li><a href="#core-concepts-based-on-time-management">Core concepts based on time management</a></li>
+<li><a href="#task-specification-and-built-in-properties-and-recommendation">Task specification and built-in properties and recommendation</a></li>
+<li><a href="#manage-multiple-projects-in-luiti">Manage multiple projects in luiti</a></li>
+<li><a href="#a-simple-guide-to-luigi">A simple guide to Luigi</a></li>
+<li><a href="#a-simple-example-in-luiti">A simple example in luiti</a></li>
+<li><a href="#install">Install</a></li>
+<li><a href="#task-recommendation">Task recommendation</a></li>
+<li><a href="#task-decorators">Task decorators</a></li>
+<li><a href="#mapreduce-related">MapReduce related</a></li>
+<li><a href="#extend-luiti">Extend luiti</a></li>
+<li><a href="#faq">FAQ</a></li>
+<li><a href="#run-tests">Run tests</a></li>
+<li><a href="#who-uses-luiti">Who uses Luiti?</a></li>
+</ol>
+
+<h2>
+<a id="luiti-command-tool" class="anchor" href="#luiti-command-tool" aria-hidden="true"><span class="octicon octicon-link"></span></a>Luiti command tool</h2>
 
 <p>After installed package, you can use <code>luiti</code> command tool that contained
 in the package.</p>
 
 <pre lang="text"><code>$ luiti
-usage: luiti [-h] {ls,new,generate,info,clean,run} ...
+usage: luiti [-h] {ls,new,generate,info,clean,run,webui} ...
 
 Luiti tasks manager.
 
@@ -71,13 +92,14 @@ optional arguments:
 subcommands:
   valid subcommands
 
-  {ls,new,generate,info,clean,run}
+  {ls,new,generate,info,clean,run,webui}
     ls                  list all current luiti tasks.
     new                 create a new luiti project.
     generate            generate a new luiti task python file.
     info                show a detailed task.
     clean               manage files that outputed by luiti tasks.
     run                 run a luiti task.
+    webui               start a luiti DAG visualiser.
 </code></pre>
 
 <h2>
@@ -114,8 +136,8 @@ date types are added in <code>TaskBase.DateTypes</code> too.</p>
 <a id="other-task-classes" class="anchor" href="#other-task-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other task classes:</h4>
 
 <ol>
-<li>RootTask           (luiti.Task)</li>
-<li>StaticFile         (luiti.Task)</li>
+<li>RootTask           (luigi.Task)</li>
+<li>StaticFile         (luigi.Task)</li>
 <li>MongoImportTask    (TaskBase)  # export json file from hdfs to mongodb.</li>
 </ol>
 
@@ -123,7 +145,7 @@ date types are added in <code>TaskBase.DateTypes</code> too.</p>
 <a id="task-specification-and-built-in-properties-and-recommendation" class="anchor" href="#task-specification-and-built-in-properties-and-recommendation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task specification and built-in properties and recommendation</h2>
 
 <h3>
-<a id="task-naming-conventions" class="anchor" href="#task-naming-conventions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task Naming conventions</h3>
+<a id="task-naming-conventions" class="anchor" href="#task-naming-conventions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task naming conventions</h3>
 
 <ol>
 <li>One Task class per file.</li>
@@ -193,7 +215,7 @@ below form, and it means it's also a normal Python package, for example:</p>
 <p>After installing <code>luiti</code>, you can run following command line to generate
 a project like above.</p>
 
-<div class="highlight highlight-bash"><pre>luiti new project_A</pre></div>
+<div class="highlight highlight-bash"><pre>luiti new --project-name project_A</pre></div>
 
 <p>If other luiti projects needs to using this package, and you need to
 install this package, to make sure luiti could find them in the
@@ -217,12 +239,16 @@ tasks, and they're linked by atomic Input and Ouput. Luigi contains four
 parts mainly:</p>
 
 <ol>
-<li>Output. It must be implemented in <code>output</code> function, such as <code>LocalTarget</code> and <code>hdfs.HdfsTarget</code>.</li>
-<li>Input. It must be implemented in <code>requires</code> function, and the
+<li>
+<strong>Output</strong>. It must be implemented in <code>output</code> function, such as <code>LocalTarget</code> and <code>hdfs.HdfsTarget</code>.</li>
+<li>
+<strong>Input</strong>. It must be implemented in <code>requires</code> function, and the
 function supposed to return some or None task instances.</li>
-<li>Parameters. Parameters should be inherited from <code>luigi.Parameter</code>,
+<li>
+<strong>Parameters</strong>. Parameters should be inherited from <code>luigi.Parameter</code>,
 e.g. <code>DateParameter</code>, etc.</li>
-<li>Execute Logic. Use <code>run</code> function if running at local, or <code>mapper</code> and <code>reducer</code>
+<li>
+<strong>Execute Logic</strong>. Use <code>run</code> function if running at local, or <code>mapper</code> and <code>reducer</code>
 if running on a distributed MapReduce YARN.</li>
 </ol>
 
@@ -594,6 +620,16 @@ questions at <a href="https://github.com/17zuoye/luiti/issues">issues</a>.</p>
 <a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run tests</h2>
 
 <div class="highlight highlight-bash"><pre>nosetests</pre></div>
+
+<h2>
+<a id="who-uses-luiti" class="anchor" href="#who-uses-luiti" aria-hidden="true"><span class="octicon octicon-link"></span></a>Who uses Luiti?</h2>
+
+<ul>
+<li>
+<a href="http://www.17zuoye.com/">17zuoye</a> Luiti born at this company.</li>
+</ul>
+
+<p>Please let us know if your company wants to be featured on this list!</p>
 
 <h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
