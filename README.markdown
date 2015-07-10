@@ -88,10 +88,16 @@ Luiti WebUI screenshots
 luiti webui --project-dir your_main_luiti_package_path
 ```
 
-Here's some screenshots.
+Here's some screenshots from example_webui_run.py, just to give you an
+idea of how luiti's multiple Python packages works.
 
+1. Luiti WebUI list
 ![Luiti WebUI list](https://raw.githubusercontent.com/17zuoye/luiti/master/screenshots/luiti_webui_list.png)
+
+2. Luiti WebUI show
 ![Luiti WebUI show](https://raw.githubusercontent.com/17zuoye/luiti/master/screenshots/luiti_webui_show.png)
+
+3. Luiti Code show
 ![Luiti Code show](https://raw.githubusercontent.com/17zuoye/luiti/master/screenshots/luiti_code_show.png)
 
 
