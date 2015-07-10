@@ -156,12 +156,11 @@ if subcommand == "run":
     manager.SysArgv.convert_to_luigi_accepted_argv(subparsers)
 
     # 2. run it!
-    luigi.run(main_task_cls=curr_task)
-    """
+    # luigi.run(main_task_cls=curr_task)  # old style
     from luiti.schedule import SensorSchedule
     # luiti only need these two parameters. Other parameters can be passed by Shell environment variables.
     SensorSchedule.run(curr_task, args_main.date_value)
-    """
+
 
 if subcommand == "webui":
     # add other luiti packages.
