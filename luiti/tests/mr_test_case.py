@@ -9,7 +9,7 @@ import json
 from ..manager import Loader
 
 
-def MrTestCase(cls, verbose=False):
+def MrTestCase(cls, verbose=False, date_value="2014-09-01"):
     """
     功能: 集成测试数据到 类中 ，这样就方便引用了。
     """
@@ -34,9 +34,8 @@ def MrTestCase(cls, verbose=False):
             print "[task_cls]", task_cls
 
         def test_mr(self):
-            # TODO customize date
             # TODO print which json line error
-            task_instance_1 = task_cls("2014-09-01")
+            task_instance_1 = task_cls(date_value=date_value)
             if verbose:
                 print "[task_instance]", task_instance_1
 
