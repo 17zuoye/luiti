@@ -40,7 +40,7 @@ def MrTestCase(cls, verbose=False, date_value="2014-09-01"):
 
             task_instance_1.lines = map_lines(task_instance_1.mrtest_input())
             result_expect = sorted(
-                [read_json_from_mrtest_output(i2, idx) for idx, i2
+                [read_json_from_mrtest_output(i2, idx + 1) for idx, i2
                  in enumerate(map_lines(task_instance_1.mrtest_output()))])
 
             self.assertEqual(result_expect, run_map_reduce(task_instance_1))
@@ -84,10 +84,10 @@ def run_map_reduce(task_instance_1):
     return sorted(result_list)
 
 
-def read_json_from_mrtest_output(line, idx):
+def read_json_from_mrtest_output(line, num):
     """ print which json line error """
     try:
         return json.loads(line)
     except Exception as e:
-        print u"[line#%s] %s" % (idx, line)
+        print u"[line#%s] %s" % (num, line)
         raise e
