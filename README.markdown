@@ -36,7 +36,7 @@ periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.
 Document guide
 ------------------------
 1. [Intro](#luiti)
-2. [Luiti command tool & WebUI](#luiti-command-tool)
+2. [Luiti command tool & WebUI screenshots](#luiti-command-tool)
 3. [Core concepts based on time management](#core-concepts-based-on-time-management)
 4. [Task specification and built-in properties and recommendation](#task-specification-and-built-in-properties-and-recommendation)
 5. [Manage multiple projects in luiti](#manage-multiple-projects-in-luiti)
@@ -88,6 +88,12 @@ Luiti WebUI
 
 luiti webui --project-dir your_main_project_path
 ```
+
+Here's some screenshots.
+
+![Luiti WebUI list](https://raw.githubusercontent.com/17zuoye/luigi/master/screenshots/luiti_webui_list.png)
+![Luiti WebUI show](https://raw.githubusercontent.com/17zuoye/luigi/master/screenshots/luiti_webui_show.png)
+![Luiti Code show](https://raw.githubusercontent.com/17zuoye/luigi/master/screenshots/luiti_code_show.png)
 
 
 Core concepts based on time management
