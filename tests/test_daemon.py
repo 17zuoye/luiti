@@ -24,8 +24,8 @@ class FoobarDay(TaskDay):
 class TestDaemon(unittest.TestCase):
 
     def test_main(self):
-        from luiti.daemon import run
-        run
+        from luiti.daemon import Server
+        Server
 
     def test_utils(self):
         from luiti.daemon.utils import TaskStorageSet, TaskStorageDict

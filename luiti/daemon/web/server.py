@@ -8,8 +8,9 @@ Draw DAG tasks under selected parameters.
 
 from __future__ import unicode_literals
 
-__all__ = ["run"]
+__all__ = ["Server"]
 
+from etl_utils import cached_property
 import tornado.httpclient
 import tornado.httpserver
 import tornado.ioloop
@@ -29,25 +30,44 @@ logger = logging.getLogger("luiti.server")
 from .handlers import web_handlers
 
 
-def app():
-    settings = {
-        "unescape": tornado.escape.xhtml_unescape,
-        # "autoreload": True
-    }
+class Server(object):
+    """ A tornado server.  """
 
-    api_app = tornado.web.Application(web_handlers, **settings)
-    return api_app
-
-
-def run(address, api_port):
+    welcome_doc = u"""
+( \      |\     /|\__   __/\__   __/\__   __/
+| (      | )   ( |   ) (      ) (      ) (
+| |      | |   | |   | |      | |      | |
+| |      | |   | |   | |      | |      | |
+| |      | |   | |   | |      | |      | |
+| (____/\| (___) |___) (___   | |   ___) (___
+(_______/(_______)\_______/   )_(   \_______/
     """
-    Runs one instance of the API server.
-    """
-    api_app = app()
 
-    api_sockets = tornado.netutil.bind_sockets(api_port, address=address)
-    server = tornado.httpserver.HTTPServer(api_app)
-    server.add_sockets(api_sockets)
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
 
-    logger.info("Scheduler starting up")
-    tornado.ioloop.IOLoop.instance().start()
+        print self.welcome_doc
+        print "Luiti WebUI is mounted on http://%s:%s" % (self.host, self.port)
+
+    def run(self):
+        """
+        Runs one instance of the API server.
+        """
+
+        api_sockets = tornado.netutil.bind_sockets(self.port, address=self.host)
+        server = tornado.httpserver.HTTPServer(self.app)
+        server.add_sockets(api_sockets)
+
+        logger.info("Scheduler starting up")
+        tornado.ioloop.IOLoop.instance().start()
+
+    @cached_property
+    def app(self):
+        """ return a API app instance. """
+        settings = {
+            "unescape": tornado.escape.xhtml_unescape,
+            # "autoreload": True
+        }
+
+        return tornado.web.Application(web_handlers, **settings)
