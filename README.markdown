@@ -15,7 +15,7 @@ It also comes with Hadoop support built in."
 Luiti is built on top of Luigi, separates all your tasks into multiple
 packages, and forces one task per one Python file. Luiti task classes
 can be managed by the `luiti` command, supported operations are ls, new,
-generate, info, clean, and run.
+generate, info, clean, run, and webui.
 
 Luiti is born to build a layered database structure, corresponding to
 the different packages we just mentioned. A data warehouse is consisted
@@ -43,7 +43,7 @@ Document guide
 6. [Manage multiple projects in luiti](#manage-multiple-projects-in-luiti)
 7. [A simple guide to Luigi](#a-simple-guide-to-luigi)
 8. [A simple example in luiti](#a-simple-example-in-luiti)
-9. [Install](#install)
+9. [Installment & Development](#installment-develop-requirements)
 10. [Task recommendation](#task-recommendation)
 11. [Task decorators](#task-decorators)
 12. [MapReduce related](#mapreduce-related)
@@ -334,8 +334,9 @@ Yes, it's almost no difference to luigi, except the `self.days_in_week`
 property and `@luigi.ref_tasks` decorator.
 
 
-Install
+Installment & Develop requirements
 ------------------------
+#### Installment
 ```bash
 pip install luiti
 ```
@@ -348,9 +349,14 @@ cd luiti
 python setup.py install
 ```
 
+#### Develop requirements
+1. [Node.js](https://nodejs.org/download/) & [bower](http://bower.io/#install-bower)
+2. pip requirements from setup.py
+3. [tox](https://testrun.org/tox/latest/) & [nose](https://nose.readthedocs.org/)
 
 
-### Time library
+Time library
+-------------------------
 
 The time library is [Arrow](http://crsmithdev.com/arrow/) , every Task
 instance's `date_value` property is a arrow.Arrow type.
@@ -362,8 +368,8 @@ you want to customize time, please prefer to use
 
 
 
-### Task recommendation
-
+Task recommendation
+-------------------------
 #### Cache
 We highly recommend you to use `cached_property`, like
 [werkzeug](http://werkzeug.pocoo.org/docs/0.10/utils/) said, "A decorator that

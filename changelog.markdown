@@ -1,3 +1,8 @@
+### 0.2.1   - July 15, 2015
+* Add SensorSchedule to wait external task to finish lazily.
+* Add WebUI screenshots.
+* Lots of bug fixes.
+
 ### 0.2.0   - July 7, 2015
 * Add WebUI and daemon.
 * Lots of bug fixes and refactor.
