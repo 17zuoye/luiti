@@ -37,7 +37,7 @@ It also comes with Hadoop support built in."</p>
 <p>Luiti is built on top of Luigi, separates all your tasks into multiple
 packages, and forces one task per one Python file. Luiti task classes
 can be managed by the <code>luiti</code> command, supported operations are ls, new,
-generate, info, clean, and run.</p>
+generate, info, clean, run, and webui.</p>
 
 <p>Luiti is born to build a layered database structure, corresponding to
 the different packages we just mentioned. A data warehouse is consisted
@@ -66,7 +66,7 @@ periodically, e.g. hourly, daily, weekly, etc. luiti = luigi + time.</p>
 <li><a href="#manage-multiple-projects-in-luiti">Manage multiple projects in luiti</a></li>
 <li><a href="#a-simple-guide-to-luigi">A simple guide to Luigi</a></li>
 <li><a href="#a-simple-example-in-luiti">A simple example in luiti</a></li>
-<li><a href="#install">Install</a></li>
+<li><a href="#installment--develop-requirements">Installment &amp; Development</a></li>
 <li><a href="#task-recommendation">Task recommendation</a></li>
 <li><a href="#task-decorators">Task decorators</a></li>
 <li><a href="#mapreduce-related">MapReduce related</a></li>
@@ -404,7 +404,10 @@ lines codes to complete the feature, and return a Generator directly.</li>
 property and <code>@luigi.ref_tasks</code> decorator.</p>
 
 <h2>
-<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+<a id="installment--develop-requirements" class="anchor" href="#installment--develop-requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installment &amp; Develop requirements</h2>
+
+<h4>
+<a id="installment" class="anchor" href="#installment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installment</h4>
 
 <div class="highlight highlight-bash"><pre>pip install luiti</pre></div>
 
@@ -414,8 +417,21 @@ property and <code>@luigi.ref_tasks</code> decorator.</p>
 <span class="pl-c1">cd</span> luiti
 python setup.py install</pre></div>
 
-<h3>
-<a id="time-library" class="anchor" href="#time-library" aria-hidden="true"><span class="octicon octicon-link"></span></a>Time library</h3>
+<h4>
+<a id="develop-requirements" class="anchor" href="#develop-requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Develop requirements</h4>
+
+<ol>
+<li>
+<a href="https://nodejs.org/download/">Node.js</a> &amp; <a href="http://bower.io/#install-bower">bower</a>
+</li>
+<li>pip requirements from setup.py</li>
+<li>
+<a href="https://testrun.org/tox/latest/">tox</a> &amp; <a href="https://nose.readthedocs.org/">nose</a>
+</li>
+</ol>
+
+<h2>
+<a id="time-library" class="anchor" href="#time-library" aria-hidden="true"><span class="octicon octicon-link"></span></a>Time library</h2>
 
 <p>The time library is <a href="http://crsmithdev.com/arrow/">Arrow</a> , every Task
 instance's <code>date_value</code> property is a arrow.Arrow type.</p>
@@ -425,8 +441,8 @@ you want to customize time, please prefer to use
  <code>ArrowParameter.get(*strs)</code> and <code>ArrowParameter.now()</code> to make sure you
  use the local time zone.</p>
 
-<h3>
-<a id="task-recommendation" class="anchor" href="#task-recommendation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task recommendation</h3>
+<h2>
+<a id="task-recommendation" class="anchor" href="#task-recommendation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Task recommendation</h2>
 
 <h4>
 <a id="cache" class="anchor" href="#cache" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cache</h4>
