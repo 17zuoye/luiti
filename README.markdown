@@ -43,7 +43,7 @@ Document guide
 6. [Manage multiple projects in luiti](#manage-multiple-projects-in-luiti)
 7. [A simple guide to Luigi](#a-simple-guide-to-luigi)
 8. [A simple example in luiti](#a-simple-example-in-luiti)
-9. [Installment & Development](#installment-develop-requirements)
+9. [Installment & Development](#installment--develop-requirements)
 10. [Task recommendation](#task-recommendation)
 11. [Task decorators](#task-decorators)
 12. [MapReduce related](#mapreduce-related)
