@@ -167,5 +167,5 @@ if subcommand == "webui":
     for luiti_package in args_main.luiti_packages.split(","):
         luigi.plug_packages(luiti_package)
 
-    from luiti.daemon import run
-    run(args_main.host, args_main.port)
+    from luiti.daemon import Server
+    Server(args_main.host, args_main.port).run()

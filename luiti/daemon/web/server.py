@@ -47,8 +47,11 @@ class Server(object):
         self.host = host
         self.port = port
 
+        # Fix cant open http://0.0.0.0 on browser.
+        self.url = "http://%s:%s" % (self.host.replace("0.0.0.0", "localhost"), self.port)
+
         print self.welcome_doc
-        print "Luiti WebUI is mounted on http://%s:%s" % (self.host, self.port)
+        print "Luiti WebUI is mounted on %s" % self.url
 
     def run(self):
         """
