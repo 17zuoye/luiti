@@ -3,8 +3,14 @@
 
 import os
 import sys
-root_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, root_dir)
+
+try:
+    # Try load installed version first.
+    import luiti
+    luiti
+except:
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, root_dir)
 
 import logging
 logger = logging.getLogger("luiti.server")
