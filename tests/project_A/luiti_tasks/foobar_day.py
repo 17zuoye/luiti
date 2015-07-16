@@ -20,13 +20,15 @@ class FoobarDay(TaskDayHadoop):
 
     def mrtest_input(self):
         return u"""
-{"uid": 3, "count": 2}
-{"uid": 3, "count": 3}
+{"uid": 1, "count": 2}
+{"uid": 1, "count": 3}
+{"uid": 2, "count": 1}
 """
 
     def mrtest_output(self):
         return u"""
-{"uid": 3, "total": 5, "ref": "foobar"}
+{"uid": 1, "total": 5, "ref": "foobar"}
+{"uid": 2, "total": 1, "ref": "foobar"}
 """
 
     def mrtest_attrs(self):
