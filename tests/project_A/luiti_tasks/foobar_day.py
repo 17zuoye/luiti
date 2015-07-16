@@ -1,14 +1,17 @@
 # -*-coding:utf-8-*-
 
-from .__init_luiti import TaskDayHadoop, json, MRUtils
+from .__init_luiti import TaskDayHadoop, MRUtils
 
 
 class FoobarDay(TaskDayHadoop):
+    """
+    A MapReduce Python Program written in Luiti Task Style, including test case.
+    """
 
     root_dir = "/foobar"
 
     def mapper(self, line1):
-        d2 = json.loads(line1)
+        d2 = MRUtils.json_parse(line1)
         yield d2['uid'], d2
 
     def reducer(self, uid1, d1):
@@ -17,6 +20,8 @@ class FoobarDay(TaskDayHadoop):
             "total": sum([i2['count'] for i2 in d1]),
             "ref": self.ref,
         })
+
+    ref = NotImplementedError
 
     def mrtest_input(self):
         return u"""
