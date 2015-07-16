@@ -5,7 +5,6 @@ Luiti
 [![Health](https://landscape.io/github/17zuoye/luiti/master/landscape.svg?style=flat)](https://landscape.io/github/17zuoye/luiti/master)
 [![Download](https://img.shields.io/pypi/dm/luiti.svg?style=flat)](https://pypi.python.org/pypi/luiti)
 [![License](https://img.shields.io/pypi/l/luiti.svg?style=flat)](https://pypi.python.org/pypi/luiti)
-[![Python Versions](https://pypip.in/py_versions/luiti/badge.svg?style=flat)](https://pypi.python.org/pypi/luiti)
 
 As [Luigi](https://github.com/spotify/luigi)'s homepage said, it's "a
 Python module that helps you build complex pipelines of batch jobs. It
