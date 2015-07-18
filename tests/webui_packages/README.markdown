@@ -5,7 +5,7 @@ Test webui visualizer.
 Package relations.
 -----------------------
 ```text
-      Hierarchical data warehourse
+      Hierarchical data warehouse
 
               /   dump
              |     ||
@@ -19,3 +19,8 @@ Package relations.
               \  summary
 
 ```
+
+
+Some overwritten configuration.
+-----------------------
+See it at `luiti_webui_tests/__init__.py`

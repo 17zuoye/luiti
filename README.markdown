@@ -16,7 +16,7 @@ packages, and forces one task per one Python file. Luiti task classes
 can be managed by the `luiti` command, supported operations are ls, new,
 generate, info, clean, run, and webui.
 
-Luiti is born to build a layered database structure, corresponding to
+Luiti is born to build a layered database warehouse, corresponding to
 the different packages we just mentioned. A data warehouse is consisted
 of synced data sources, fact tables, dimension tables, regular or
 temporary business reports.
@@ -201,7 +201,7 @@ indicate current Task to find `ArtistStreamDay` Task in current package
 A simple guide to Luigi
 ------------------------
 Luigi's core concept is forcing you separting a big task into many small
-tasks, and they're linked by atomic Input and Ouput. Luigi contains four
+tasks, and they're linked by **atomic** Input and Ouput. Luigi contains four
 parts mainly:
 
 1. **Output**. It must be implemented in `output` function, such as `LocalTarget` and `hdfs.HdfsTarget`.
