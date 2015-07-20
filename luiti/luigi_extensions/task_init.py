@@ -10,14 +10,16 @@ class TaskInit(object):
     def setup(task_instance):
         """
         Let luigi'Task supports luiti's operations.
+
+        You need to call this function, if you want to extend luigi.
         """
         self = task_instance
 
         # 在跨期的时候用于判断 该周应该是该周的哪些天。
         # 比如这学期开学是 2015-02-17(星期二) 开学, 那么这周的数据只有 0217-0222。
         # 而在寒假里(即run 2015-02-16(星期天) 的 task 时，那么该周的天只有 0216 一天。
-        self.orig_date_value = \
-            ArrowParameter.get(self.date_value).replace(tzinfo=tz.tzlocal())
+        d1 = ArrowParameter.get(self.date_value).replace(tzinfo=tz.tzlocal())
+        self.orig_date_value = d1  # exists only if this `setup` executed.
 
         # reset date to at the beginning of current date type here
         self.reset_date()

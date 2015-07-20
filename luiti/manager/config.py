@@ -36,7 +36,7 @@ class LuitiConfigClass(object):
         """ Inherit class must be in TaskBase{Day,Week,Month,Range} style.  """
         assert isinstance(name1, (str, unicode))
         str1 = Inflector().underscore(name1).split("_")[-1].lower()
-        assert str1 in luiti_config.DateTypes
+        assert str1 in luiti_config.DateTypes, [str1, luiti_config.DateTypes]
         return str1
 
     @staticmethod

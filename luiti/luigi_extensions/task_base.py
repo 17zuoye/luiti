@@ -23,7 +23,6 @@ class TaskBase(luigi.Task, ExtUtils.ExtendClass):
     run_mode = ["local", "mr_distribute", "mr_local"][0]
 
     date_value = ArrowParameter()  # **统一** 时间类型, 防止同时跑多个任务
-    orig_date_value = None
 
     # will overwritten by @decorator
     # 不能以 **两个 __ 开头**, 否则会被 Python 当作隐私变量而无法继承。TODO 隐私变量 可能是错的。

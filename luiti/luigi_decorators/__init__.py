@@ -19,6 +19,7 @@ from ..utils import TargetUtils
 luigi.HDFS = TargetUtils.hdfs  # 本来就是需要读取全局配置，所以索性就绑定在 luigi 命名空间了吧。
 
 
+from .as_a_luiti_task import as_a_luiti_task
 from .check_date_range import check_date_range
 from .check_runtime_range import check_runtime_range
 from .mr_local import mr_local
@@ -27,6 +28,7 @@ from .persist_files import persist_files
 from .plug_packages import plug_packages
 from .ref_tasks import ref_tasks
 
+luigi.as_a_luiti_task = as_a_luiti_task
 luigi.persist_files = persist_files
 luigi.ref_tasks = ref_tasks
 luigi.check_date_range = check_date_range

@@ -8,6 +8,7 @@ os.environ['LUIGI_CONFIG_PATH'] = RootDir + '/tests/client.cfg'
 
 import unittest
 
+from luiti.tests import date_begin
 from luiti.tests import SetupLuitiPackages
 luiti_config = SetupLuitiPackages.config  # make a ref
 
@@ -18,6 +19,30 @@ day_arrow = ArrowParameter.get(day_str)  # Fix maybe tested in other time zone.
 
 
 class TestLuitiExt(unittest.TestCase):
+
+    def test_as_a_luiti_task(self):
+        from luigi.contrib.hive import HiveQueryTask
+        from luiti import luigi, TaskBase
+
+        @luigi.as_a_luiti_task()
+        class SomeHive(HiveQueryTask):
+            pass
+
+        self.assertTrue(issubclass(SomeHive, TaskBase))
+        self.assertTrue(issubclass(SomeHive, luigi.Task))
+
+        class AnotherHiveDay(SomeHive):
+            root_dir = "/tmp"
+
+            def query(self):
+                """ Implement the HiveQueryTask API """
+                pass
+
+        t1 = AnotherHiveDay(date_value=date_begin)
+        self.assertTrue(isinstance(t1, TaskBase))
+        self.assertTrue(isinstance(t1, luigi.Task))
+        self.assertTrue(isinstance(t1, HiveQueryTask))
+        self.assertTrue("orig_date_value" in dir(t1))
 
     def test_ref_tasks(self):
         ADay = manager.load_a_task_by_name("ADay")
