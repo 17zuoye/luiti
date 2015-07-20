@@ -51,6 +51,7 @@ Document guide
 15. [Run tests](#run-tests)
 16. [Who uses Luiti?](#who-uses-luiti)
 
+Keynote [Luiti - An Offline Task Management Framework](https://speakerdeck.com/mvj3/luiti-an-offline-task-management-framework)
 
 Luiti command tool
 ------------------------
