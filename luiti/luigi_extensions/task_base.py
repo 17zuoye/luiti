@@ -17,7 +17,6 @@ from .task_init import TaskInit
 
 
 class TaskBase(luigi.Task, ExtUtils.ExtendClass):
-
     """ 继承的子类在类名后 必须加 **时间类型**, 如 Day, Week, ... """
 
     run_mode = ["local", "mr_distribute", "mr_local"][0]

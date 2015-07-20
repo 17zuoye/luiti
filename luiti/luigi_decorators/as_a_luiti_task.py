@@ -34,16 +34,20 @@ def as_a_luiti_task(**opts):  # Decorator
 
         # copy members to target class
         for member in task_base_members:
-            setattr(task_cls, member, getattr(TaskBase, member))
+            base_val = getattr(TaskBase, member)
+            target_val = getattr(task_cls, member, NotImplementedError)
+            if target_val in [NotImplementedError, NotImplemented]:
+                setattr(task_cls, member, base_val)
 
         # let `isinstance` works for this wrap task class
-        class wrap_cls(TaskBase, task_cls):
+        class wrap_cls(task_cls, TaskBase):
             def __init__(self, *args, **kwargs):
                 super(wrap_cls, self).__init__(*args, **kwargs)
                 TaskInit.setup(self)
 
         wrap_cls.__doc__ = task_cls.__doc__
         wrap_cls.__module__ = task_cls.__module__
+        wrap_cls.__name__ = task_cls.__name__
         task_cls = wrap_cls
 
         return task_cls
