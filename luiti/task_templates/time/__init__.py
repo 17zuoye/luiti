@@ -9,4 +9,6 @@ Example:
 TaskDay.__init__ will overwrite luigi.hadoop.HadoopExt's.
 
 
+NOTE: luigi.hadoop.HadoopExt will overwrite TaskDay
+
 """

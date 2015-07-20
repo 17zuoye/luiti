@@ -24,7 +24,7 @@ class TaskInit(object):
         # reset date to at the beginning of current date type here
         self.reset_date()
 
-        assert task_instance.root_dir is not NotImplementedError, task_instance.root_dir
+        assert task_instance.root_dir is not NotImplementedError, [task_instance, task_instance.root_dir]
         self.data_file      # force load it now, or `output` still load it.
         self.package_name   # force load it now, use to serialize
 
