@@ -200,7 +200,7 @@ class QueryBuilder(object):
     @cached_property
     def task_instance_repr_to_info(self):
         result = dict()
-        for ti in self.selected_task_instances:
+        for ti in self.total_task_instances:
             param_kwargs = deepcopy(ti.param_kwargs)
             if "pool" in param_kwargs:
                 del param_kwargs["pool"]
