@@ -6,5 +6,4 @@ from ...luigi_extensions import TaskBase
 
 
 class TaskDay(TaskBase):
-
     pass

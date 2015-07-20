@@ -42,6 +42,15 @@ class TestLuitiUtils(unittest.TestCase):
             IODevice = luigi.LocalTarget
         self.assertEqual(OldFoobarFileDay().output().path, "/foobar")
 
+    def test_TaskDate(self):
+        from luiti.task_templates import TaskMonth
+
+        class AnotherMonthDay(TaskMonth):
+            root_dir = "/tmp"
+
+        m1 = AnotherMonthDay(date_value=date_begin)
+        self.assertEqual(len(m1.days_in_month), 30)
+
 
 if __name__ == '__main__':
     unittest.main()
