@@ -3,14 +3,22 @@
 __all__ = ['luigi', 'config', "VisualiserEnvTemplate",
 
            'TaskBase',
-           'TaskHour',
-           'TaskDay',
-           'TaskDayHadoop',
-           'TaskWeek',
-           'TaskWeekHadoop',
-           'TaskMonth',
-           'TaskRange',
-           'TaskRangeHadoop',
+           "TaskHour",
+           "TaskHourHadoop",
+           "TaskDay",
+           "TaskDayHadoop",
+           "TaskWeek",
+           "TaskWeekHadoop",
+           "TaskBiweekly",
+           "TaskBiweeklyHadoop",
+           "TaskMonth",
+           "TaskMonthHadoop",
+           "TaskQuarter",
+           "TaskQuarterHadoop",
+           "TaskYear",
+           "TaskYearHadoop",
+           "TaskRange",
+           "TaskRangeHadoop",
 
            'RootTask',
            'StaticFile',
@@ -39,12 +47,14 @@ from etl_utils import cached_property
 
 from .luigi_decorators import luigi
 
-from .task_templates import TaskHour, TaskDay, TaskWeek, TaskMonth, TaskRange, TaskDayHadoop, TaskWeekHadoop, TaskRangeHadoop, StaticFile, MongoImportTask
+from .task_templates import TaskHour, TaskDay, TaskWeek, TaskBiweekly, TaskMonth, TaskQuarter, TaskYear, TaskRange
+from .task_templates import TaskHourHadoop, TaskDayHadoop, TaskWeekHadoop, TaskBiweeklyHadoop, TaskMonthHadoop, TaskQuarterHadoop, TaskYearHadoop, TaskRangeHadoop
+from .task_templates import StaticFile, MongoImportTask
 
 
 from . import manager
-from .utils import IOUtils, DateUtils, TargetUtils, HDFSUtils, \
-    MRUtils, MathUtils, CommandUtils, CompressUtils
+from .utils import IOUtils, DateUtils, TargetUtils, HDFSUtils
+from .utils import MRUtils, MathUtils, CommandUtils, CompressUtils
 
 import arrow
 from .luigi_extensions import RootTask, TaskBase, ArrowParameter, HadoopExt

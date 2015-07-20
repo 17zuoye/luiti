@@ -11,8 +11,8 @@ import arrow
 class LuitiConfigClass(object):
 
     """ Make sure init variables only once. """
-    DateTypes = ["range", "week"] + arrow.Arrow._ATTRS
-    #           ['year', 'month', ...]
+    # arrow.Arrow._ATTRS = ['year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond']
+    DateTypes = ["range", "week", "biweekly", "quarter"] + arrow.Arrow._ATTRS
 
     curr_project_name = None
     curr_project_dir = None
