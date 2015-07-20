@@ -15,10 +15,3 @@ class TaskMonth(TaskBase):
                 'day',
                 self.date_value.floor('month'),
                 self.date_value.ceil('month'),)
-
-    @cached_property
-    def latest_30_days(self):
-            return arrow.Arrow.range(
-                'day',
-                self.date_value.replace(days=-29),
-                self.date_value,)

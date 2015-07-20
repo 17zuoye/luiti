@@ -5,6 +5,7 @@ __all__ = ['TaskWeek']
 from etl_utils import cached_property
 from ...luigi_extensions import TaskBase
 from ...utils import DateUtils
+import arrow
 
 
 class TaskWeek(TaskBase):

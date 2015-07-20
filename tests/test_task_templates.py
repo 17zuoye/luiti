@@ -43,18 +43,26 @@ class TestLuitiUtils(unittest.TestCase):
         self.assertEqual(OldFoobarFileDay().output().path, "/foobar")
 
     def test_TaskDate(self):
-        from luiti.task_templates import TaskMonth
+        from luiti.task_templates import TaskMonth, TaskDay
 
         class AnotherMonthDay(TaskMonth):
+            root_dir = "/tmp"
+
+        class AnotherDay(TaskDay):
             root_dir = "/tmp"
 
         m1 = AnotherMonthDay(date_value=date_begin)
         self.assertEqual(len(m1.days_in_month), 30)
 
-        m2 = AnotherMonthDay(date_value="2015-07-20")
+        m2 = AnotherDay(date_value="2015-07-20")
         self.assertEqual(m2.latest_30_days[0].format('YYYY-MM-DD'), '2015-06-21')
         self.assertEqual(m2.latest_30_days[-1].format('YYYY-MM-DD'), '2015-07-20')
         self.assertEquals(len(m2.latest_30_days), 30)
+
+        m3 = AnotherDay(date_value="2015-07-20")
+        self.assertEquals(m3.latest_7_days[0].format('YYYY-MM-DD'), '2015-07-14')
+        self.assertEqual(m3.latest_7_days[-1].format('YYYY-MM-DD'), '2015-07-20')
+        self.assertEquals(len(m3.latest_7_days), 7)
 
 
 if __name__ == '__main__':
