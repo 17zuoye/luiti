@@ -17,6 +17,12 @@ def as_a_luiti_task(**opts):  # Decorator
     """
     Luigi's contrib are really Great, luiti would like to Reuse them through just a decorator.
 
+    Usage:
+
+        @luigi.as_a_luiti_task()
+        class AnotherHiveDay(HiveQueryTask):
+            pass
+
 
     https://github.com/spotify/luigi/tree/master/luigi/contrib
     """
