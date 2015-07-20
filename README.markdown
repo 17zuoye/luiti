@@ -430,6 +430,9 @@ Task decorators
 # 6. Bind other output file names except for the default `date_file`, and compacts with cleaning temporary files is the task is failed.
 @luigi.persist_files(*files)
 
+# 7. Let Task Templates under [luigi.contrib](https://github.com/spotify/luigi/tree/master/luigi/contrib) to follow with Luiti's Task convertion.
+@luigi.as_a_luiti_task()
+
 class AnotherBussinessDay(TaskDayHadoop):
     pass
 ```
