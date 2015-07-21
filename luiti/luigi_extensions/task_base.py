@@ -7,7 +7,7 @@ import arrow
 from inflector import Inflector
 from etl_utils import cached_property
 
-from ..luigi_decorators import luigi
+from .luigi_root_context import luigi
 from .root_task import RootTask
 from ..utils import DateUtils, ExtUtils, IOUtils
 from ..manager import luiti_config

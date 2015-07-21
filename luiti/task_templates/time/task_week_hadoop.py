@@ -3,8 +3,7 @@
 __all__ = ["TaskWeekHadoop"]
 
 from .task_week import TaskWeek
-
-import luigi
+from ...luigi_extensions import luigi
 
 
 class TaskWeekHadoop(luigi.hadoop.HadoopExt, TaskWeek):

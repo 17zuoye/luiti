@@ -2,8 +2,8 @@
 
 __all__ = ['TaskRangeHadoop']
 
-import luigi
 from .task_range import TaskRange
+from ...luigi_extensions import luigi
 
 
 class TaskRangeHadoop(luigi.hadoop.HadoopExt, TaskRange):

@@ -21,8 +21,11 @@ __all__ = ['luigi', 'config', "VisualiserEnvTemplate",
            "TaskRangeHadoop",
 
            'RootTask',
+
            'StaticFile',
            'MongoImportTask',
+           'HiveTask',
+
            'HadoopExt',
 
            'manager',
@@ -45,11 +48,11 @@ from collections import defaultdict
 import json
 from etl_utils import cached_property
 
-from .luigi_decorators import luigi
+from .luigi_extensions import luigi
 
 from .task_templates import TaskHour, TaskDay, TaskWeek, TaskBiweekly, TaskMonth, TaskQuarter, TaskYear, TaskRange
 from .task_templates import TaskHourHadoop, TaskDayHadoop, TaskWeekHadoop, TaskBiweeklyHadoop, TaskMonthHadoop, TaskQuarterHadoop, TaskYearHadoop, TaskRangeHadoop
-from .task_templates import StaticFile, MongoImportTask
+from .task_templates import StaticFile, MongoImportTask, HiveTask
 
 
 from . import manager
@@ -65,5 +68,3 @@ from .tests import MrTestCase
 
 
 config = manager.luiti_config
-
-luigi.tmp_dir = "/tmp"  # default one

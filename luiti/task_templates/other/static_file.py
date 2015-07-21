@@ -2,7 +2,7 @@
 
 
 from etl_utils import cached_property
-from ...luigi_decorators import luigi
+from ...luigi_extensions import luigi
 from ...utils import TargetUtils
 
 
