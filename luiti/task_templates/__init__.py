@@ -18,6 +18,7 @@ __all__ = ["TaskHour",
            "TaskRangeHadoop",
 
            "StaticFile",
+           "HiveTask",
            "MongoImportTask", ]
 
 
@@ -41,3 +42,4 @@ from .time.task_range_hadoop import TaskRangeHadoop
 
 from .other.static_file import StaticFile
 from .other.mongo_import_task import MongoImportTask
+from .other.hive_task import HiveTask
