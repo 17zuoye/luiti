@@ -4,6 +4,7 @@ __all__ = ["as_a_luiti_task"]
 
 import luigi
 from ..luigi_extensions import TaskBase, TaskInit
+from ..utils import ExtUtils
 
 # Extensions to luigi.Task
 task_base_members = [k1 for k1 in sorted(TaskBase.__dict__.keys()) if not k1.startswith("__")]
@@ -40,7 +41,7 @@ def as_a_luiti_task(**opts):  # Decorator
                 setattr(task_cls, member, base_val)
 
         # let `isinstance` works for this wrap task class
-        class wrap_cls(task_cls, TaskBase):
+        class wrap_cls(task_cls, TaskBase, ExtUtils.ExtendClass):
             def __init__(self, *args, **kwargs):
                 super(wrap_cls, self).__init__(*args, **kwargs)
                 TaskInit.setup(self)
