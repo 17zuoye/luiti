@@ -53,12 +53,13 @@ INSERT OVERWRITE DIRECTORY "%s" %s
 
     @cached_property
     def data_root(self):
-        raise ValueError("Old API. Please use luiti's standard `root_dir` instead.")
+        raise ValueError("Old API. Please use luiti's standard property `root_dir` instead.")
 
     @cached_property
     def root_dir(self):
-        if not isinstance(self.data_dir, ValueError):
-            return self.data_dir
+        # or a cached_property
+        if self.__class__.data_root not in [NotImplementedError, ValueError]:
+            return self.data_root  # from instance
         raise ValueError
 
     @cached_property

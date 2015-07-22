@@ -83,7 +83,7 @@ class TestLuitiUtils(unittest.TestCase):
 
         class CompatibilityHiveDay(HiveTask):
             """ test old API """
-            data_dir = "/foobar"
+            data_root = "/foobar"
             hive_db = "foobar"
 
         h2 = CompatibilityHiveDay(date_value=date_begin)
