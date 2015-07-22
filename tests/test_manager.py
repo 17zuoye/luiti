@@ -28,6 +28,7 @@ class TestManager(unittest.TestCase):
             AssertionError,
             lambda: manager.load_a_task_by_name("not_exists_day"),
         )
+        os.chdir(RootDir)
 
     def test_get_all_date_file_to_task_instances(self):
         ADay = manager.load_a_task_by_name("ADay")
@@ -79,6 +80,7 @@ class TestManager(unittest.TestCase):
         self.assertTrue("TaskWeek" in content_b)
 
         os.system("rm -rf %s" % dir1)
+        os.chdir(RootDir)
 
     def test_new_a_project(self):
         os.chdir("/")  # fix chdir err
@@ -99,6 +101,7 @@ class TestManager(unittest.TestCase):
         os.chdir("..")
 
         os.system("rm -rf %s" % dir1)
+        os.chdir(RootDir)
 
 
 if __name__ == '__main__':

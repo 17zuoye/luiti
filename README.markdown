@@ -582,6 +582,8 @@ Run tests
 ------------------------
 ```bash
 nosetests
+# or
+tox -e py27-cdh
 ```
 
 
