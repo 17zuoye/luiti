@@ -31,6 +31,10 @@ class TestLuitiUtils(unittest.TestCase):
             task1.date_value_by_type_in_last, ArrowParameter.get("2014-08-25"))
         self.assertEqual(task1.task_class, HelloWorldWeek)
 
+    def test_RootTask(self):
+        from luiti import RootTask
+        self.assertTrue("luiti/luigi_extensions/root_task.pyc" in RootTask().output().path)
+
 
 if __name__ == '__main__':
     unittest.main()

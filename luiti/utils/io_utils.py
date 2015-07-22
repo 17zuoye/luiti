@@ -39,6 +39,7 @@ class IOUtils:
         with output1.open('w') as output_hdfs:
             for o1 in result:
                 output_hdfs.write(IOUtils.json_dump(o1) + "\n")
+        return 0
     write_jsons_to_output = write_json_to_output  # make a alias
 
     @staticmethod
@@ -59,6 +60,7 @@ class IOUtils:
         for file1 in files:
             if luigi.hdfs.exists(file1):
                 luigi.hdfs.remove(file1)
+        return True
 
     @staticmethod
     def local_target(path1):

@@ -8,6 +8,11 @@ os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
 
 import unittest
 import mock
+from luigi.mock import MockTarget
+
+
+class HdfsFile(MockTarget):
+    pass
 
 
 class TestLuitiUtils(unittest.TestCase):
@@ -123,20 +128,36 @@ class TestLuitiUtils(unittest.TestCase):
         self.assertTrue(isinstance(Foobar.property_1, property))
         self.assertTrue(isinstance(Foobar.cached_property_1, cached_property))
 
-    def test_IOUtils(self):
+    @mock.patch("luigi.hdfs.exists")
+    @mock.patch("luigi.hdfs.remove")
+    def test_IOUtils(self, remove, exists):
+        remove.return_value = True
+        exists.return_value = True
+
         from luiti.utils import IOUtils
 
         self.assertEqual(IOUtils.json_dump({}), "{}")
         self.assertEqual(IOUtils.json_dump([{}]), "[{}]")
 
+        f1 = HdfsFile("writor")
+        self.assertEqual(IOUtils.write_json_to_output({}, f1), 0)
+
+        f2 = HdfsFile("writor")
+        with f2.open("w") as w2:
+            w2.write("""{"foo":"bar"}""")
+        self.assertEqual(IOUtils.read_json_from_output(f2), {"foo": "bar"})
+
+        f3 = HdfsFile("writor_error")
+        with f3.open("w") as w3:
+            w3.write("""{"foo":"bar"}\n{}""")  # two lines
+        self.assertRaises(ValueError, lambda: IOUtils.read_json_from_output(f3))
+
+        self.assertTrue(IOUtils.remove_files("f1", "f2"), True)
+
     def test_TargetUtils(self):
         from luiti.utils import TargetUtils
-        from luigi.mock import MockTarget
 
         def mock_test_file(filename, data):
-            class HdfsFile(MockTarget):
-                pass
-
             f = HdfsFile(filename)
             with f.open("w") as w:
                 w.write(data)
