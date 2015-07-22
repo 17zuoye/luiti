@@ -7,6 +7,7 @@ sys.path.insert(0, root_dir)
 os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
 
 import unittest
+import mock
 
 
 class TestLuitiUtils(unittest.TestCase):
@@ -146,6 +147,25 @@ class TestLuitiUtils(unittest.TestCase):
 
         g2 = TargetUtils.json_read(mock_test_file("g1", """\n{"a": 1}\n[1, "b"]  \n \n"""))
         self.assertTrue(list(g2), [{"a": 1}, [1, "b"]])
+
+    @mock.patch("luiti.utils.HDFSUtils.hdfs_cli")
+    @mock.patch("luiti.utils.CommandUtils.execute")
+    @mock.patch("luiti.utils.HDFSUtils.copyToLocal")
+    @mock.patch("os.path.isdir")
+    @mock.patch("luiti.utils.HDFSUtils.exists")
+    def test_CompressUtils(self, hdfs_exists, os_path_isdir, copyToLocal, execute, hdfs_cli):
+        """ a rough test ... """
+        hdfs_exists.return_value = True
+        os_path_isdir.return_value = False
+        copyToLocal.return_value = True
+        execute.return_value = True
+        hdfs_cli.return_value = "hdfs"
+
+        from luiti.utils import CompressUtils
+        self.assertTrue(CompressUtils.unzip_with_upload(
+            "orig", "dist",
+            tmp_dir="/tmp",
+            tmp_name="foobar"))
 
 
 if __name__ == '__main__':

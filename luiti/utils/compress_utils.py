@@ -10,14 +10,18 @@ class CompressUtils:
 
     @staticmethod
     def unzip_with_upload(orig_filepath, hdfs_filepath,
-                          tmp_dir=None, tmp_name=None):
-        """ """
+                          tmp_dir=NotImplementedError, tmp_name=NotImplementedError):
+        """
+        1. Download zip file from HDFS
+        2. Unzip it
+        3. Reupload to the same place on HDFS
+        """
         # 1. check
         if not HDFSUtils.exists(orig_filepath):
             raise ValueError("[hdfs] %s not exists!" % orig_filepath)
 
         # 2. pull file from hdfs
-        tmp_local_target = tmp_dir + "/" + tmp_name
+        tmp_local_target = os.path.join(tmp_dir, tmp_name)
         HDFSUtils.copyToLocal(orig_filepath, tmp_local_target)
 
         # 3. unzip
@@ -43,3 +47,4 @@ class CompressUtils:
         HDFSUtils.copyFromLocal(unzip_file, hdfs_filepath)
         CommandUtils.execute("rm -rf %s" % unzip_dir)
         CommandUtils.execute("rm -rf %s" % tmp_local_target)
+        return True
