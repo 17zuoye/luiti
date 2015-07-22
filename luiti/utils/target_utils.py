@@ -48,12 +48,6 @@ class TargetUtilsClass(object):
         """
         return luigi.hdfs.HdfsTarget(path1, format=luigi.hdfs.PlainDir)
 
-    def mr_read(self, hdfs1):
-        from .mr_utils import MRUtils
-        for line1 in TargetUtils.line_read(hdfs1):
-            k_1, v_1 = MRUtils.split_mr_kv(line1)
-            yield k_1, v_1
-
     def isdir(self, path1):
         return self.client.get_bite().test(path1, directory=True)
 

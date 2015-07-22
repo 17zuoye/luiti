@@ -57,7 +57,6 @@ class Server(object):
         """
         Runs one instance of the API server.
         """
-
         api_sockets = tornado.netutil.bind_sockets(self.port, address=self.host)
         server = tornado.httpserver.HTTPServer(self.app)
         server.add_sockets(api_sockets)

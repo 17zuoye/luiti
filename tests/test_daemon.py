@@ -23,9 +23,11 @@ class FoobarDay(TaskDay):
 
 class TestDaemon(unittest.TestCase):
 
-    def test_main(self):
+    def test_Server(self):
         from luiti.daemon import Server
-        Server
+        s1 = Server("0.0.0.0", 8082)
+        self.assertEqual(s1.url, "http://localhost:8082")
+        self.assertTrue(s1.app)
 
     def test_utils(self):
         from luiti.daemon.utils import TaskStorageSet, TaskStorageDict

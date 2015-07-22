@@ -52,6 +52,8 @@ class TestLuitiUtils(unittest.TestCase):
             filepath = "/foobar"
             IODevice = luigi.LocalTarget
         self.assertEqual(OldFoobarFileDay().output().path, "/foobar")
+        self.assertTrue(OldFoobarFileDay().complete())
+        self.assertFalse(OldFoobarFileDay().run())
 
     def test_TaskDate(self):
         from luiti.task_templates import TaskMonth, TaskDay
