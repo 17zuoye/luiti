@@ -416,7 +416,7 @@ Task decorators
 @luigi.ref_tasks(*tasks)
 
 # 2. Support multiple file output in MapReduce
-@luigi.multiple_text_files
+@luigi.multiple_text_files()
 
 # 3. Run MapReduce in local mode by only add one decorator.
 @luigi.mr_local()

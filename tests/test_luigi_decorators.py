@@ -232,6 +232,28 @@ class TestLuitiExt(unittest.TestCase):
 
         self.assertTrue(isinstance(getattr(Anotherday, "sample_file", None), property))
 
+    def test_multiple_text_files(self):
+        from luiti import luigi, TaskDayHadoop
+        from luiti.luigi_decorators.multiple_text_files import CompileJavaCode
+
+        @luigi.multiple_text_files
+        class AnotherHadoopDay(TaskDayHadoop):
+            root_dir = "/tmp"
+
+        t1 = AnotherHadoopDay(date_value=date_begin)
+        self.assertTrue(t1.libjars[0].endswith("luiti/java/MultipleTextFiles.jar"))
+        self.assertEqual(t1.output_format, "com.voxlearning.bigdata.MrOutput.MultipleTextFiles")
+
+        cjc = CompileJavaCode()
+        self.assertTrue("hadoop" in cjc.compile_cmd.lower(),
+                        "Java path contains 'hadoop' string")
+
+        @luigi.multiple_text_files()
+        class DemoHadoopDay(TaskDayHadoop):
+            root_dir = "/tmp"
+
+        self.assertTrue(hasattr(DemoHadoopDay, "compile_java_code"))
+
 
 if __name__ == '__main__':
     unittest.main()
