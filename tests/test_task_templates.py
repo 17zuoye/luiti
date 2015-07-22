@@ -90,6 +90,19 @@ class TestLuitiUtils(unittest.TestCase):
         self.assertEqual(h2.root_dir, "/foobar")
         self.assertEqual(h2.use_hive_db, "foobar")
 
+    def test_requires_with_prev_week(self):
+        from luiti.task_templates import TaskDay, TaskWeek
+
+        class OneDay(TaskDay):
+            root_dir = "/tmp"
+
+        class AnotherWeek(TaskWeek):
+            root_dir = "/tmp"
+
+        w1 = AnotherWeek(date_value=date_begin)
+        tasks = w1.requires_with_prev_week(OneDay)
+        self.assertEqual(len(tasks), 8)
+
 
 if __name__ == '__main__':
     unittest.main()
