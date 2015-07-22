@@ -103,6 +103,29 @@ class TestManager(unittest.TestCase):
         os.system("rm -rf %s" % dir1)
         os.chdir(RootDir)
 
+    def test_CLI(self):
+        from luiti.manager.cli import Cli
+
+        old_arv = sys.argv[:]
+        sys.argv = ["luiti", "ls"]
+
+        cli = Cli()
+        self.assertTrue("ArgumentParser" in repr(cli.parser))
+        self.assertTrue(callable(cli.load_a_task_by_name))
+
+        self.assertTrue(cli.executor)
+
+        for subcommand in cli.subparsers.choices.keys():
+            # Dumb test, just test function exists.
+            # TODO but dont works
+            self.assertTrue(callable(getattr(cli.executor, subcommand)))
+
+        sys.argv = old_arv
+
+        from luiti.manager.cli import bool_type
+        self.assertEqual(bool_type("False"), False)
+        self.assertEqual(bool_type("false"), False)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -583,6 +583,7 @@ Run tests
 ```bash
 nosetests
 # or
+nosetests --with-coverage --cover-inclusive --cover-package=luiti
 tox -e py27-cdh
 ```
 
