@@ -8,6 +8,7 @@ os.environ['LUIGI_CONFIG_PATH'] = RootDir + '/tests/client.cfg'
 
 import unittest
 from luiti import manager
+from luiti.tests import date_begin
 
 sys.path.insert(0, os.path.join(
     RootDir, "tests/zip_package_by_luiti"))
@@ -125,6 +126,23 @@ class TestManager(unittest.TestCase):
         from luiti.manager.cli import bool_type
         self.assertEqual(bool_type("False"), False)
         self.assertEqual(bool_type("false"), False)
+
+    def test_SysArgv(self):
+        from luiti.manager.sys_argv import SysArgv
+        from luiti.manager.cli import Cli
+
+        def func(argv_in, argv_ou):
+            old_arv = sys.argv[:]
+            sys.argv = argv_in
+
+            cli = Cli()
+            SysArgv.convert_to_luigi_accepted_argv(cli.subparsers)
+            self.assertEqual(sys.argv, argv_ou)
+
+            sys.argv = old_arv
+
+        func(["luiti", "info", "--task-name", "HelloDay", "--date-value", date_begin], ['luiti', '--date-value', date_begin])
+        func(["luiti", "info", "--task-name=HelloDay"], ['luiti'])
 
 
 if __name__ == '__main__':

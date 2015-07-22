@@ -38,6 +38,7 @@ class Cli(object):
 
     @cached_property
     def subparsers(self):
+        self.parser  # pre cache
         return self._subparsers
 
     @cached_property
