@@ -223,6 +223,15 @@ class TestLuitiExt(unittest.TestCase):
         import zip_package_by_luiti.subfold
         zip_package_by_luiti.subfold
 
+    def test_persist_files(self):
+        from luiti import luigi, TaskBase
+
+        @luigi.persist_files("sample_file")
+        class Anotherday(TaskBase):
+            pass
+
+        self.assertTrue(isinstance(getattr(Anotherday, "sample_file", None), property))
+
 
 if __name__ == '__main__':
     unittest.main()

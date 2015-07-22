@@ -7,6 +7,7 @@ from luigi import Event
 from ..utils import IOUtils
 
 
+# NOTE deprecated
 def persist_files(*files):  # 装饰器
     """ 多个data_file 可以用 DSL 描述，然后和 event_handler(Event.FAILURE) 绑定在一起 """
     def func(cls):
