@@ -16,6 +16,8 @@ __all__ = [
     "active_packages",
 
     "luiti_config",
+
+    "Cli",
 ]
 
 from .loader import Loader
@@ -30,6 +32,8 @@ from .active_packages import active_packages
 from .sys_argv import SysArgv
 
 from .generate_from_templates import GenerateFromTemplates
+
+from .cli import Cli
 
 
 # API list
@@ -47,20 +51,4 @@ new_a_project = GenerateFromTemplates.new_a_project
 generate_a_task = GenerateFromTemplates.generate_a_task
 
 
-from etl_utils import singleton, cached_property
-
-
-@singleton()
-class LazyData(object):
-
-    @cached_property
-    def all_task_classes(self):
-        return [i1['task_cls'] for i1 in ld.result['success']]
-
-    @cached_property
-    def result(self):
-        return load_all_tasks()
-
-ld = LazyData()
-Dep.ld = ld
-Table.ld = ld
+from .lazy_data import ld
