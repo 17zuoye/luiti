@@ -15,9 +15,7 @@ class CodeRender(dict):
         from pygments.lexers import PythonLexer
         lexer = PythonLexer()
 
-        def func(source_code):
-            return pygments.highlight(source_code, lexer, self.formatter)
-        return func
+        return lambda source_code: pygments.highlight(source_code, lexer, self.formatter)
 
     @cached_property
     def formatter(self):

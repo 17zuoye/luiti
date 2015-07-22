@@ -12,7 +12,7 @@ from luiti import luigi
 from luiti.luigi_extensions import ArrowParameter
 current_time = ArrowParameter.now()
 
-from luiti.tests import SetupLuitiPackages
+from luiti.tests import SetupLuitiPackages, date_begin
 config = SetupLuitiPackages.config
 
 
@@ -196,6 +196,77 @@ class TestDaemon(unittest.TestCase):
         # ... to be continued.
 
         self.assertEqual(QueryBuilder(PTM, {}).selected_query["luiti_package"], ["luiti_summary"])  # default
+
+    def test_CodeRender(self):
+        from luiti.daemon.web.code_render import CodeRender
+
+        cr = CodeRender()
+        self.assertTrue(callable(cr.highlight))
+        self.assertEqual(cr.formatter.name, "HTML")
+
+        self.assertTrue(isinstance(cr[__file__], unicode))
+        self.assertTrue(len(cr[__file__]) > 1000, "large html code")
+
+    def test_Template(self):
+        from luiti import TaskDay
+        from luiti.daemon.utils.template import Template
+
+        class SampleDay(TaskDay):
+            """ doc """
+            root_dir = "/foobar"
+
+            def requires(self):
+                if self == t2:  # hack
+                    return []
+                return t2
+
+        t1 = SampleDay(date_value=date_begin)
+        t2 = SampleDay(date_value="2014-01-01")
+
+        node_info_sample = {
+            'task_doc': 'doc',
+            'group': '__main__',
+            'package_name': '__main__',
+            'task_file': '__main__.py',
+            'data_file': '/foobar/2014-09-01/sample_day.json',
+            'detail': 'SampleDay(date_value=2014-09-01T00:00:00+08:00)',
+            'size': 20,
+            'id': 'SampleDay(date_value=2014-09-01T00:00:00+08:00)',
+            'label': 'SampleDay'}
+
+        def remove_tzinfo(d1):
+            """ Travis's tzinfo is different """
+            for k2 in ["detail", "id", "to", "from",
+                       "package_name", "group", "task_file"]:  # different in tox mode, "__main__" vs "test_daemon"
+                if k2 in d1:
+                    del d1[k2]
+            return d1
+
+        self.assertEqual(Template.task_doc(t1), "doc")
+        self.assertEqual(remove_tzinfo(Template.a_node(t1)), remove_tzinfo(node_info_sample))
+
+        edge_sample_1 = {
+            'strength': 1.0,
+            'source_name': 'SampleDay',
+            'target_name': 'SampleDay',
+            'arrows': 'self_to_self',
+            'to': 'SampleDay(date_value=2014-09-01T00:00:00+08:00)',
+            'from': 'SampleDay(date_value=2014-09-01T00:00:00+08:00)',
+            'id': 'SampleDay(date_value=2014-09-01T00:00:00+08:00) SampleDay(date_value=2014-09-01T00:00:00+08:00)'}
+        self.assertEqual(remove_tzinfo(Template.an_edge(t1, t1)), remove_tzinfo(edge_sample_1))
+
+        edge_sample_2 = {
+            'strength': 1.0,
+            'source_name': 'SampleDay',
+            'target_name': 'SampleDay',
+            'arrows': 'to',
+            'to': 'SampleDay(date_value=2014-09-01T00:00:00+08:00)',
+            'from': 'SampleDay(date_value=2014-01-01T00:00:00+08:00)',
+            'id': 'SampleDay(date_value=2014-01-01T00:00:00+08:00) SampleDay(date_value=2014-09-01T00:00:00+08:00)'}
+
+        edges = Template.edges_from_nodes([t1, t2])
+        self.assertTrue(isinstance(edges, list))
+        self.assertEqual(remove_tzinfo(edges[0]), remove_tzinfo(edge_sample_2))
 
 
 if __name__ == '__main__':
