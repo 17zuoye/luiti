@@ -7,6 +7,8 @@ sys.path.insert(0, RootDir)
 os.environ['LUIGI_CONFIG_PATH'] = RootDir + '/tests/client.cfg'
 
 import unittest
+import mock
+
 from luiti import manager
 from luiti.tests import date_begin
 
@@ -154,6 +156,14 @@ class TestManager(unittest.TestCase):
         from luiti.manager.lazy_data import ld
         self.assertTrue(len(Table.print_all_tasks(ld.result)[0]) > 6, """Example data is ([[1, 'ADay', 'project_A'], [2, 'BDay', 'project_A'], [3, 'CDay', 'project_A'], [4, 'DDay', 'project_A'], [5, 'FoobarDay', 'project_A'], [6, 'HDay', 'project_B'], [7, 'ImportPackagesDay', 'project_A'], [8, 'MultipleDependentDay', 'project_A'], ['total', 8, '']], ['', 'All Tasks', 'luiti_package'])""")
 
+    @mock.patch("luigi.hdfs.client.rename")
+    @mock.patch("luigi.hdfs.client.exists")
+    def test_Files(self, exists, rename):
+        from luiti.manager.files import Files
+
+        exists.return_value = True
+        rename.return_value = True
+        self.assertEqual(Files.soft_delete_files("hello", "world"), 0)
 
 if __name__ == '__main__':
     unittest.main()

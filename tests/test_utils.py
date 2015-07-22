@@ -167,6 +167,14 @@ class TestLuitiUtils(unittest.TestCase):
             tmp_dir="/tmp",
             tmp_name="foobar"))
 
+    @mock.patch("os.system")
+    def test_CommandUtils(self, os_system):
+        os_system.return_value = 0
+
+        from luiti.utils import CommandUtils
+        self.assertEqual(CommandUtils.execute("ls"), 0)
+        self.assertEqual(CommandUtils.execute("ls", dry=True), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
