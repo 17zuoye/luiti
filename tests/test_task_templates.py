@@ -6,6 +6,7 @@ root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, root_dir)
 os.environ['LUIGI_CONFIG_PATH'] = root_dir + '/tests/client.cfg'
 
+import mock
 import unittest
 
 from luiti.tests import date_begin
@@ -14,7 +15,10 @@ from etl_utils import cached_property
 
 class TestLuitiUtils(unittest.TestCase):
 
-    def test_MongoImportTask(self):
+    @mock.patch("os.system")
+    def test_MongoImportTask(self, os_system, ):
+        os_system.return_value = 0
+
         from luiti import MongoImportTask
 
         class AnotherMongoDay(MongoImportTask):
@@ -25,10 +29,16 @@ class TestLuitiUtils(unittest.TestCase):
             collection_name = "teacher_report"
             tmp_filepath = "/foobar.json"
 
+            is_collection_exists = lambda self: True
+
         mongo_task = AnotherMongoDay(date_value=date_begin)
+
         self.assertEqual(mongo_task.mongodb_connection_host, "192.168.20.111")
         self.assertEqual(mongo_task.mongodb_connection_port, 37001)
         self.assertEqual(mongo_task.mongoimport_command, "/usr/bin/mongoimport --host 192.168.20.111 --port 37001 --db 17zuoye_crm --collection teacher_report --file /foobar.json")
+        self.assertEqual(mongo_task.tmp_dir, "/tmp/AnotherMongoDay")
+
+        self.assertFalse(mongo_task.run())
 
     def test_StaticFile(self):
         from luiti import StaticFile, luigi
