@@ -75,6 +75,9 @@ class Cli(object):
         parser_webui.add_argument(
             '--port', default=8082,
             help=u"webui server port", required=False, )
+        parser_webui.add_argument(
+            '--background', default=False,
+            help=u"run in a background mode", required=False, )
 
         for parser_1 in [parser_ls, parser_gene, parser_info,
                          parser_clean, parser_run, parser_webui]:
@@ -216,8 +219,15 @@ class Executor(object):
             luigi.plug_packages(luiti_package)
 
         from luiti.daemon import Server
-        Server(self.args_main.host, self.args_main.port).run()
-        # TODO daemonize
+
+        import daemon
+        # TODO add logger and pidfile
+        if self.args_main.background:
+            ctx = daemon.DaemonContext()
+            with ctx:
+                Server(self.args_main.host, self.args_main.port).run()
+        else:
+            Server(self.args_main.host, self.args_main.port).run()
 
 
 def bool_type(arg1):
