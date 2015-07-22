@@ -11,6 +11,31 @@ curr_dir = os.getcwd()
 class Cli(object):
     """ Luiti command line interface. """
 
+    def run(self):
+        self.check_argv()
+        getattr(self.executor, self.subcommand)()
+
+    def check_argv(self):
+        """ check arguments """
+        if len(sys.argv) == 1:
+            self.parser.print_help()
+            exit(0)
+        else:
+            if "project_dir" in self.args_main:
+                self.luiti_config.curr_project_dir = self.args_main.project_dir
+        self.luiti_config.curr_project_dir = self.luiti_config.curr_project_dir or curr_dir
+
+        # check if it's a valid project.
+        if self.subcommand != "new":  # not new a project
+            self.luiti_config.fix_project_dir()
+
+            if not os.path.exists(os.path.join(self.luiti_config.curr_project_dir, "luiti_tasks")):
+                print u"""
+            Current work directory '%s' has no sub directory 'luiti_tasks', make sure
+            you have already `cd path/to/your/luiti/project/` .
+                """ % (self.luiti_config.curr_project_dir)
+                exit(1)
+
     @cached_property
     def subparsers(self):
         return self._subparsers
@@ -88,27 +113,6 @@ class Cli(object):
 
         return parser_main
 
-    def check_argv(self):
-        """ check arguments """
-        if len(sys.argv) == 1:
-            self.parser.print_help()
-            exit(0)
-        else:
-            if "project_dir" in self.args_main:
-                self.luiti_config.curr_project_dir = self.args_main.project_dir
-        self.luiti_config.curr_project_dir = self.luiti_config.curr_project_dir or curr_dir
-
-        # check if it's a valid project.
-        if self.subcommand != "new":  # not new a project
-            self.luiti_config.fix_project_dir()
-
-            if not os.path.exists(os.path.join(self.luiti_config.curr_project_dir, "luiti_tasks")):
-                print u"""
-            Current work directory '%s' has no sub directory 'luiti_tasks', make sure
-            you have already `cd path/to/your/luiti/project/` .
-                """ % (self.luiti_config.curr_project_dir)
-                exit(1)
-
     @cached_property
     def subcommand(self):
         return sys.argv[1]
@@ -135,10 +139,7 @@ class Cli(object):
 
     @cached_property
     def executor(self):
-        return Executor()
-
-    def run(self):
-        return getattr(self.executor, self.subcommand)()
+        return Executor(self)
 
 
 class Executor(object):
