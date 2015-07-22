@@ -16,10 +16,11 @@ sys.path.insert(0, os.path.join(
 
 class TestManager(unittest.TestCase):
 
-    def test_Loader(self):
+    def setUp(self):
         # change work dir
         os.chdir(os.path.join(RootDir, "tests/project_A"))
 
+    def test_Loader(self):
         self.assertEqual(
             manager.load_a_task_by_name("ADay"),
             manager.load_a_task_by_name("a_day"),
@@ -143,6 +144,15 @@ class TestManager(unittest.TestCase):
 
         func(["luiti", "info", "--task-name", "HelloDay", "--date-value", date_begin], ['luiti', '--date-value', date_begin])
         func(["luiti", "info", "--task-name=HelloDay"], ['luiti'])
+
+    def test_Table(self):
+        # TODO add more tests
+        from luiti.manager.table import Table
+        ADay = manager.load_a_task_by_name("ADay")
+        self.assertEqual(Table.print_task_info(ADay), ([['Tasks self dep on', "['BDay', 'CDay']"], ['Tasks dep on self', '[]']], ['Task name', 'ADay']))
+
+        from luiti.manager.lazy_data import ld
+        self.assertTrue(len(Table.print_all_tasks(ld.result)[0]) > 6, """Example data is ([[1, 'ADay', 'project_A'], [2, 'BDay', 'project_A'], [3, 'CDay', 'project_A'], [4, 'DDay', 'project_A'], [5, 'FoobarDay', 'project_A'], [6, 'HDay', 'project_B'], [7, 'ImportPackagesDay', 'project_A'], [8, 'MultipleDependentDay', 'project_A'], ['total', 8, '']], ['', 'All Tasks', 'luiti_package'])""")
 
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@
 
 import os
 from .dep import Dep
+import luigi
 
 
 class Table(object):
@@ -10,11 +11,13 @@ class Table(object):
     """
 
     @staticmethod
-    def puts(task_table, task_headers, **opts):
+    def puts(task_body, task_headers, **opts):
         from tabulate import tabulate
+        result = tabulate(task_body, task_headers, **opts)
         print
-        print tabulate(task_table, task_headers, **opts)
+        print result
         print
+        return result
 
     @staticmethod
     def print_all_tasks(result):
@@ -28,11 +31,11 @@ class Table(object):
             ]
 
         task_headers = ["", "All Tasks", "luiti_package"]
-        task_table = [task_inspect(item1['task_cls'], idx1 + 1)
-                      for idx1, item1 in enumerate(sorted(result['success']))]
-        task_table.extend([["total", len(result['success']), ""]])
+        task_body = [task_inspect(item1['task_cls'], idx1 + 1)
+                     for idx1, item1 in enumerate(sorted(result['success']))]
+        task_body.extend([["total", len(result['success']), ""]])
 
-        Table.puts(task_table, task_headers, tablefmt="grid")
+        Table.puts(task_body, task_headers, tablefmt="grid")
 
         if result['failure']:
             print
@@ -42,13 +45,14 @@ class Table(object):
                 print "[task_file] ", failure1['task_clsname']
                 print "[err] ", failure1['err']
                 print
+        return (task_body, task_headers)
 
     @staticmethod
     def print_files_by_task_cls_and_date_range(curr_task, args, opts=None):
         opts = opts or dict()
         # 打印 依赖类 和 执行配置 信息
         task_headers = ["Current Env Key", "Current Env Value"]
-        task_table = [
+        task_body = [
             ["task name", args.task_name],
             ["task date range", args.date_range],
             ["task execute mode", "DRY=" + str(args.dry)],
@@ -57,7 +61,7 @@ class Table(object):
         ]
         print
         print "Tasks related infos"
-        Table.puts(task_table, task_headers, tablefmt="grid")
+        Table.puts(task_body, task_headers, tablefmt="grid")
 
         # 打印 要删除的文件列表
         file_headers = ["Generated from task", "Storage",
@@ -84,9 +88,12 @@ class Table(object):
         print "Files related infos"
         Table.puts(file_table, file_headers, tablefmt="grid")
         print "\n" * 3
+        return (file_table, file_headers)
 
     @staticmethod
     def print_task_info(curr_task):
+        assert issubclass(curr_task, luigi.Task)
+
         dep_tasks_on_curr_task = Dep.find_dep_on_tasks(
             curr_task, Table.ld.all_task_classes)
 
@@ -97,3 +104,4 @@ class Table(object):
              str(sorted([t2.__name__ for t2 in dep_tasks_on_curr_task]))],
         ]
         Table.puts(task_content, task_headers, tablefmt="grid")
+        return (task_content, task_headers)
