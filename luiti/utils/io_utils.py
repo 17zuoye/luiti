@@ -17,7 +17,7 @@ class IOUtils:
         m1 = lambda item1: json.dumps(list(item1))
         m2 = lambda item1: JsonUtils.unicode_dump(item1).encode("UTF-8")
         if isinstance(o1, (list, set,)):
-            # 兼容 JsonUtils.unicode_dump 不支持list
+            # Comptible with JsonUtils.unicode_dump dont support list
             method = m1
         else:
             method = m2

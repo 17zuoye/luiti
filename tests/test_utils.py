@@ -122,6 +122,31 @@ class TestLuitiUtils(unittest.TestCase):
         self.assertTrue(isinstance(Foobar.property_1, property))
         self.assertTrue(isinstance(Foobar.cached_property_1, cached_property))
 
+    def test_IOUtils(self):
+        from luiti.utils import IOUtils
+
+        self.assertEqual(IOUtils.json_dump({}), "{}")
+        self.assertEqual(IOUtils.json_dump([{}]), "[{}]")
+
+    def test_TargetUtils(self):
+        from luiti.utils import TargetUtils
+        from luigi.mock import MockTarget
+
+        def mock_test_file(filename, data):
+            class HdfsFile(MockTarget):
+                pass
+
+            f = HdfsFile(filename)
+            with f.open("w") as w:
+                w.write(data)
+
+            return f
+        g1 = TargetUtils.line_read(mock_test_file("g1", """\nline one\nline two\n   \n"""))
+        self.assertTrue(list(g1), [u"line one", u"line two"])
+
+        g2 = TargetUtils.json_read(mock_test_file("g1", """\n{"a": 1}\n[1, "b"]  \n \n"""))
+        self.assertTrue(list(g2), [{"a": 1}, [1, "b"]])
+
 
 if __name__ == '__main__':
     unittest.main()
