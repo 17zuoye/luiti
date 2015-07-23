@@ -110,10 +110,7 @@ class TestManager(unittest.TestCase):
     def test_CLI(self):
         from luiti.manager.cli import Cli
 
-        old_arv = sys.argv[:]
-        sys.argv = ["luiti", "ls"]
-
-        cli = Cli()
+        cli = Cli(["luiti", "ls"])
         self.assertTrue("ArgumentParser" in repr(cli.parser))
         self.assertTrue(callable(cli.load_a_task_by_name))
 
@@ -124,8 +121,6 @@ class TestManager(unittest.TestCase):
             # TODO but dont works
             self.assertTrue(callable(getattr(cli.executor, subcommand)))
 
-        sys.argv = old_arv
-
         from luiti.manager.cli import bool_type
         self.assertEqual(bool_type("False"), False)
         self.assertEqual(bool_type("false"), False)
@@ -135,14 +130,8 @@ class TestManager(unittest.TestCase):
         from luiti.manager.cli import Cli
 
         def func(argv_in, argv_ou):
-            old_arv = sys.argv[:]
-            sys.argv = argv_in
-
-            cli = Cli()
-            SysArgv.convert_to_luigi_accepted_argv(cli.subparsers)
-            self.assertEqual(sys.argv, argv_ou)
-
-            sys.argv = old_arv
+            cli = Cli(argv_in)
+            self.assertEqual(SysArgv.convert_to_luigi_accepted_argv(cli.subparsers, argv_in), argv_ou)
 
         func(["luiti", "info", "--task-name", "HelloDay", "--date-value", date_begin], ['luiti', '--date-value', date_begin])
         func(["luiti", "info", "--task-name=HelloDay"], ['luiti'])

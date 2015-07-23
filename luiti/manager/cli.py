@@ -1,15 +1,16 @@
 # -*-coding:utf-8-*-
 
 import os
-import sys
 import argparse
 from etl_utils import cached_property
-
-curr_dir = os.getcwd()
 
 
 class Cli(object):
     """ Luiti command line interface. """
+
+    def __init__(self, argv):
+        self.argv = argv[:]  # make a copy
+        self.curr_dir = os.getcwd()
 
     def run(self):
         self.check_argv()
@@ -17,13 +18,13 @@ class Cli(object):
 
     def check_argv(self):
         """ check arguments """
-        if len(sys.argv) == 1:
+        if len(self.argv) == 1:
             self.parser.print_help()
             exit(0)
         else:
             if "project_dir" in self.args_main:
                 self.luiti_config.curr_project_dir = self.args_main.project_dir
-        self.luiti_config.curr_project_dir = self.luiti_config.curr_project_dir or curr_dir
+        self.luiti_config.curr_project_dir = self.luiti_config.curr_project_dir or self.curr_dir
 
         # check if it's a valid project.
         if self.subcommand != "new":  # not new a project
@@ -85,7 +86,7 @@ class Cli(object):
             parser_1.add_argument(
                 "--project-dir",
                 help=u"force use another project directory.",
-                default=curr_dir)
+                default=self.curr_dir)
 
             if parser_1 not in [parser_ls, parser_new, parser_webui]:
                 parser_1.add_argument(
@@ -119,11 +120,11 @@ class Cli(object):
 
     @cached_property
     def subcommand(self):
-        return sys.argv[1]
+        return self.argv[1]
 
     @cached_property
     def args_main(self):
-        return self.parser.parse_args()
+        return self.parser.parse_args(self.argv[1:])
 
     @cached_property
     def luiti_config(self):

@@ -2,14 +2,14 @@
 
 __all__ = ["SysArgv"]
 
-import sys
-
 
 class SysArgv(object):
+    """
+    Modify sys.argv to fix luigi's command interface.
+    """
 
     @staticmethod
-    def convert_to_luigi_accepted_argv(subparsers):
-        sys.argv_old = sys.argv[:]
+    def convert_to_luigi_accepted_argv(subparsers, argv):
         luigi_keep_opts = ["--date-value"]
 
         def fetch_keys(parser1):
@@ -23,7 +23,7 @@ class SysArgv(object):
                            if i1 not in luigi_keep_opts]
 
         delete_argv_idxes = set([])
-        for idx1, arg1 in enumerate(sys.argv):
+        for idx1, arg1 in enumerate(argv):
             if idx1 in delete_argv_idxes:
                 continue
             # 1. remove tasks, files, run, etc.
@@ -39,5 +39,6 @@ class SysArgv(object):
                 if (arg1 in luiti_only_opts) and (arg1 not in luigi_keep_opts):
                     delete_argv_idxes.add(idx1)
                     delete_argv_idxes.add(idx1 + 1)
-        sys.argv = [arg1 for idx1, arg1 in enumerate(sys.argv)
-                    if idx1 not in delete_argv_idxes]
+        argv = [arg1 for idx1, arg1 in enumerate(argv)
+                if idx1 not in delete_argv_idxes]
+        return argv
