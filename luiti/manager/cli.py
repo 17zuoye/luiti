@@ -1,6 +1,7 @@
 # -*-coding:utf-8-*-
 
 import os
+import sys
 import argparse
 from etl_utils import cached_property
 
@@ -134,7 +135,7 @@ class Cli(object):
     @cached_property
     def curr_task(self):
         if ("task_name" in self.args_main) and (self.subcommand not in ["generate"]):
-            return self.Loader.load_a_task_by_name(self.args_main.task_name)
+            return self.load_a_task_by_name(self.args_main.task_name)
         raise ValueError("Current subcommand [%s] dont support!" % self.subcommand)
 
     @cached_property
@@ -206,7 +207,7 @@ class Executor(object):
         from .sys_argv import SysArgv
 
         # 1. 把参数修复为 luigi 接受的参数，即把只有 luiti 依赖的参数去除。
-        SysArgv.convert_to_luigi_accepted_argv(self.parser_main.subparsers)
+        sys.argv = SysArgv.convert_to_luigi_accepted_argv(self.cli.subparsers, sys.argv)
 
         # 2. run it!
         # luigi.run(main_task_cls=curr_task)  # old style
