@@ -154,5 +154,11 @@ class TestManager(unittest.TestCase):
         rename.return_value = True
         self.assertEqual(Files.soft_delete_files("hello", "world"), 0)
 
+    def test_ManageDecorators(self):
+        from luiti.luigi_extensions.manage_decorators import ManageDecorators
+        from luiti import luigi
+        luigi = ManageDecorators.bind_to(luigi)  # actually it's already runned by luiti.luigi_extensions.__init__
+        self.assertTrue("as_a_luiti_task" in dir(luigi))
+
 if __name__ == '__main__':
     unittest.main()
