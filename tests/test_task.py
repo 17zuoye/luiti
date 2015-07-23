@@ -34,7 +34,7 @@ class TestLuitiUtils(unittest.TestCase):
     def test_RootTask(self):
         from luiti import RootTask
         output_path = RootTask().output().path
-        self.assertTrue("luiti/luigi_extensions/root_task.pyc" in output_path, output_path)
+        self.assertTrue("luiti/luigi_extensions/root_task.py" in output_path, output_path)
 
 
 if __name__ == '__main__':
