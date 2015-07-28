@@ -28,6 +28,7 @@ class TestLuitiUtils(unittest.TestCase):
             database_name = "17zuoye_crm"
             collection_name = "teacher_report"
             tmp_filepath = "/foobar.json"
+            data_file_collection_model = "MongoCollection(foobar)"
 
             is_collection_exists = lambda self: True
 

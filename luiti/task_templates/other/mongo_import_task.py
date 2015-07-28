@@ -102,6 +102,7 @@ class MongoImportTask(TaskBase):
 
         # 1. check is already done.
         if self.is_collection_exists():
+            print "[info] %s already exists!" % (self.data_file_collection_model, )
             return False
 
         # 2. check report status collection is valid
