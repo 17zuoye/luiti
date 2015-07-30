@@ -47,8 +47,8 @@ class SensorSchedule(object):
     current_sleep_seconds = 0
 
     @classmethod
-    def run(cls, curr_task, date_value):
-        ss = SensorSchedule(curr_task, date_value)
+    def run(cls, curr_task, date_value, check_output_recursive=True):
+        ss = SensorSchedule(curr_task, date_value, check_output_recursive)
 
         while True:
             # 1. all output arrives
@@ -103,11 +103,12 @@ class SensorSchedule(object):
         OSError: [Errno 11] Resource temporarily unavailable
         """
 
-    def __init__(self, curr_task, date_value):
+    def __init__(self, curr_task, date_value, check_output_recursive):
         # 1. check data type
         assert issubclass(curr_task, luigi.Task), curr_task
         self.curr_task = curr_task
         self.date_value = ArrowParameter.get(date_value)
+        self.check_output_recursive = check_output_recursive
 
     @cached_property
     def curr_task_intance(self):
@@ -124,7 +125,10 @@ class SensorSchedule(object):
             required_task_instances = _curr_task.requires()
             if not isinstance(required_task_instances, list):
                 required_task_instances = [required_task_instances]
-            dep_dict[_curr_task] = set(filter(lambda t1: bool(t1) and (not isinstance(t1, RootTask)), required_task_instances))
+            dep_dict[_curr_task] = filter(lambda t1: bool(t1) and (not isinstance(t1, RootTask)), required_task_instances)
+            if self.check_output_recursive:
+                dep_dict[_curr_task] = filter(lambda t1: t1.output().exists(), dep_dict[_curr_task])
+            dep_dict[_curr_task] = set(dep_dict[_curr_task])
 
             for t1 in dep_dict[_curr_task]:
                 func(dep_dict, t1)
