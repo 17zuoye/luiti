@@ -3,6 +3,7 @@
 from etl_utils import cached_property
 import luigi
 import time
+import arrow
 from ..luigi_extensions import ArrowParameter, RootTask
 
 
@@ -149,7 +150,9 @@ class SensorSchedule(object):
         return filter(lambda i1: SensorSchedule.is_external(i1.__class__), self.ordered_task_instances_list)
 
     def is_external_all_complete(self):
-        return len(filter(lambda t1: not t1.output().exists(), self.external_task_instances_list)) == 0
+        unfinished_external_tasks = filter(lambda t1: not t1.output().exists(), self.external_task_instances_list)
+        print "[%s unfinished_external_tasks]" % str(arrow.now()), unfinished_external_tasks
+        return len(unfinished_external_tasks) == 0
 
     @staticmethod
     def is_external(task_instance):
